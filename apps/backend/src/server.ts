@@ -17,7 +17,12 @@ import chatRoutes from "./features/chat/router.js"; // Updated chat route import
 import adminRoutes from "./routes/admin/index.js";
 
 const app = express();
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+// Get allowed origins from environment variable or use defaults
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",")
+  : ["http://localhost:3000", "http://localhost:3001"];
+
+console.log("CORS allowed origins:", allowedOrigins);
 
 // Middleware
 app.use(
@@ -26,6 +31,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log(`Blocked request from unauthorized origin: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
     },
