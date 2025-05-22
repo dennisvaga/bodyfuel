@@ -12,11 +12,11 @@ if [ -z "$DATABASE_URL" ]; then
 fi
 
 # Extract database connection info from DATABASE_URL
-DB_USER=$(echo $DATABASE_URL | sed -E 's|^postgresql://([^:]+):.*$|\1|')
-DB_PASSWORD=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^:]+:([^@]+)@.*$|\1|')
-DB_HOST=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@([^:]+):.*$|\1|')
-DB_PORT=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@[^:]+:([0-9]+)/.*$|\1|')
-DB_NAME=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@[^:]+:[0-9]+/(.*)$|\1|')
+DB_USER=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://([^:]+):.*$|\1|')
+DB_PASSWORD=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://[^:]+:([^@]+)@.*$|\1|')
+DB_HOST=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://[^@]+@([^:/]+):.*$|\1|')
+DB_PORT=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://[^@]+@[^:/]+:([0-9]+).*|\1|')
+DB_NAME=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://[^@]+@[^:/]+:[0-9]+/([^?]+).*|\1|')
 
 # Absolute path to the backup file 
 BACKUP_FILE="packages/database/src/backup/bodyfuel_backup_20250521.sql"
