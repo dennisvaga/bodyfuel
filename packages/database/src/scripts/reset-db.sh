@@ -18,8 +18,8 @@ DB_HOST=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@([^:]+):.*$|\1|')
 DB_PORT=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@[^:]+:([0-9]+)/.*$|\1|')
 DB_NAME=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@[^:]+:[0-9]+/(.*)$|\1|')
 
-# Absolute path to the backup file (adjusted to correct directory)
-BACKUP_FILE="$(dirname "$0")/../backup/bodyfuel_backup_20250521.sql"
+# Absolute path to the backup file 
+BACKUP_FILE="packages/database/src/backup/bodyfuel_backup_20250521.sql"
 
 if [ ! -f "$BACKUP_FILE" ]; then
   echo "Error: Backup file not found at $BACKUP_FILE!"
