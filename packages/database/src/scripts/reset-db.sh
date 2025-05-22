@@ -18,8 +18,8 @@ DB_HOST=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@([^:]+):.*$|\1|')
 DB_PORT=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@[^:]+:([0-9]+)/.*$|\1|')
 DB_NAME=$(echo $DATABASE_URL | sed -E 's|^postgresql://[^@]+@[^:]+:[0-9]+/(.*)$|\1|')
 
-# Absolute path to the backup file (should be committed in the repo)
-BACKUP_FILE="$(dirname "$0")/bodyfuel_backup_20250521.sql"
+# Absolute path to the backup file (adjusted to correct directory)
+BACKUP_FILE="$(dirname "$0")/../backup/bodyfuel_backup_20250521.sql"
 
 if [ ! -f "$BACKUP_FILE" ]; then
   echo "Error: Backup file not found at $BACKUP_FILE!"
@@ -30,13 +30,18 @@ fi
 export PGPASSWORD="$DB_PASSWORD"
 
 # Drop, recreate, and restore the database
+echo "Dropping existing database $DB_NAME..."
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME WITH (FORCE);"
+
+echo "Creating fresh database $DB_NAME..."
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;"
+
+echo "Restoring database from backup file..."
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$BACKUP_FILE"
 
 # Clean up
 unset PGPASSWORD
 
-echo "Database reset completed."
+echo "✅ Database reset completed successfully."
 
 exit 0
