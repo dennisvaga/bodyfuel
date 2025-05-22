@@ -1,9 +1,13 @@
 #!/bin/bash
 
 # Reset Database Script for BodyFuel (Render Cron Job)
-# Drops and recreates the database using a backup SQL file
+# Instead of recreating the database, we'll clear and restore its contents
 
 set -e
+
+# Debug: Print masked DATABASE_URL for troubleshooting
+masked_url=$(echo "$DATABASE_URL" | sed -E 's|^(postgresql://[^:]+:)[^@]+(@.*)$|\1*****\2|')
+echo "🔍 Using database connection: $masked_url"
 
 # Make sure DATABASE_URL is provided
 if [ -z "$DATABASE_URL" ]; then
@@ -11,7 +15,7 @@ if [ -z "$DATABASE_URL" ]; then
   exit 1
 fi
 
-# Parse the DATABASE_URL components using 'awk'
+# Parse the DATABASE_URL components
 DB_USER=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://([^:]+):.*$|\1|')
 DB_PASSWORD=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://[^:]+:([^@]+)@.*$|\1|')
 DB_HOST=$(echo "$DATABASE_URL" | sed -E 's|^postgresql://[^@]+@([^:/]+):.*$|\1|')
@@ -29,29 +33,37 @@ fi
 # Set password env var for psql
 export PGPASSWORD="$DB_PASSWORD"
 
-echo "🔄 Terminating all connections to database $DB_NAME..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "
-  SELECT pg_terminate_backend(pg_stat_activity.pid) 
-  FROM pg_stat_activity 
-  WHERE pg_stat_activity.datname = '$DB_NAME' 
-  AND pid <> pg_backend_pid();" || true
-
-echo "⚙️ Dropping existing database $DB_NAME..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;" || {
-  echo "⚠️ Could not drop database. It may be in use or you may not have sufficient permissions."
-  echo "🔍 Checking if database exists..."
-  DB_EXISTS=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'")
-  if [ "$DB_EXISTS" = "1" ]; then
-    echo "⚠️ Database still exists. Will attempt to continue with existing database..."
-  else
-    echo "✅ Database does not exist. Will create it now..."
-  fi
+echo "🧹 Clearing existing database content..."
+# Connect directly to the target database and drop all tables/functions/etc
+psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -c "
+-- Drop all tables, views, functions, etc.
+DO \$\$ 
+DECLARE
+  r RECORD;
+BEGIN
+  -- Drop all tables with CASCADE
+  FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+    EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+  END LOOP;
+  
+  -- Drop all views
+  FOR r IN (SELECT viewname FROM pg_views WHERE schemaname = 'public') LOOP
+    EXECUTE 'DROP VIEW IF EXISTS ' || quote_ident(r.viewname) || ' CASCADE';
+  END LOOP;
+  
+  -- Drop all functions/procedures
+  FOR r IN (SELECT oid::regprocedure FROM pg_proc WHERE pronamespace = 'public'::regnamespace) LOOP
+    EXECUTE 'DROP FUNCTION IF EXISTS ' || r.oid || ' CASCADE';
+  END LOOP;
+  
+  -- Drop all sequences
+  FOR r IN (SELECT relname FROM pg_class WHERE relkind = 'S' AND relnamespace = 'public'::regnamespace) LOOP
+    EXECUTE 'DROP SEQUENCE IF EXISTS ' || quote_ident(r.relname) || ' CASCADE';
+  END LOOP;
+END \$\$;
+" || {
+  echo "⚠️ Could not clear database. Attempting to continue anyway..."
 }
-
-echo "🛠️ Creating fresh database $DB_NAME if it doesn't exist..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE IF NOT EXISTS $DB_NAME;" 2>/dev/null || 
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;" 2>/dev/null || 
-echo "⚠️ Could not create database. It may already exist. Continuing..."
 
 echo "📦 Restoring database from backup..."
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$BACKUP_FILE"
