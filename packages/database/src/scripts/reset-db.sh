@@ -29,11 +29,29 @@ fi
 # Set password env var for psql
 export PGPASSWORD="$DB_PASSWORD"
 
-echo "⚙️ Dropping existing database $DB_NAME..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME WITH (FORCE);"
+echo "🔄 Terminating all connections to database $DB_NAME..."
+psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "
+  SELECT pg_terminate_backend(pg_stat_activity.pid) 
+  FROM pg_stat_activity 
+  WHERE pg_stat_activity.datname = '$DB_NAME' 
+  AND pid <> pg_backend_pid();" || true
 
-echo "🛠️ Creating fresh database $DB_NAME..."
-psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;"
+echo "⚙️ Dropping existing database $DB_NAME..."
+psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "DROP DATABASE IF EXISTS $DB_NAME;" || {
+  echo "⚠️ Could not drop database. It may be in use or you may not have sufficient permissions."
+  echo "🔍 Checking if database exists..."
+  DB_EXISTS=$(psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -tAc "SELECT 1 FROM pg_database WHERE datname='$DB_NAME'")
+  if [ "$DB_EXISTS" = "1" ]; then
+    echo "⚠️ Database still exists. Will attempt to continue with existing database..."
+  else
+    echo "✅ Database does not exist. Will create it now..."
+  fi
+}
+
+echo "🛠️ Creating fresh database $DB_NAME if it doesn't exist..."
+psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE IF NOT EXISTS $DB_NAME;" 2>/dev/null || 
+psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d postgres -c "CREATE DATABASE $DB_NAME;" 2>/dev/null || 
+echo "⚠️ Could not create database. It may already exist. Continuing..."
 
 echo "📦 Restoring database from backup..."
 psql -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER" -d "$DB_NAME" -f "$BACKUP_FILE"
