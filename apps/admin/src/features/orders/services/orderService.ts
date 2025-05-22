@@ -1,0 +1,22 @@
+"use client";
+
+import { orderService as sharedOrderService } from "@repo/shared";
+import { OrderStatus } from "@prisma/client";
+import { fetchData } from "@repo/shared";
+import { FetchMethod, ContentType } from "@repo/shared";
+
+// Extend the shared order service with admin-specific functionality
+export const adminOrderService = {
+  ...sharedOrderService,
+
+  // Update order status
+  updateOrderStatus: async (orderId: string, status: OrderStatus) => {
+    return await fetchData({
+      slug: `admin/orders/${orderId}/status`,
+      method: FetchMethod.PATCH,
+      body: JSON.stringify({ status }),
+      contentType: ContentType.JSON,
+      cache: "no-store",
+    });
+  },
+};

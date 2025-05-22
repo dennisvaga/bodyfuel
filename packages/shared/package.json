@@ -1,0 +1,63 @@
+{
+  "name": "@repo/shared",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "sourceMap": true,
+  "imports": {
+    "#auth/*": [
+      "./dist/features/auth/*.js"
+    ],
+    "#categories/*": [
+      "./dist/features/categories/*.js"
+    ],
+    "#collections/*": [
+      "./dist/features/collections/*.js"
+    ],
+    "#orders/*": [
+      "./dist/features/orders/*.js"
+    ],
+    "#products/*": [
+      "./dist/features/products/*.js"
+    ],
+    "#services/*": [
+      "./dist/services/*.js"
+    ],
+    "#types/*": [
+      "./dist/types/*.js"
+    ],
+    "#utils/*": [
+      "./dist/utils/*.js"
+    ],
+    "#hooks/*": [
+      "./dist/hooks/*.js"
+    ]
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/server/auth.js",
+      "types": "./dist/server/auth.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf node_modules .turbo dist"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.8.0",
+    "@prisma/client": "^6.5.0",
+    "@repo/database": "*",
+    "bcryptjs": "^3.0.2",
+    "react-hook-form": "^7.54.2"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/node": "^22.13.13",
+    "prisma": "^6.5.0"
+  }
+}

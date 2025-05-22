@@ -1,0 +1,116 @@
+import React, { createContext, useContext, useState, useMemo } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { cartService } from "../services/cartService";
+import type { ProductWithImageUrl } from "@repo/database/types/product";
+import type { CartWithItems } from "@repo/database/types/cart";
+import { ApiResult, QUERY_KEYS, useFetchQuery } from "@repo/shared";
+
+interface CartContextType {
+  cart: CartWithItems | undefined;
+  total: number;
+  isLoading: boolean;
+  refetch: Function;
+  addToCart: (
+    product: ProductWithImageUrl,
+    quantity?: number
+  ) => Promise<ApiResult<CartWithItems>>;
+  changeQuantity: (
+    productId: number,
+    change: number
+  ) => Promise<ApiResult<CartWithItems>>;
+  openMiniCart: boolean;
+  setOpenMiniCart: (open: boolean) => void;
+}
+
+// Context must be used here to share `openMiniCart` between components
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const CartProvider = ({ children }: { children: React.ReactNode }) => {
+  const queryClient = useQueryClient();
+  const [openMiniCart, setOpenMiniCart] = useState(false);
+
+  // Fetch the cart
+  const {
+    data: cart,
+    isLoading,
+    refetch,
+  } = useFetchQuery<CartWithItems>({
+    queryKey: QUERY_KEYS.CART,
+    serviceFn: cartService.getCart,
+  });
+
+  // Compute total
+  const total = useMemo(() => {
+    const newTotal =
+      cart?.cartItems?.reduce(
+        (sum, item) => sum + item.product.price * item.quantity,
+        0
+      ) ?? 0;
+
+    return Number(newTotal.toFixed(2));
+  }, [cart]);
+
+  // Mutations
+  const changeQuantityMutation = useMutation({
+    mutationFn: (variables: { productId: number; change: number }) =>
+      cartService.changeQuantity(variables.productId, variables.change),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] });
+    },
+  });
+
+  const addToCartMutation = useMutation({
+    mutationFn: (variables: {
+      product: ProductWithImageUrl;
+      quantity: number;
+    }) => cartService.addToCart(variables.product, variables.quantity),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] });
+    },
+  });
+
+  // Functions matching the original signatures
+  const addToCart = async (
+    product: ProductWithImageUrl,
+    quantity: number = 1
+  ) => {
+    const result = await addToCartMutation.mutateAsync({ product, quantity });
+    await refetch();
+    setOpenMiniCart(true);
+    return result;
+  };
+
+  const changeQuantity = async (productId: number, change: number) => {
+    const result = await changeQuantityMutation.mutateAsync({
+      productId,
+      change,
+    });
+    await refetch();
+    return result;
+  };
+
+  return (
+    <CartContext.Provider
+      value={{
+        cart,
+        total,
+        isLoading,
+        refetch,
+        addToCart,
+        changeQuantity,
+        openMiniCart,
+        setOpenMiniCart,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  );
+};
+
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (context === undefined) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
+};
