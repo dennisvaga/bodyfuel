@@ -22,27 +22,29 @@ const ProductSliderSkeleton = ({
   const bgClass = withBrigterBg ? "bg-gray-200" : "";
 
   return (
-    <div className="flex flex-col gap-6">
-      {/* Group heading skeleton */}
-      <div className="flex flex-row items-center">
-        <Skeleton className={`h-8 w-[180px] ${bgClass}`} />
-        <Skeleton className={`h-7 w-7 ml-2 ${bgClass}`} />
-      </div>
+    <div className="flex flex-col xl:items-center">
+      <div className="flex flex-col gap-6">
+        {/* Group heading skeleton */}
+        <div className="flex flex-row items-center">
+          <Skeleton className={`h-8 w-[180px] ${bgClass}`} />
+          <Skeleton className={`h-7 w-7 ml-2 ${bgClass}`} />
+        </div>
 
-      {/* Content skeleton */}
-      <div className="flex flex-row gap-3 overflow-x-auto">
-        {/* Group image & "view all" skeleton */}
-        {showViewAll && (
-          <Skeleton className={`min-w-[200px] h-[300px] ${bgClass}`} />
-        )}
+        {/* Content skeleton */}
+        <div className="flex flex-row gap-3 overflow-x-auto">
+          {/* Group image & "view all" skeleton */}
+          {showViewAll && (
+            <Skeleton className={`min-w-[200px] h-[300px] ${bgClass}`} />
+          )}
 
-        {/* Product cards skeleton */}
-        <div className="flex flex-row gap-3 -order-1 sm:order-1">
-          <ProductSkeleton
-            variant={ProductCardVariants.slider}
-            count={productCount}
-            withBrigterBg={withBrigterBg}
-          />
+          {/* Product cards skeleton */}
+          <div className="flex flex-row gap-3 -order-1 sm:order-1">
+            <ProductSkeleton
+              variant={ProductCardVariants.slider}
+              count={productCount}
+              withBrigterBg={withBrigterBg}
+            />
+          </div>
         </div>
       </div>
     </div>
