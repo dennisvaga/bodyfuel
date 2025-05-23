@@ -8,7 +8,7 @@ const Home = () => {
       <section>
         <HeroSection></HeroSection>
       </section>
-      <section>
+      <section className="py-[6rem]">
         <CollectionsSection></CollectionsSection>
       </section>
     </main>
