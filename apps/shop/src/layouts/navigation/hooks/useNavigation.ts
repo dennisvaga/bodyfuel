@@ -71,15 +71,10 @@ export const useNavigation = () => {
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState<boolean>(false);
 
-  //   const toggleMobileMenu = (): void => {
-  //     setIsMobileMenuOpen(!isMobileMenuOpen);
-  //   };
-
   return {
     navigationItems,
     isMobileMenuOpen,
     setIsMobileMenuOpen,
-    // toggleMobileMenu,
   };
 };
 

@@ -51,7 +51,7 @@ const ProductCard = ({
     >
       <CardHeader className={`p-4 overflow-hidden`}>
         <Product.Image
-          src={product.images?.[0].imageUrl || "/"}
+          src={product.images?.[0]?.imageUrl || "/"}
           onClick={handleCardClick}
           width={230}
           hoverEffect

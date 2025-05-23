@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { useCart } from "../contexts/cartContext";
 import CartItemsList from "./CartItemsList";
 import { CartVariants } from "../types/cartEnums";
 

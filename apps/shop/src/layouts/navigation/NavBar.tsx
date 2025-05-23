@@ -20,7 +20,7 @@ const NavBar = () => {
 
   return (
     <header className="sticky top-0 z-50 bg-[hsl(var(--background-darker))] backdrop-blur-[5px] text-white shadow-md shadow-black/20">
-      <div className="flex justify-center py-2 px-5 lg:px-10 text-base font-extrabold sm:h-[80px]">
+      <div className="flex justify-center py-2 px-5 lg:px-10 text-base font-extrabold">
         {/* Mobile Navigation */}
         <MobileNavBar onOpenMenu={() => setIsMobileMenuOpen(true)} />
 

@@ -7,7 +7,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import logo from "../../../../../public/media/logo-dark.svg";
+import logo from "@rootMedia/logo-dark.svg";
 import MiniCart from "@features/cart/components/MiniCart";
 import AuthLink from "./AuthLink";
 import DropdownMenu from "./DropDownMenu";
@@ -44,9 +44,9 @@ const DesktopNavBar = ({ navigationItems }: DesktopNavBarProps) => {
         {/* Icons */}
         <div className="flex items-center ms-auto *:p-5">
           <ProductSearch width="350px" />
+          <ModeToggle variant="shop" />
           <AuthLink />
           <MiniCart />
-          <ModeToggle variant="shop" />
         </div>
       </nav>
     </div>

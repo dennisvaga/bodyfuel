@@ -38,4 +38,14 @@ export const cartService = {
       cache: "no-store",
     });
   },
+
+  removeFromCart: async (
+    productId: number
+  ): Promise<ApiResult<CartWithItems>> => {
+    return await fetchData({
+      slug: `cart/items/${productId}`,
+      method: FetchMethod.DELETE,
+      cache: "no-store",
+    });
+  },
 };

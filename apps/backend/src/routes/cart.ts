@@ -8,6 +8,7 @@ import {
   addOrUpdateCartItem as addOrUpdateCartItem,
   getUpdatedCart,
   updateItemQuantity,
+  removeCartItem,
 } from "../repositories/cartRepository.js";
 import { assignImageUrlToCart } from "../services/s3Service.js";
 import { CartWithItems } from "@repo/database/types/cart";
@@ -81,6 +82,20 @@ router.put("/", async (req: Request, res: Response) => {
 
     const result = await updateItemQuantity(session, productId, quantity);
     sendResponse(res, 200, { success: true, data: result });
+  } catch (error) {
+    handleError(error, res);
+  }
+});
+
+// Remove item from cart
+router.delete("/items/:productId", async (req: Request, res: Response) => {
+  try {
+    const productId = parseInt(req.params.productId);
+    const session = req.cookies.cart_session;
+
+    // Use the repository function instead of direct Prisma calls
+    const updatedCart = await removeCartItem(session, productId);
+    sendResponse(res, 200, { success: true, data: updatedCart });
   } catch (error) {
     handleError(error, res);
   }

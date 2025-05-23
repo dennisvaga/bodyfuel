@@ -162,30 +162,39 @@ Product.QuantityControls = ({
 }) => {
   return (
     <div
-      className={cn("flex flex-row items-center border", className)}
+      className={cn(
+        "flex flex-row items-center border border-[var(--quantity-border)] rounded-md w-[120px] h-10",
+        className
+      )}
       onClick={(e) => e.stopPropagation()}
     >
       <Button
-        className="hover:bg-transparent hover:cursor-pointer"
+        className="flex items-center justify-center h-full w-10 p-0 rounded-none border-0 dark:hover:bg-muted/50"
         variant="ghost"
-        onClick={() => onChangeQuantity(quantity - 1)}
+        onClick={() => onChangeQuantity(Math.max(1, quantity - 1))}
+        type="button"
       >
-        <MinusIcon width={10} height={10} />
+        <MinusIcon className="h-4 w-4" />
       </Button>
-      <Input
-        type="number"
-        className="text-base w-10 h-10 text-center border-y-0"
-        value={quantity}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-          onChangeQuantity(Number(e.target.value))
-        }
-      />
+      <div className="flex-1 h-full border-l border-r border-[var(--quantity-border)]">
+        <Input
+          type="number"
+          className="h-full w-10 px-2 text-center border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
+          value={quantity}
+          min={1}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            const value = Number(e.target.value);
+            if (value > 0) onChangeQuantity(value);
+          }}
+        />
+      </div>
       <Button
-        className="hover:bg-transparent hover:cursor-pointer"
+        className="flex items-center justify-center h-full w-10 p-0 rounded-none border-0 dark:hover:bg-muted/50"
         variant="ghost"
         onClick={() => onChangeQuantity(quantity + 1)}
+        type="button"
       >
-        <PlusIcon width={10} height={10} />
+        <PlusIcon className="h-4 w-4" />
       </Button>
     </div>
   );
@@ -210,21 +219,3 @@ Product.Description = ({
 }) => <div className={cn("text-md", className)}>{description}</div>;
 
 export default Product;
-
-// // Add this to Product.tsx
-// Product.ClickableWrapper = ({
-//   children,
-//   onClick,
-//   className,
-// }: {
-//   children: ReactNode;
-//   onClick: (e: React.MouseEvent) => void;
-//   className?: string;
-// }) => (
-//   <div
-//     onClick={onClick}
-//     className={cn("hover:cursor-pointer [&_*]:cursor-pointer", className)}
-//   >
-//     {children}
-//   </div>
-// );

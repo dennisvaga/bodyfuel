@@ -18,6 +18,7 @@ interface CartContextType {
     productId: number,
     change: number
   ) => Promise<ApiResult<CartWithItems>>;
+  removeFromCart: (productId: number) => Promise<ApiResult<CartWithItems>>;
   openMiniCart: boolean;
   setOpenMiniCart: (open: boolean) => void;
 }
@@ -69,6 +70,13 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     },
   });
 
+  const removeFromCartMutation = useMutation({
+    mutationFn: (productId: number) => cartService.removeFromCart(productId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] });
+    },
+  });
+
   // Functions matching the original signatures
   const addToCart = async (
     product: ProductWithImageUrl,
@@ -77,6 +85,12 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     const result = await addToCartMutation.mutateAsync({ product, quantity });
     await refetch();
     setOpenMiniCart(true);
+    return result;
+  };
+
+  const removeFromCart = async (productId: number) => {
+    const result = await removeFromCartMutation.mutateAsync(productId);
+    await refetch();
     return result;
   };
 
@@ -98,6 +112,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         refetch,
         addToCart,
         changeQuantity,
+        removeFromCart,
         openMiniCart,
         setOpenMiniCart,
       }}

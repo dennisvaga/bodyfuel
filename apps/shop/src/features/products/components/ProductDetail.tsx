@@ -13,7 +13,7 @@ interface ProductDetailProps {
   isLoading: boolean;
 }
 
-const ProductDetail = ({ product, isLoading }: ProductDetailProps) => {
+const ProductDetail = ({ product }: ProductDetailProps) => {
   const { addToCart, changeQuantity, cart } = useCart();
   const [localQuantity, setLocalQuantity] = useState(1);
 
@@ -48,30 +48,40 @@ const ProductDetail = ({ product, isLoading }: ProductDetailProps) => {
   };
 
   return (
-    <div className="flex flex-row justify-around w-full">
-      <div className="w-full">
-        <Product.Image width={500} src={product.images?.[0].imageUrl || "/"} />
+    <div className="flex flex-col lg:flex-row justify-around w-full gap-6 px-4 md:px-6 lg:px-8">
+      <div className="w-full flex justify-center">
+        <Product.Image
+          width={500}
+          src={product.images?.[0].imageUrl || "/"}
+          className="max-w-full h-auto object-contain"
+        />
       </div>
       <div className="flex flex-col relative w-full">
-        <div className="flex flex-col gap-3 ">
-          <Product.Name className="text-3xl font-bold" name={product.name} />
+        <div className="flex flex-col gap-3">
+          <Product.Name
+            className="text-2xl md:text-3xl font-bold"
+            name={product.name}
+          />
           <Product.Brand
-            className="text-xl font-medium"
+            className="text-lg md:text-xl font-medium"
             brand={product?.brand ?? ""}
           />
           <Product.Price
-            className="text-xl font-medium"
+            className="text-lg md:text-xl font-medium"
             price={product.price ?? 0}
           />
           <Product.Description
-            className="text-md"
+            className="text-sm md:text-md"
             description={product.description ?? ""}
           />
         </div>
-
-        <div className="flex gap-2  pt-20">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 mt-8 md:mt-16 md:items-center">
           <Product.QuantityControls
-            quantity={productInCart?.quantity || localQuantity}
+            quantity={
+              productInCart !== undefined
+                ? productInCart.quantity
+                : localQuantity
+            }
             onChangeQuantity={handleQuantityChange}
           />
           <Product.AddToCartButton
@@ -79,7 +89,7 @@ const ProductDetail = ({ product, isLoading }: ProductDetailProps) => {
               handleAddToCart();
               e.stopPropagation();
             }}
-            className={`w-full hover:cursor-pointer hover:bg-primary bottom-0 left-0 right-0 rounded-none font-semibold  md:block`}
+            className={`sm:max-w-[200px] w-full hover:cursor-pointer hover:bg-primary rounded-md md:rounded-none font-semibold`}
           />
         </div>
       </div>

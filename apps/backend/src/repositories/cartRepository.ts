@@ -88,3 +88,23 @@ export async function updateItemQuantity(
     });
   }
 }
+
+export const removeCartItem = async (sessionId: string, productId: number) => {
+  // Find the cart by session
+  const cart = await getCartBySession(sessionId);
+
+  if (!cart) {
+    throw new Error("Cart not found");
+  }
+
+  // Delete the cart item
+  await prisma.cartItem.deleteMany({
+    where: {
+      cartId: cart.id,
+      productId,
+    },
+  });
+
+  // Return updated cart
+  return await getUpdatedCart(cart.id);
+};

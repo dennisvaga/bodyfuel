@@ -11,12 +11,14 @@ interface ProductSearchProps {
   onSearch?: () => void;
   autoFocus?: boolean;
   width?: string; // Add width prop
+  className?: string;
 }
 
 export const ProductSearch = ({
   onSearch,
   autoFocus,
   width,
+  className,
 }: ProductSearchProps) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,6 +51,7 @@ export const ProductSearch = ({
     <div
       onClick={(e) => e.stopPropagation()}
       style={width ? { width } : undefined}
+      className={className}
     >
       <ProductSearchBase
         products={products}

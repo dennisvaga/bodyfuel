@@ -67,6 +67,7 @@
     /*Custom*/
     --background-darker: 0, 0%, 0%, 0.9;
     --background-darker-solid: 0, 0%, 8%;
+    --quantity-border: hsl(0, 0%, 52%);
   }
 
   .dark {
@@ -98,6 +99,7 @@
     /*Custom*/
     --background-darker: 0, 0%, 5%, 0.5;
     --background-darker-solid: 0, 0%, 8%;
+    --quantity-border: hsl(0, 0%, 52%);
   }
 
   * {

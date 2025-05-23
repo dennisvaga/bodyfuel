@@ -8,6 +8,7 @@ import { CartItemWithProduct, CartWithItems } from "@repo/database/types/cart";
 import CartItemSkeleton, { TotalSkeleton } from "./CartItemSkeleton";
 import { CartVariants } from "../types/cartEnums";
 import { useCart } from "../contexts/cartContext";
+import { X } from "lucide-react";
 
 interface CartItemsListProps {
   variant?: CartVariants;
@@ -27,7 +28,14 @@ const CartItemsList = ({
   showCheckoutButton = false,
 }: CartItemsListProps) => {
   const router = useRouter();
-  const { cart, isLoading, total, setOpenMiniCart, changeQuantity } = useCart();
+  const {
+    cart,
+    isLoading,
+    total,
+    setOpenMiniCart,
+    changeQuantity,
+    removeFromCart,
+  } = useCart();
 
   // Empty cart - only for cart variant
   const renderEmptyCart = () => {
@@ -77,45 +85,47 @@ const CartItemsList = ({
     if (!cart?.cartItems?.length) return null;
 
     switch (variant) {
-      case CartVariants.cart:
-        return cart.cartItems.map((item: CartItemWithProduct) => {
-          const productTotal =
-            item.quantity * (item.price || item.product.price || 0);
-
-          return (
-            <Product key={item.productId} className="border p-4">
-              <div className="flex flex-row">
-                <Product.Image
-                  src={item.product.images?.[0]?.imageUrl || "/"}
-                  width={130}
+      case CartVariants.mini:
+        return cart.cartItems.map((item: CartItemWithProduct) => (
+          <Product className="px-4 py-6" key={item.productId}>
+            {/* Remove button */}
+            <button
+              onClick={() => removeFromCart(item.productId)}
+              className="flex flex-col w-5 h-5 p-1 text-muted-foreground hover:text-destructive rounded-full hover:bg-muted transition-colors"
+              aria-label="Remove item"
+            >
+              <X />
+            </button>
+            {/* Product image */}
+            <Product.Image
+              src={item.product.images?.[0]?.imageUrl || "/"}
+              width={90}
+              onClick={() => handleProductClick(item)}
+            />
+            <div className="flex flex-col gap-4 text-end">
+              <div className="flex justify-between items-start">
+                {/* Product name */}
+                <Product.Name
+                  name={item.product.name}
                   onClick={() => handleProductClick(item)}
                 />
-                <div className="flex flex-col gap-2">
-                  <Product.Name
-                    name={item.product.name}
-                    onClick={() => handleProductClick(item)}
-                  />
-                  <div className="flex gap-2 items-center">
-                    <Label className="text-gray-600">Price:</Label>
-                    <Product.Price price={item.product.price} />
-                  </div>
-                </div>
               </div>
-              <div className="flex flex-row items-center gap-2">
+              {/* Product price */}
+              <Product.Price price={item.product.price} />
+              <div className="flex flex-row justify-end">
                 {changeQuantity && (
                   <Product.QuantityControls
                     quantity={item.quantity}
-                    onChangeQuantity={(newQty: number) =>
-                      changeQuantity(item.productId, newQty)
-                    }
+                    onChangeQuantity={(newQty: number) => {
+                      changeQuantity(item.productId, newQty);
+                    }}
+                    className="items-end"
                   />
                 )}
-                {/* Product total price */}
-                <Label>{productTotal.toFixed(2)}</Label>
               </div>
-            </Product>
-          );
-        });
+            </div>
+          </Product>
+        ));
 
       case CartVariants.checkout:
         return cart?.cartItems?.map((item: CartItemWithProduct) => (
@@ -140,19 +150,20 @@ const CartItemsList = ({
               width={90}
               onClick={() => handleProductClick(item)}
             />
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 text-end">
               <Product.Name
                 name={item.product.name}
                 onClick={() => handleProductClick(item)}
               />
               <Product.Price price={item.product.price} />
-              <div className="flex flex-row items-center">
+              <div className="flex flex-row justify-end">
                 {changeQuantity && (
                   <Product.QuantityControls
                     quantity={item.quantity}
                     onChangeQuantity={(newQty: number) => {
                       changeQuantity(item.productId, newQty);
                     }}
+                    className="items-end"
                   />
                 )}
               </div>

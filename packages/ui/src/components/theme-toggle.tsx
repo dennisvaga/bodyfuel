@@ -1,10 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { AppVariant } from "@repo/shared";
-
 import { Button } from "./ui/button";
 import {
   DropdownMenu,
@@ -12,8 +10,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { cn } from "#lib/cn";
 
-export function ModeToggle({ variant }: { variant?: AppVariant }) {
+type ModeToggleProps = {
+  variant?: AppVariant;
+  isDrawer?: boolean;
+  className?: string;
+};
+
+export function ModeToggle({
+  variant,
+  isDrawer = false,
+  className,
+}: ModeToggleProps) {
   const { setTheme } = useTheme();
   const isShopVariant = variant === "shop";
 
@@ -23,7 +32,11 @@ export function ModeToggle({ variant }: { variant?: AppVariant }) {
         <Button
           variant={isShopVariant ? "theme-toggle" : "outline"}
           size="icon"
-          className="border-[hsl(12,6.5%,15.1%))] m-3"
+          className={cn(
+            "border-[hsl(12,6.5%,15.1%))] m-3",
+            isDrawer && "bg-white",
+            className
+          )}
         >
           <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
