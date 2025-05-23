@@ -32,7 +32,7 @@ const CurrencyInput = ({
         disabled={isDisabled}
         value={value}
         onChange={onChange}
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e: React.MouseEvent<HTMLInputElement>) => e.stopPropagation()}
         type="number"
         step="0.01"
         min="0"
@@ -58,7 +58,12 @@ function IndeterminateCheckbox({
   }, [ref, indeterminate]);
 
   return (
-    <input type="checkbox" ref={ref} className={className + " cursor-pointer"} {...rest} />
+    <input
+      type="checkbox"
+      ref={ref}
+      className={className + " cursor-pointer"}
+      {...rest}
+    />
   );
 }
 
@@ -176,12 +181,17 @@ export const getVariantsColumns = (updateVariantRowData: Function) => {
           const childStockTotal = row
             .getLeafRows()
             .reduce(
-              (accumulator, currentRow) => accumulator + (currentRow.original.stock ?? 0),
+              (accumulator, currentRow) =>
+                accumulator + (currentRow.original.stock ?? 0),
               0
             );
 
           return (
-            <Input className="font-medium" value={childStockTotal ?? 0} disabled={true} />
+            <Input
+              className="font-medium"
+              value={childStockTotal ?? 0}
+              disabled={true}
+            />
           );
         }
         // Regular input (nested children or parent with 1 option)
@@ -190,7 +200,7 @@ export const getVariantsColumns = (updateVariantRowData: Function) => {
             className="font-medium"
             value={row.original.stock ?? 0}
             type="text"
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               const newStock = parseInt(e.target.value, 10) || 0;
               updateVariantRowData(row.original, { stock: newStock });
             }}

@@ -1,10 +1,20 @@
 "use client";
 
 import React from "react";
-import { FormControl, FormField, FormItem, FormMessage } from "@repo/ui/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@repo/ui/components/ui/form";
 import { Input } from "@repo/ui/components/ui/input";
 import { useFormContext } from "react-hook-form";
-import { categoryService, ProductFormInput, QUERY_KEYS, useFetchQuery } from "@repo/shared";
+import {
+  categoryService,
+  ProductFormInput,
+  QUERY_KEYS,
+  useFetchQuery,
+} from "@repo/shared";
 import { Label } from "@repo/ui/components/ui/label";
 import FloatingInput from "@repo/ui/components/ui/FloatingInput";
 import FloatingSelect from "@repo/ui/components/ui/FloatingSelect";
@@ -32,7 +42,9 @@ const ProductDetails = ({ fileInputRef }: props) => {
       <FormField
         control={control}
         name="description"
-        render={({ field }) => <FloatingTextarea field={field} label="Description" />}
+        render={({ field }) => (
+          <FloatingTextarea field={field} label="Description" />
+        )}
       />
 
       <FormField
@@ -45,7 +57,11 @@ const ProductDetails = ({ fileInputRef }: props) => {
         control={control}
         name="categoryId"
         render={({ field }) => (
-          <FloatingSelect field={field} label="Category" selectOptions={categories ?? []} />
+          <FloatingSelect
+            field={field}
+            label="Category"
+            selectOptions={categories ?? []}
+          />
         )}
       />
 
@@ -76,7 +92,9 @@ const ProductDetails = ({ fileInputRef }: props) => {
                     Select Images
                   </Label>
                   <Label className="list-disc list-inside ml-2">
-                    {field.value && field.value.length > 0 && `${field.value.length} selected`}
+                    {field.value &&
+                      field.value.length > 0 &&
+                      `${field.value.length} selected`}
                   </Label>
                 </div>
 
@@ -86,7 +104,7 @@ const ProductDetails = ({ fileInputRef }: props) => {
                   ref={fileInputRef}
                   multiple
                   className="hidden"
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     const files = e.target.files;
                     if (files && files.length > 0) {
                       // Store the array of File objects

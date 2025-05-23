@@ -1,8 +1,8 @@
 "use client";
 
-import { OrderWithItems } from "@repo/database/types/order";
 import { Package } from "lucide-react";
 import { formatCurrency } from "@repo/shared";
+import { OrderWithItems } from "@repo/database/types/order";
 
 interface OrderItemsTableProps {
   order: OrderWithItems;

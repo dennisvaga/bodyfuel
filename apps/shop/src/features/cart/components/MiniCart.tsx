@@ -20,7 +20,11 @@ const MiniCart = () => {
   const router = useRouter();
 
   return (
-    <Drawer open={openMiniCart} onOpenChange={setOpenMiniCart} direction="right">
+    <Drawer
+      open={openMiniCart}
+      onOpenChange={setOpenMiniCart}
+      direction="right"
+    >
       <Link
         onClick={(e) => {
           if (!cart?.cartItems || cart?.cartItems?.length === 0) {
@@ -34,14 +38,17 @@ const MiniCart = () => {
       >
         <ShoppingCart />
       </Link>
-      <DrawerContent className="w-[300px]" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <DrawerContent
+        className="w-[300px]"
+        onOpenAutoFocus={(e: Event) => e.preventDefault()}
+      >
         <DrawerHeader>
           <DrawerTitle></DrawerTitle>
         </DrawerHeader>
         <div className="overflow-y-scroll scrollbar divide-y">
           <CartItemsList showTotal={false} variant={CartVariants.mini} />
         </div>
-
+        ``
         {/* Buttons */}
         <div className="flex flex-col p-4 gap-4 ">
           <div className="flex flex-row justify-between ">

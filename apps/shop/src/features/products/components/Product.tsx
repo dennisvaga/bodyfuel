@@ -14,9 +14,17 @@ import { Button } from "@repo/ui/components/ui/button";
 import { cn } from "@/lib/utils";
 
 // Core Product compound component
-const Product = ({ children, className }: { children: ReactNode; className?: string }) => {
+const Product = ({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
   return (
-    <div className={cn("flex flex-row justify-between w-full", className)}>{children}</div>
+    <div className={cn("flex flex-row justify-between w-full", className)}>
+      {children}
+    </div>
   );
 };
 
@@ -59,7 +67,8 @@ Product.Image = ({
         fill
         className={cn(
           "object-contain",
-          hoverEffect && "transition-transform duration-500 transform group-hover:scale-110"
+          hoverEffect &&
+            "transition-transform duration-500 transform group-hover:scale-110"
         )}
       />
     </div>
@@ -77,7 +86,10 @@ Product.Name = ({
   onClick?: () => void;
 }) => (
   <Label
-    className={cn(`text-md font-normal ${onClick ? "hover:cursor-pointer" : ""}`, className)}
+    className={cn(
+      `text-md font-normal ${onClick ? "hover:cursor-pointer" : ""}`,
+      className
+    )}
     onClick={onClick}
   >
     {name}
@@ -85,19 +97,35 @@ Product.Name = ({
 );
 
 // Product Price
-Product.Price = ({ price, className }: { price: number; className?: string }) => (
+Product.Price = ({
+  price,
+  className,
+}: {
+  price: number;
+  className?: string;
+}) => (
   <Label className={cn("text-base font-medium", className)}>${price}</Label>
 );
 
 // Product Category
-Product.Category = ({ category, className }: { category: string; className?: string }) => (
+Product.Category = ({
+  category,
+  className,
+}: {
+  category: string;
+  className?: string;
+}) => (
   <Label className={cn("text-base text-gray-500", className)}>{category}</Label>
 );
 
 // Product Brand
-Product.Brand = ({ brand, className }: { brand: string; className?: string }) => (
-  <Label className={cn("text-sm text-gray-500", className)}>{brand}</Label>
-);
+Product.Brand = ({
+  brand,
+  className,
+}: {
+  brand: string;
+  className?: string;
+}) => <Label className={cn("text-sm text-gray-500", className)}>{brand}</Label>;
 
 // Add to Cart Button
 Product.AddToCartButton = ({
@@ -112,7 +140,7 @@ Product.AddToCartButton = ({
   children?: ReactNode;
 }) => (
   <Button
-    onClick={(e) => {
+    onClick={(e: React.MouseEvent) => {
       onClick(e);
       e.stopPropagation();
     }}
@@ -148,7 +176,9 @@ Product.QuantityControls = ({
         type="number"
         className="text-base w-10 h-10 text-center border-y-0"
         value={quantity}
-        onChange={(e) => onChangeQuantity(Number(e.target.value))}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          onChangeQuantity(Number(e.target.value))
+        }
       />
       <Button
         className="hover:bg-transparent hover:cursor-pointer"
@@ -162,9 +192,13 @@ Product.QuantityControls = ({
 };
 
 // Subtotal
-Product.Subtotal = ({ amount, className }: { amount: number; className?: string }) => (
-  <Label className={cn("text-sm", className)}>Subtotal: ${amount}</Label>
-);
+Product.Subtotal = ({
+  amount,
+  className,
+}: {
+  amount: number;
+  className?: string;
+}) => <Label className={cn("text-sm", className)}>Subtotal: ${amount}</Label>;
 
 // Description
 Product.Description = ({

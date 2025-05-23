@@ -11,7 +11,7 @@ export function selectionColumn<TData>(): ColumnDef<TData> {
             table.getIsAllPageRowsSelected() ||
             (table.getIsSomePageRowsSelected() && "indeterminate")
           }
-          onCheckedChange={(value) => {
+          onCheckedChange={(value: boolean | "indeterminate") => {
             table.toggleAllPageRowsSelected(!!value);
           }}
           aria-label="Select all"
@@ -23,11 +23,13 @@ export function selectionColumn<TData>(): ColumnDef<TData> {
       <div className="flex items-center justify-center">
         <Checkbox
           checked={row.getIsSelected()}
-          onCheckedChange={(value) => {
+          onCheckedChange={(value: boolean | "indeterminate") => {
             row.toggleSelected(!!value);
           }}
           aria-label="Select row"
-          onClick={(e) => e.stopPropagation()}
+          onClick={(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) =>
+            e.stopPropagation()
+          }
           className="hover:cursor-default"
         />
       </div>

@@ -1,10 +1,23 @@
-import pkg from "pg";
-const { Pool } = pkg;
-import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 
-const connectionString = `${process.env.DATABASE_URL}`;
+// Define prisma client without the PG adapter for client-side compatibility
+let prisma: PrismaClient;
 
-const pool = new Pool({ connectionString });
-const adapter = new PrismaPg(pool);
-export const prisma = new PrismaClient({ adapter });
+// Only use PG adapter on the server
+if (typeof window === "undefined") {
+  // Server-side code
+  try {
+    const { PrismaPg } = require("@prisma/adapter-pg");
+    const connectionString = process.env.DATABASE_URL;
+    const adapter = new PrismaPg({ connectionString });
+    prisma = new PrismaClient({ adapter });
+  } catch (e) {
+    console.warn("Could not initialize Prisma with PG adapter:", e);
+    prisma = new PrismaClient();
+  }
+} else {
+  // Client-side code (browsers)
+  prisma = new PrismaClient();
+}
+
+export { prisma };

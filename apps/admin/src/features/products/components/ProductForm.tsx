@@ -47,8 +47,10 @@ const ProductForm = ({ product }: props) => {
             entityType={ENTITY_TYPES.COLLECTION}
             entityData={collections}
             // Add only name column
-            columns={collectionColumns.filter((col: any) =>
-              ["name"].includes(col.accessorKey)
+            columns={collectionColumns.filter((col) =>
+              // Use 'id' or the correct property that identifies the column key
+              // Replace 'id' with the actual property name if different
+              ["name"].includes((col as any).id)
             )}
             rowSelection={rowSelection}
             setRowSelection={setRowSelection}
