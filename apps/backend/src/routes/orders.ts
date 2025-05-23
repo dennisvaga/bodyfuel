@@ -1,9 +1,9 @@
 import { prisma } from "@repo/database";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import { sendResponse } from "../utils/apiResponse.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Get order by id
 router.get("/:orderNumber", async (req: Request, res: Response) => {

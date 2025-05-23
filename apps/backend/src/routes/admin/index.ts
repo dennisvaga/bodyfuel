@@ -1,11 +1,11 @@
-import express from "express";
+import express, { Router } from "express";
 // admin-specific route handlers
 import adminProductsHandler from "./products.js";
 import adminCollectionsHandler from "./collections.js";
 import adminOrdersHandler from "./orders.js";
 import { authenticatedAdmin } from "../../adminAuth.js";
 
-const adminRouter = express.Router();
+const adminRouter: Router = express.Router();
 
 // Apply admin authentication to all routes in this router
 adminRouter.use(authenticatedAdmin);

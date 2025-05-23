@@ -1,10 +1,10 @@
 import { prisma } from "@repo/database";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import bcrypt from "bcryptjs";
 import { sendResponse } from "../utils/apiResponse.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post("/signup", async (req: Request, res: Response) => {
   try {

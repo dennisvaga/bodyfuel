@@ -1,7 +1,7 @@
-import express from "express";
+import express, { Router } from "express";
 import * as chatController from "./controllers/chatController.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 /**
  * POST /chat - Process new chat messages and generate AI responses

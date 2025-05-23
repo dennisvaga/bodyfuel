@@ -1,6 +1,6 @@
 import { prisma } from "@repo/database";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { assignImageUrlToProducts } from "../services/s3Service.js";
 import { handleError } from "../utils/handleErrors.js";
 import { sendResponse } from "../utils/apiResponse.js";
@@ -9,7 +9,7 @@ import {
   parsePaginationParams,
 } from "../utils/paginationUtils.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Get collection by slug with paginated products
 router.get("/:slug", async (req: Request, res: Response) => {

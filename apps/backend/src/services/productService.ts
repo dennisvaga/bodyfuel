@@ -1,6 +1,6 @@
 import { ProductInput, ProductInputField } from "@repo/shared";
 import { uploadImages } from "./s3Service.js";
-import { PrismaClient } from ".prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 /**
  * Upload product images
@@ -100,7 +100,10 @@ export function prepareProductUpdateData(
   }
 
   // Category
-  if (validatedData.categoryId && validatedData.categoryId !== originalProduct.categoryId) {
+  if (
+    validatedData.categoryId &&
+    validatedData.categoryId !== originalProduct.categoryId
+  ) {
     dataToUpdate.category = { connect: { id: validatedData.categoryId } };
   }
 
@@ -110,7 +113,9 @@ export function prepareProductUpdateData(
       // First erase all previous collections
       set: [],
       // Then create new ones
-      connect: validatedData.collections.map((collection) => ({ id: collection.id })),
+      connect: validatedData.collections.map((collection) => ({
+        id: collection.id,
+      })),
     };
   }
 

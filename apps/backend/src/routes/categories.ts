@@ -1,11 +1,11 @@
 import { prisma } from "@repo/database";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import { sendResponse } from "../utils/apiResponse.js";
 import { assignImageUrlToProducts } from "../services/s3Service.js";
 import { ProductWithImageUrl } from "@repo/database/types/product";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Get all categories names
 router.get("/", async (req: Request, res: Response) => {
@@ -13,7 +13,10 @@ router.get("/", async (req: Request, res: Response) => {
     const categories = await prisma.category.findMany();
 
     if (!categories) {
-      sendResponse(res, 404, { success: false, message: "No categories found" });
+      sendResponse(res, 404, {
+        success: false,
+        message: "No categories found",
+      });
       return;
     }
 

@@ -1,12 +1,12 @@
 import { prisma } from "@repo/database";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { handleError } from "../../utils/handleErrors.js";
 import { OrderInput } from "@repo/shared";
 import { Product } from "@prisma/client";
 import { sendResponse } from "../../utils/apiResponse.js";
 import { prepareOrderItems } from "../../services/orderService.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Get all orders
 router.get("/", async (req: Request, res: Response) => {

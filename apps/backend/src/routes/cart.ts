@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import { addCookie } from "../utils/cookieUtils.js";
 import { sendResponse } from "../utils/apiResponse.js";
@@ -12,7 +12,7 @@ import {
 import { assignImageUrlToCart } from "../services/s3Service.js";
 import { CartWithItems } from "@repo/database/types/cart";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Get existing cart or create one
 router.get("/", async (req: Request, res: Response) => {

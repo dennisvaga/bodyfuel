@@ -18,8 +18,11 @@
     "@aws-sdk/client-s3": "^3.774.0",
     "@aws-sdk/s3-request-presigner": "^3.774.0",
     "@panva/hkdf": "^1.2.1",
-    "@repo/database": "*",
-    "@repo/shared": "*",
+    "@prisma/client": "^6.8.2",
+    "@repo/database": "workspace:*",
+    "@repo/shared": "workspace:*",
+    "@tanstack/react-query": "^5.69.0",
+    "@tanstack/react-table": "^8.21.2",
     "ai": "^4.3.10",
     "bcryptjs": "^3.0.2",
     "body-parser": "^1.20.3",
@@ -29,9 +32,12 @@
     "express": "^4.21.2",
     "jose": "^6.0.10",
     "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.2"
+    "multer": "^1.4.5-lts.2",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.8",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",

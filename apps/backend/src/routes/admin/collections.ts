@@ -1,5 +1,5 @@
 import { prisma } from "@repo/database";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { handleError } from "../../utils/handleErrors.js";
 import { slugifyNative } from "../../utils/utils.js";
 import { CollectionInput, CollectionSchema } from "@repo/shared";
@@ -8,7 +8,7 @@ import { sendResponse } from "../../utils/apiResponse.js";
 import { CollectionWithProducts } from "@repo/database/types/collection";
 import { prepareCollectionUpdateData } from "../../services/collectionService.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 // Add collection
 router.post("/", async (req: Request, res: Response) => {

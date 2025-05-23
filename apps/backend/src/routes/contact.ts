@@ -1,9 +1,9 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import { validateData, contactSchema } from "@repo/shared"; // Import shared schema from package index
 import { sendResponse } from "../utils/apiResponse.js";
 import { handleError } from "../utils/handleErrors.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
 router.post("/", async (req: Request, res: Response) => {
   try {

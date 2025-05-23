@@ -1,5 +1,5 @@
+import { PrismaClient } from "@prisma/client";
 import { ProductOptionInput, ProductVariantInput } from "@repo/shared";
-import { PrismaClient } from ".prisma/client";
 
 type PrismaTransaction = Omit<
   PrismaClient,

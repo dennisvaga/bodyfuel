@@ -17,7 +17,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "prebuild": "npm run generate",
-    "predev": "npm run generate",
+    "predev": "w run generate",
     "clean": "rm -rf node_modules .turbo dist",
     "lint": "eslint . --max-warnings 0",
     "studio": "prisma studio"
@@ -25,10 +25,10 @@
   "dependencies": {
     "@prisma/adapter-pg": "^6.5.0",
     "@prisma/client": "^6.5.0",
-    "pg": "^8.14.1"
+    "pg": "^8.16.0"
   },
   "devDependencies": {
-    "@repo/typescript-config": "*",
+    "@repo/typescript-config": "workspace:*",
     "@types/pg": "^8.15.2",
     "eslint": "^9",
     "prisma": "^6.5.0",

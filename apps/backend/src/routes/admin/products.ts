@@ -1,5 +1,5 @@
 import { prisma } from "@repo/database";
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import multer from "multer";
 import { handleError } from "../../utils/handleErrors.js";
 import { normalizeFiles, slugifyNative } from "../../utils/utils.js";
@@ -19,7 +19,7 @@ import {
   updateProductVariants,
 } from "../../repositories/productRepository.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 const upload = multer(); // In-memory storage
 
 /**
