@@ -80,7 +80,6 @@ const CartItemsList = ({
     router.push(`/products/${item.product.slug}`);
   };
 
-  // Different rendering based on variant, matching original structure exactly
   const renderCartItems = () => {
     if (!cart?.cartItems?.length) return null;
 
@@ -88,20 +87,25 @@ const CartItemsList = ({
       case CartVariants.mini:
         return cart.cartItems.map((item: CartItemWithProduct) => (
           <Product className="px-4 py-6" key={item.productId}>
-            {/* Remove button */}
-            <button
-              onClick={() => removeFromCart(item.productId)}
-              className="flex flex-col w-5 h-5 p-1 text-muted-foreground hover:text-destructive rounded-full hover:bg-muted transition-colors"
-              aria-label="Remove item"
-            >
-              <X />
-            </button>
-            {/* Product image */}
-            <Product.Image
-              src={item.product.images?.[0]?.imageUrl || "/"}
-              width={90}
-              onClick={() => handleProductClick(item)}
-            />
+            <div className="flex flex-row gap-2">
+              {/* Remove button */}
+              <button
+                onClick={() => removeFromCart(item.productId)}
+                className="flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer"
+                aria-label="Remove item"
+              >
+                <X />
+              </button>
+
+              {/* Product image */}
+              <Product.Image
+                src={item.product.images?.[0]?.imageUrl || "/"}
+                width={90}
+                onClick={() => handleProductClick(item)}
+                className="items-start"
+              />
+            </div>
+
             <div className="flex flex-col gap-4 text-end">
               <div className="flex justify-between items-start">
                 {/* Product name */}
@@ -142,34 +146,58 @@ const CartItemsList = ({
           </Product>
         ));
 
-      case CartVariants.mini:
-        return cart.cartItems.map((item: CartItemWithProduct) => (
-          <Product className="px-4 py-6" key={item.productId}>
-            <Product.Image
-              src={item.product.images?.[0]?.imageUrl || "/"}
-              width={90}
-              onClick={() => handleProductClick(item)}
-            />
-            <div className="flex flex-col gap-4 text-end">
-              <Product.Name
-                name={item.product.name}
-                onClick={() => handleProductClick(item)}
-              />
-              <Product.Price price={item.product.price} />
-              <div className="flex flex-row justify-end">
+      case CartVariants.cart:
+        return cart.cartItems.map((item: CartItemWithProduct) => {
+          const productTotal =
+            item.quantity * (item.price || item.product.price || 0);
+
+          return (
+            <Product key={item.productId} className="border p-4">
+              <div className="flex flex-row">
+                <div className="flex flex-row gap-2">
+                  {/* Remove button */}
+                  <button
+                    onClick={() => removeFromCart(item.productId)}
+                    className="flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer"
+                    aria-label="Remove item"
+                  >
+                    <X />
+                  </button>
+
+                  {/* Product image */}
+                  <Product.Image
+                    src={item.product.images?.[0]?.imageUrl || "/"}
+                    width={90}
+                    onClick={() => handleProductClick(item)}
+                    className="items-start"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Product.Name
+                    name={item.product.name}
+                    onClick={() => handleProductClick(item)}
+                  />
+                  <div className="flex gap-2 items-center">
+                    <Label className="text-gray-600">Price:</Label>
+                    <Product.Price price={item.product.price} />
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-row items-center gap-2">
                 {changeQuantity && (
                   <Product.QuantityControls
                     quantity={item.quantity}
-                    onChangeQuantity={(newQty: number) => {
-                      changeQuantity(item.productId, newQty);
-                    }}
-                    className="items-end"
+                    onChangeQuantity={(newQty: number) =>
+                      changeQuantity(item.productId, newQty)
+                    }
                   />
                 )}
+                {/* Product total price */}
+                <Label>{productTotal.toFixed(2)}</Label>
               </div>
-            </div>
-          </Product>
-        ));
+            </Product>
+          );
+        });
 
       default:
         return null;
