@@ -1,23 +1,35 @@
 import { PrismaClient } from "@prisma/client";
 
-// Define prisma client without the PG adapter for client-side compatibility
-let prisma: PrismaClient;
+// Create a default instance
+let prisma = new PrismaClient();
 
-// Only use PG adapter on the server
-if (typeof window === "undefined") {
-  // Server-side code
-  try {
-    const { PrismaPg } = require("@prisma/adapter-pg");
-    const connectionString = process.env.DATABASE_URL;
-    const adapter = new PrismaPg({ connectionString });
-    prisma = new PrismaClient({ adapter });
-  } catch (e) {
-    console.warn("Could not initialize Prisma with PG adapter:", e);
-    prisma = new PrismaClient();
+// Function to initialize Prisma with PG adapter
+async function initPrismaWithPgAdapter() {
+  if (typeof window === "undefined") {
+    try {
+      const { PrismaPg } = await import("@prisma/adapter-pg");
+      const connectionString = process.env.DATABASE_URL;
+
+      if (connectionString) {
+        const adapter = new PrismaPg({ connectionString });
+        // Create a new instance with the adapter
+        prisma = new PrismaClient({ adapter });
+        console.log("Prisma initialized with PG adapter");
+      } else {
+        console.warn("No DATABASE_URL provided for PG adapter");
+      }
+    } catch (e) {
+      console.warn("Could not initialize Prisma with PG adapter:", e);
+    }
   }
-} else {
-  // Client-side code (browsers)
-  prisma = new PrismaClient();
+
+  return prisma;
 }
 
+// Start the initialization process
+initPrismaWithPgAdapter().catch((e) => {
+  console.error("Failed to initialize Prisma:", e);
+});
+
+// Export the pre-initialized instance
 export { prisma };
