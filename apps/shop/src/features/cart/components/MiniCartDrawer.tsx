@@ -27,6 +27,7 @@ const MiniCartDrawer = () => {
       open={openMiniCart}
       onOpenChange={setOpenMiniCart}
       direction="right"
+      handleOnly
     >
       <Link
         onClick={(e) => {
