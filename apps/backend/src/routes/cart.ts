@@ -18,30 +18,51 @@ const router: Router = express.Router();
 // Get existing cart or create one
 router.get("/", async (req: Request, res: Response) => {
   try {
+    // Get the cart session cookie
     const cartSession = req.cookies.cart_session;
 
-    if (cartSession) {
-      // Get existing cart
+    // Add debugging
+    console.log("Cart session cookie:", cartSession);
+
+    // Check if we have a valid session ID
+    if (
+      cartSession &&
+      typeof cartSession === "string" &&
+      cartSession.trim() !== ""
+    ) {
+      // Try to find the cart with this session
       const cart = await getCartBySession(cartSession);
 
-      if (!cart) {
+      if (cart) {
+        // Cart found, add presigned URLs
+        const cartWithPresignedUrls = await assignImageUrlToCart(
+          cart as CartWithItems
+        );
+
+        sendResponse(res, 200, { success: true, data: cartWithPresignedUrls });
+        return;
+      } else {
+        // Session exists in cookie but not in DB - create new cart
+        console.log(
+          "Session exists in cookie but not in DB, creating new cart"
+        );
+        const newCart = await prisma.cart.create({ data: {} });
+
+        // Update cookie with the new session ID
+        addCookie(res, "cart_session", newCart.sessionId);
+        sendResponse(res, 200, { success: true, data: newCart });
         return;
       }
-
-      // add presigned URLs to images
-      const cartWithPresignedUrls = await assignImageUrlToCart(
-        cart as CartWithItems
-      );
-
-      sendResponse(res, 200, { success: true, data: cartWithPresignedUrls });
-      return;
-    } else {
-      // Create new cart + session
-      const newCart = await prisma.cart.create({ data: {} });
-      addCookie(res, "cart_session", newCart.sessionId);
-      sendResponse(res, 200, { success: true, data: newCart });
     }
+
+    // No valid session - create new cart
+    console.log("No valid session, creating new cart");
+    const newCart = await prisma.cart.create({ data: {} });
+
+    addCookie(res, "cart_session", newCart.sessionId);
+    sendResponse(res, 200, { success: true, data: newCart });
   } catch (error) {
+    console.error("Cart error:", error);
     handleError(error, res);
   }
 });
