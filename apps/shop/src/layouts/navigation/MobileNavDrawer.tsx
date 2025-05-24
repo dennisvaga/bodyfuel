@@ -92,7 +92,7 @@ const MobileNavDrawer = ({
                     <Link
                       key={dropdownItem.name}
                       href={dropdownItem.href}
-                      className="block py-1.5 text-sm text-gray-700 hover:text-primary transition-colors"
+                      className="block py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:text-primary transition-colors"
                       onClick={() => setIsOpen(false)}
                     >
                       {dropdownItem.name}

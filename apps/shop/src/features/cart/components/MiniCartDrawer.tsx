@@ -15,7 +15,7 @@ import { useCart } from "../contexts/cartContext";
 import CartItemsList from "./CartItemsList";
 import { CartVariants } from "../types/cartEnums";
 
-const MiniCart = () => {
+const MiniCartDrawer = () => {
   const { cart, total, openMiniCart, setOpenMiniCart } = useCart();
   const router = useRouter();
 
@@ -46,8 +46,9 @@ const MiniCart = () => {
           </span>
         )}
       </Link>
+      {/* Drawer content */}
       <DrawerContent
-        className="w-[300px]"
+        className="md:w-[330px] w-full"
         onOpenAutoFocus={(e: Event) => e.preventDefault()}
       >
         <DrawerHeader>
@@ -60,8 +61,9 @@ const MiniCart = () => {
             <p className="text-muted-foreground">Your cart is empty</p>
           </div>
         ) : (
-          <>
-            <div className="overflow-y-auto max-h-[60vh] scrollbar divide-y px-4">
+          <div className="flex flex-col h-full justify-between">
+            <div className="overflow-y-auto scrollbar divide-y px-4">
+              {/* Cart items */}
               <CartItemsList showTotal={false} variant={CartVariants.mini} />
             </div>
             {/* Buttons */}
@@ -92,11 +94,11 @@ const MiniCart = () => {
                 </Button>
               </div>
             </div>
-          </>
+          </div>
         )}
       </DrawerContent>
     </Drawer>
   );
 };
 
-export default MiniCart;
+export default MiniCartDrawer;

@@ -9,7 +9,7 @@ import { Menu } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@rootMedia/logo-dark.svg";
-import MiniCart from "@features/cart/components/MiniCart";
+import MiniCartDrawer from "@/src/features/cart/components/MiniCartDrawer";
 import { AuthLink } from "./AuthLink";
 import { ProductSearch } from "@/src/features/search/components/ProductSearch";
 interface MobileNavBarProps {
@@ -37,7 +37,7 @@ const MobileNavBar = ({ onOpenMenu }: MobileNavBarProps) => {
         <div className="flex items-center ms-auto *:p-3">
           <ProductSearch className="md:flex hidden" width="350px" />
           <AuthLink className="hidden sm:flex" />
-          <MiniCart />
+          <MiniCartDrawer />
         </div>
       </div>
       {/* Second row: Search */}

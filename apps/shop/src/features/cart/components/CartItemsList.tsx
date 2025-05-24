@@ -152,7 +152,10 @@ const CartItemsList = ({
             item.quantity * (item.price || item.product.price || 0);
 
           return (
-            <Product key={item.productId} className="border p-4">
+            <Product
+              key={item.productId}
+              className="flex sm:flex-row flex-col gap-4 items-center border p-4"
+            >
               <div className="flex flex-row">
                 <div className="flex flex-row gap-2">
                   {/* Remove button */}

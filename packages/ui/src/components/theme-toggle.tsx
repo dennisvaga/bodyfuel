@@ -34,7 +34,7 @@ export function ModeToggle({
           size="icon"
           className={cn(
             "border-[hsl(12,6.5%,15.1%))] m-3",
-            isDrawer && "bg-white",
+            isDrawer && "bg-white dark:bg-[hsla(0,0%,5%,0.5)]",
             className
           )}
         >

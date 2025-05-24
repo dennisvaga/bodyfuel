@@ -8,7 +8,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@rootMedia/logo-dark.svg";
-import MiniCart from "@features/cart/components/MiniCart";
+import MiniCartDrawer from "@/src/features/cart/components/MiniCartDrawer";
 import AuthLink from "./AuthLink";
 import DropdownMenu from "./DropDownMenu";
 import { ProductSearch } from "@/src/features/search/components/ProductSearch";
@@ -46,7 +46,7 @@ const DesktopNavBar = ({ navigationItems }: DesktopNavBarProps) => {
           <ProductSearch width="350px" />
           <ModeToggle variant="shop" />
           <AuthLink />
-          <MiniCart />
+          <MiniCartDrawer />
         </div>
       </nav>
     </div>

@@ -33,7 +33,7 @@ export default function AboutPage() {
           </div>
 
           {/* Last section */}
-          <section className="text-center">
+          <section className="text-center py-[6rem]">
             <h2 className="text-4xl font-bold mb-4">Start Your Journey</h2>
             <p className="text-lg max-w-2xl mx-auto mb-8 text-muted-foreground">
               Ready to fuel your fitness journey with products you can trust?

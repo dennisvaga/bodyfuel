@@ -13,7 +13,9 @@ const ThankYouContent = () => {
         return (
           <>
             <h1 className="text-4xl font-bold text-green-600">Thank You! 🎉</h1>
-            <p className="text-lg mt-4">Your message has been successfully sent.</p>
+            <p className="text-lg mt-4">
+              Your message has been successfully sent.
+            </p>
             <p className="text-lg">
               We appreciate your feedback and will get back to you shortly.
             </p>
@@ -23,7 +25,9 @@ const ThankYouContent = () => {
         return (
           <>
             <h1 className="text-4xl font-bold text-green-600">Thank You! 🎉</h1>
-            <p className="text-lg mt-4">Your order has been successfully placed.</p>
+            <p className="text-lg mt-4">
+              Your order has been successfully placed.
+            </p>
             <p className="text-lg">
               We appreciate your purchase and will process your order shortly.
             </p>

@@ -89,7 +89,7 @@ const HeroSection = () => {
                * Main slide container with responsive height
                * Each slide has a unique gradient background based on product type
                */}
-              <div className="relative w-full h-[600px] md:h-[400px] lg:h-[440px]">
+              <div className="relative w-full h-[600px] md:h-[400px] lg:h-[400px]">
                 {/* Full-width background gradient that spans entire viewport */}
                 <div
                   style={{
@@ -109,7 +109,7 @@ const HeroSection = () => {
                 ></div>
 
                 {/* Content container with layout class for content width control */}
-                <div className="layout relative z-10 flex flex-col gap-4 md:gap-8 md:flex-row w-full h-full">
+                <div className="layout !py-[0rem] relative z-10 flex flex-col gap-4 md:gap-8 md:flex-row w-full h-full">
                   {/* Product image container - order changes based on alignment */}
                   <div
                     className={cn(
@@ -117,14 +117,21 @@ const HeroSection = () => {
                       slide.alignment === "right" ? "md:order-1" : "md:order-2"
                     )}
                   >
-                    <Image
-                      src={slide.src}
-                      alt={slide.alt}
-                      priority={index === 0}
-                      quality={100}
-                      fill
-                      className="object-contain object-center"
-                    />
+                    <div className="absolute inset-0 flex items-end justify-center">
+                      <Image
+                        src={slide.src}
+                        alt={slide.alt}
+                        priority={index === 0}
+                        quality={100}
+                        width={450}
+                        height={0}
+                        className="object-contain pb-0"
+                        style={{
+                          maxWidth: "80%",
+                          maxHeight: "90%",
+                        }}
+                      />
+                    </div>
                   </div>
 
                   {/* Content column with marketing messaging - order changes based on alignment */}
@@ -147,9 +154,9 @@ const HeroSection = () => {
                     <p className="text-base md:text-start text-center text-white mb-4 md:mb-6 max-w-md">
                       {slide.description}
                     </p>
-                    <button className="bg-[#ff5c35] hover:bg-[#ff5c35]/90 text-white font-bold py-2 px-8 rounded-md transition-colors uppercase">
+                    {/* <button className="bg-[#ff5c35] hover:bg-[#ff5c35]/90 text-white font-bold py-2 px-8 rounded-md transition-colors uppercase">
                       {slide.ctaText}
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </div>

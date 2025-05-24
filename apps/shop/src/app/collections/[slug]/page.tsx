@@ -23,7 +23,11 @@ const Page = () => {
     );
   if (!collection) notFound();
 
-  return <ProductGrid productGroup={collection} isLoading={isLoading}></ProductGrid>;
+  return (
+    <section className="layout">
+      <ProductGrid productGroup={collection} isLoading={isLoading} />
+    </section>
+  );
 };
 
 export default Page;

@@ -30,9 +30,9 @@ const page = () => {
 
   return (
     <div className="layout">
-      <div className="flex flex-row justify-center w-full">
+      <section className="layout  flex flex-row justify-center w-full">
         <ProductDetail product={product} isLoading={isLoading}></ProductDetail>
-      </div>
+      </section>
     </div>
   );
 };

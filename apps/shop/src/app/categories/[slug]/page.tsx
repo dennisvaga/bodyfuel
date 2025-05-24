@@ -26,7 +26,11 @@ const Page = () => {
     );
   if (!category) notFound();
 
-  return <ProductGrid productGroup={category} isLoading={isLoading} />;
+  return (
+    <section className="layout">
+      <ProductGrid productGroup={category} isLoading={isLoading} />;
+    </section>
+  );
 };
 
 export default Page;
