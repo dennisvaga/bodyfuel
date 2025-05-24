@@ -73,15 +73,27 @@ router.post("/", async (req: Request, res: Response) => {
     const { product, quantity } = req.body;
     const cartSession = req.cookies.cart_session;
 
+    // Validate cart session
+    if (
+      !cartSession ||
+      typeof cartSession !== "string" ||
+      cartSession.trim() === ""
+    ) {
+      sendResponse(res, 400, {
+        success: false,
+        message: "Missing valid cart session. Please reload the page.",
+      });
+      return;
+    }
+
     // Step 1: Find the Cart (It should already exist from GET /cart)
     const cart = await getCartBySession(cartSession);
 
     if (!cart) {
-      // Create a new cart with the existing session ID
-      const newCart = await prisma.cart.create({
-        data: { sessionId: cartSession },
+      sendResponse(res, 404, {
+        success: false,
+        message: "Cart not found. Please reload the page.",
       });
-      sendResponse(res, 200, { success: true, data: newCart });
       return;
     }
 
