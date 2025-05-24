@@ -11,7 +11,8 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "clean": "turbo run clean && rm -rf node_modules .turbo .next"
+    "clean": "turbo run clean && rm -rf node_modules .turbo .next",
+    "generate": "turbo run generate --filter=@repo/database"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
