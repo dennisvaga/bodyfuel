@@ -8,6 +8,5 @@ export function addCookie(res: Response, name: string, value: string) {
     secure: isProduction,
     sameSite: isProduction ? "none" : "lax",
     maxAge: 60 * 60 * 24 * 7 * 1000, // 1 week (in milliseconds)
-    path: "/",
   });
 }
