@@ -1,13 +1,14 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, X } from "lucide-react";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
   Drawer,
+  DrawerClose,
 } from "@repo/ui/components/ui/drawer";
 import { Label } from "@repo/ui/components/ui/label";
 import { useRouter } from "next/navigation";
@@ -48,12 +49,22 @@ const MiniCartDrawer = () => {
       </Link>
       {/* Drawer content */}
       <DrawerContent
-        className="md:w-[330px] w-full"
+        className="md:w-[330px] w-full py-4 px-5"
         onOpenAutoFocus={(e: Event) => e.preventDefault()}
       >
-        <DrawerHeader>
-          <DrawerTitle>Your Cart</DrawerTitle>
-        </DrawerHeader>
+        <div className="flex justify-between items-center mb-6">
+          <DrawerHeader>
+            <DrawerTitle className="text-lg font-bold">Your Cart</DrawerTitle>
+          </DrawerHeader>
+          {/* Close button with X icon */}
+          <DrawerClose className="text-dark hover:bg-gray-100 rounded-full">
+            <div className="p-2">
+              <X className="w-5 h-5" />
+            </div>
+          </DrawerClose>
+        </div>
+
+        {/* If cart is empty, show empty state */}
 
         {isEmpty ? (
           <div className="flex flex-col items-center justify-center p-6">

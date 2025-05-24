@@ -42,7 +42,7 @@ const MobileNavBar = ({ onOpenMenu }: MobileNavBarProps) => {
       </div>
       {/* Second row: Search */}
       <div>
-        <ProductSearch className="md:hidden flex" />
+        <ProductSearch className="md:hidden flex mb-1" />
       </div>
     </div>
   );

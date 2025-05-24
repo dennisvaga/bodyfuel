@@ -183,8 +183,8 @@
   margin-left: auto;
   padding-right: 1.5rem;
   padding-left: 1.5rem;
-  padding-top: 6rem;
-  padding-bottom: 6rem;
+  padding-top: 3rem;
+  padding-bottom: 3rem;
 }
 
 /* Mimic tailwind container class */
@@ -204,12 +204,15 @@
 @media (min-width: 1024px) {
   .layout {
     max-width: 1024px;
+    padding-top: 6rem;
+    padding-bottom: 6rem;
   }
 }
 /*xl*/
 @media (min-width: 1280px) {
   .layout {
     max-width: 1280px;
+
   }
 }
 /*2xl*/

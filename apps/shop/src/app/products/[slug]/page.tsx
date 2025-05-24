@@ -29,11 +29,9 @@ const page = () => {
   }
 
   return (
-    <div className="layout">
-      <section className="layout  flex flex-row justify-center w-full">
-        <ProductDetail product={product} isLoading={isLoading}></ProductDetail>
-      </section>
-    </div>
+    <section className="layout flex flex-row justify-center w-full">
+      <ProductDetail product={product} isLoading={isLoading}></ProductDetail>
+    </section>
   );
 };
 
