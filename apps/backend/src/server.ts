@@ -1,8 +1,17 @@
 import dotenv from "dotenv";
-import path from "path";
+import { fileURLToPath } from "url";
+import { dirname, resolve } from "path";
 
-// Explicitly specify path
-dotenv.config({ path: path.resolve(__dirname, "../.env") });
+// Get the current file's path (ES module equivalent of __dirname)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load environment variables
+dotenv.config({
+  path: resolve(__dirname, "../.env"),
+});
+
+console.log("NODE_ENV after loading:", process.env.NODE_ENV);
 
 import express from "express";
 import cors from "cors";
