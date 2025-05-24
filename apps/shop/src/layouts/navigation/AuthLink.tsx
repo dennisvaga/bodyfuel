@@ -31,7 +31,7 @@ export const AuthLink = ({
 
   return (
     <Link
-      className={cn(`flex flex-row gap-2 items-center`, className)}
+      className={cn(`flex flex-row gap-5 items-center`, className)}
       href={
         status === SessionStatus.UNAUTHENTICATED
           ? `/signin?callbackUrl=${encodeURIComponent(pathname)}`

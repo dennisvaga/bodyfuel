@@ -8,7 +8,6 @@
 import Link from "next/link";
 import { NavItem } from "./hooks/useNavigation";
 import {
-  DrawerTrigger,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
@@ -18,6 +17,12 @@ import {
 import { X } from "lucide-react";
 import { ModeToggle } from "@repo/ui/components/theme-toggle";
 import AuthLink from "./AuthLink";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@repo/ui/components/ui/collapsible";
+import { ChevronDown } from "lucide-react";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -32,7 +37,6 @@ interface MobileMenuProps {
  * @param navigationItems - Array of navigation items to display in the drawer
  * @returns A mobile navigation drawer or null if closed
  */
-// ...existing code...
 const MobileNavDrawer = ({
   isOpen,
   setIsOpen,
@@ -59,7 +63,7 @@ const MobileNavDrawer = ({
 
         <nav className="flex flex-col">
           {/* Authentication link - shows Login/Account text with icon based on auth status */}
-          <div className="py-3 mb-2">
+          <div className="py-3">
             <AuthLink
               className="text-base font-semibold flex items-center"
               onClick={() => setIsOpen(false)}
@@ -67,14 +71,52 @@ const MobileNavDrawer = ({
             />
           </div>
 
-          {/* Navigation sections with cleaner styling */}
+          {/* Theme toggle section */}
+          <div className="flex items-center space-x-2 pb-6 border-b ">
+            <span className="font-semibold">Theme</span>
+            <ModeToggle variant="shop" isDrawer={true} />
+          </div>
+
           {navigationItems.map((item) => (
-            <div key={item.name} className="py-2 border-t border-gray-200">
-              {/* Main category label or link based on whether it has a dropdown */}
+            <div key={item.name} className="py-2">
               {item.dropdown && item.dropdown.length > 0 ? (
-                <h3 className="text-base font-semibold py-2 block">
-                  {item.name}
-                </h3>
+                <Collapsible className="w-full relative">
+                  <div className="flex items-center justify-between">
+                    {/* If item has a valid href, make it clickable */}
+                    {item.href ? (
+                      <Link
+                        href={item.href}
+                        className="text-base font-semibold py-2 flex-grow"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    ) : (
+                      <span className="text-base font-semibold py-2">
+                        {item.name}
+                      </span>
+                    )}
+
+                    <CollapsibleTrigger className="p-2 hover:bg-gray-100 rounded-ful absolute right-0 left-0">
+                      <ChevronDown className="h-4 w-4 transition-transform ui-open:rotate-180 absolute right-0" />
+                    </CollapsibleTrigger>
+                  </div>
+
+                  <CollapsibleContent>
+                    <div className="pl-4 space-y-1 mt-1">
+                      {item.dropdown.map((dropdownItem) => (
+                        <Link
+                          key={dropdownItem.name}
+                          href={dropdownItem.href}
+                          className="block py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:text-primary transition-colors"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {dropdownItem.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               ) : (
                 <Link
                   href={item.href}
@@ -84,30 +126,8 @@ const MobileNavDrawer = ({
                   {item.name}
                 </Link>
               )}
-
-              {/* Dropdown items container */}
-              {item.dropdown && item.dropdown.length > 0 && (
-                <div className="pl-4 space-y-1 mt-1">
-                  {item.dropdown.map((dropdownItem) => (
-                    <Link
-                      key={dropdownItem.name}
-                      href={dropdownItem.href}
-                      className="block py-1.5 text-sm text-gray-700 dark:text-gray-200 hover:text-primary transition-colors"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {dropdownItem.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
             </div>
           ))}
-
-          {/* Theme toggle section */}
-          <div className="mt-6 pt-4 border-t border-gray-200 flex items-center space-x-2">
-            <span className="font-semibold">Theme</span>
-            <ModeToggle variant="shop" isDrawer={true} />
-          </div>
         </nav>
       </DrawerContent>
     </Drawer>

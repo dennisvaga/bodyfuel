@@ -42,7 +42,7 @@ export const useNavigation = () => {
   const navigationItems: NavItem[] = [
     {
       name: "SHOP",
-      href: "/shop",
+      href: "",
       dropdown:
         collections?.map((collection) => ({
           name: collection.name,
@@ -51,7 +51,7 @@ export const useNavigation = () => {
     },
     {
       name: "CATEGORIES",
-      href: "/categories",
+      href: "",
       dropdown:
         categories?.map((category) => ({
           name: category.name,

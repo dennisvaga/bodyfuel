@@ -163,7 +163,7 @@ Product.QuantityControls = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center border border-[var(--quantity-border)] rounded-md w-[120px] h-10",
+        "flex flex-row items-center border rounded-md w-[120px] h-10",
         className
       )}
       onClick={(e) => e.stopPropagation()}
@@ -176,7 +176,7 @@ Product.QuantityControls = ({
       >
         <MinusIcon className="h-4 w-4" />
       </Button>
-      <div className="flex-1 h-full border-l border-r border-[var(--quantity-border)]">
+      <div className="flex-1 h-full border-l border-r">
         <Input
           type="number"
           className="h-full w-10 px-2 text-center border-0 rounded-none focus-visible:ring-0 focus-visible:ring-offset-0 bg-transparent"
