@@ -1,18 +1,5 @@
 import dotenv from "dotenv";
-import { fileURLToPath } from "url";
-import { dirname, resolve } from "path";
-
-// Get the current file's path (ES module equivalent of __dirname)
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Load environment variables
-dotenv.config({
-  path: resolve(__dirname, "../.env"),
-});
-
-console.log("NODE_ENV after loading:", process.env.NODE_ENV);
-
+dotenv.config();
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";

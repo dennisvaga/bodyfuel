@@ -43,7 +43,7 @@ export default function AboutPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
-                href="/collections"
+                href="/"
                 className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md text-center"
               >
                 Browse Products
