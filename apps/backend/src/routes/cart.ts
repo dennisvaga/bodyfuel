@@ -56,10 +56,11 @@ router.post("/", async (req: Request, res: Response) => {
     const cart = await getCartBySession(cartSession);
 
     if (!cart) {
-      sendResponse(res, 400, {
-        success: false,
-        message: "Cart does not exist. Please fetch the cart first.",
+      // Create a new cart with the existing session ID
+      const newCart = await prisma.cart.create({
+        data: { sessionId: cartSession },
       });
+      sendResponse(res, 200, { success: true, data: newCart });
       return;
     }
 
