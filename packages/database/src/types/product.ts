@@ -1,7 +1,9 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 // Extend the ProductImage type to include imageUrl
-type ProductImageWithUrl = Prisma.ProductImageGetPayload<{}> & { imageUrl: string };
+type ProductImageWithUrl = Prisma.ProductImageGetPayload<{}> & {
+  imageUrl: string;
+};
 
 // Extend the Product type to use the extended ProductImage type
 export type ProductWithImageUrl = Omit<
@@ -9,7 +11,9 @@ export type ProductWithImageUrl = Omit<
     include: {
       // images: true;
       options: { include: { optionValues: true } };
-      variants: { include: { variantOptionValues: { include: { optionValue: true } } } };
+      variants: {
+        include: { variantOptionValues: { include: { optionValue: true } } };
+      };
       collections: true;
     };
   }>,

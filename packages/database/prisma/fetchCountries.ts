@@ -1,4 +1,4 @@
-import { Country } from "@prisma/client";
+import type { Country } from "@prisma/client";
 
 // Country structure of the external api
 type externalCountry = { name: { common: string }; cca2: string };

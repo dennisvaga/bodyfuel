@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { ProductWithImageUrl } from "./product.js";
 
 export type CollectionWithProductsImageUrl = Omit<

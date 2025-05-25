@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { ProductWithImageUrl } from "./product.js";
 
 // export const cartIncludes = {
@@ -8,7 +8,10 @@ import { ProductWithImageUrl } from "./product.js";
 // };
 
 // Extend the CartItem type to use the extended Product type
-export type CartItemWithProduct = Omit<Prisma.CartItemGetPayload<{}>, "product"> & {
+export type CartItemWithProduct = Omit<
+  Prisma.CartItemGetPayload<{}>,
+  "product"
+> & {
   product: ProductWithImageUrl;
 };
 

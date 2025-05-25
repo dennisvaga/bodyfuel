@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { ProductWithImageUrl } from "./product.js";
 
 // fix - Check if you need the product
