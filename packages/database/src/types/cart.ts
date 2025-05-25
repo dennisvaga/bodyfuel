@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client";
-import { ProductWithImageUrl } from "./product.js";
+import type { ProductWithImageUrl } from "./product.js";
 
 // export const cartIncludes = {
 //   productImages: Prisma.validator<Prisma.CartItemInclude>()({

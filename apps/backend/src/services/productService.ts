@@ -1,6 +1,5 @@
 import { ProductInput, ProductInputField } from "@repo/shared";
 import { uploadImages } from "./s3Service.js";
-import { PrismaClient } from "@prisma/client";
 
 /**
  * Upload product images

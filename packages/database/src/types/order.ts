@@ -1,5 +1,5 @@
 import type { Prisma } from "@prisma/client";
-import { ProductWithImageUrl } from "./product.js";
+import type { ProductWithImageUrl } from "./product.js";
 
 // fix - Check if you need the product
 export type OrderItemWithProduct = Omit<
