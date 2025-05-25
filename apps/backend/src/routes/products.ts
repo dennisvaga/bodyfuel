@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
 import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
@@ -14,6 +14,8 @@ const router: Router = express.Router();
 // * Search products without pagination
 router.get("/search", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const { search } = req.query;
 
     const products = await prisma.product.findMany({
@@ -53,6 +55,7 @@ router.get("/", async (req: Request, res: Response) => {
   const getAllProducts = req.query.getAllProducts === "true";
 
   try {
+    const prisma = await getPrisma();
     // If getAllProducts is true, skip pagination
     if (getAllProducts) {
       const products = await prisma.product.findMany({
@@ -133,6 +136,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
   const { slug } = req.params;
 
   try {
+    const prisma = await getPrisma();
     // Fetch products with their associated images
     const products = await prisma.product.findMany({
       where: { slug },

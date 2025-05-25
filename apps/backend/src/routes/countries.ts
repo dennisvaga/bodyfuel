@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import express, { Request, Response, Router } from "express";
 import { sendResponse } from "../utils/apiResponse.js";
 import { handleError } from "../utils/handleErrors.js";
@@ -7,6 +7,8 @@ const router: Router = express.Router();
 
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const countries = await prisma.country.findMany({
       where: {
         isShippingAvailable: true,

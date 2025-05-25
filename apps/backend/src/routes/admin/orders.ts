@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import express, { Request, Response, Router } from "express";
 import { handleError } from "../../utils/handleErrors.js";
 import { OrderInput } from "@repo/shared";
@@ -11,6 +11,8 @@ const router: Router = express.Router();
 // Get all orders
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const orders = await prisma.order.findMany({
       include: { shippingInfo: true, user: true, orderItems: true },
     });
@@ -32,6 +34,7 @@ router.post("/", async (req: Request, res: Response) => {
   // shippingCost       - Optional
 
   try {
+    const prisma = await getPrisma();
     const orderData: OrderInput = req.body;
 
     // Get userId based on email
@@ -86,6 +89,7 @@ router.post("/", async (req: Request, res: Response) => {
 // Update order status
 router.patch("/:orderId/status", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
     const { orderId } = req.params;
     const { status } = req.body;
 

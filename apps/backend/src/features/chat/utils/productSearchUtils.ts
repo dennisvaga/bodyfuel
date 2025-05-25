@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import { ChatbotSearchCriteria } from "../types/chat.types.js";
 import {
   extractCategoryFromMessage,
@@ -214,6 +214,8 @@ export async function* streamProducts(
     "Final WHERE clause for product streaming:",
     JSON.stringify(whereClause, null, 2)
   );
+
+  const prisma = await getPrisma();
 
   // Execute the query
   const products = await prisma.product.findMany({

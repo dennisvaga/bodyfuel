@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import express, { Request, Response, Router } from "express";
 import multer from "multer";
 import { handleError } from "../../utils/handleErrors.js";
@@ -33,6 +33,7 @@ const upload = multer(); // In-memory storage
 router.post("/", upload.any(), async (req: Request, res: Response) => {
   // Make sure nobody except admin can send this
   try {
+    const prisma = await getPrisma();
     const body = parseProductBody(req.body);
     const images = normalizeFiles(req.files);
     const validatedData: ProductInput = validateData(productSchema, body);
@@ -100,6 +101,7 @@ router.put(
     const { id } = req.params;
     const productId = parseInt(id);
     try {
+      const prisma = await getPrisma();
       const body = parseProductBody(req.body);
       const images = normalizeFiles(req.files);
       const validatedData: ProductInput = validateData(productSchema, body);
@@ -175,6 +177,7 @@ router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
   const productId = parseInt(id);
 
   try {
+    const prisma = await getPrisma();
     const product = await prisma.product.findUnique({
       where: { id: productId },
     });

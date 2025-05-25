@@ -2,7 +2,7 @@ import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import { addCookie } from "../utils/cookieUtils.js";
 import { sendResponse } from "../utils/apiResponse.js";
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import {
   getCartBySession,
   addOrUpdateCartItem as addOrUpdateCartItem,
@@ -18,6 +18,8 @@ const router: Router = express.Router();
 // Get existing cart or create one
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     // Get the cart session cookie
     const cartSession = req.cookies.cart_session;
 

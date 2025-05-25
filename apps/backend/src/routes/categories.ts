@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import { sendResponse } from "../utils/apiResponse.js";
@@ -10,6 +10,8 @@ const router: Router = express.Router();
 // Get all categories names
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const categories = await prisma.category.findMany();
 
     if (!categories) {
@@ -29,6 +31,8 @@ router.get("/", async (req: Request, res: Response) => {
 // Get category by slug (product included)
 router.get("/:slug", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const { slug } = req.params; // Contains the plain text payload
 
     // Get category

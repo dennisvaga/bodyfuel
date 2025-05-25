@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import express, { Request, Response, Router } from "express";
 import { handleError } from "../../utils/handleErrors.js";
 import { slugifyNative } from "../../utils/utils.js";
@@ -13,6 +13,8 @@ const router: Router = express.Router();
 // Add collection
 router.post("/", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     // const collectionData = JSON.parse(req.body);
     const collectionData = req.body;
     const data: CollectionInput = validateData(
@@ -52,6 +54,7 @@ router.put("/:id", async (req: Request<{ id: string }>, res: Response) => {
   const collectionId = parseInt(id);
 
   try {
+    const prisma = await getPrisma();
     // const rawCollectionInput = JSON.parse(req.body);
     const rawCollectionInput = req.body;
     const validatedCollectionInput: CollectionInput = validateData(
@@ -99,6 +102,7 @@ router.put("/:id", async (req: Request<{ id: string }>, res: Response) => {
 // Delete collection
 router.delete("/:id", async (req: Request<{ id: string }>, res: Response) => {
   try {
+    const prisma = await getPrisma();
     const { id } = req.params;
     const collectionId = parseInt(id);
 

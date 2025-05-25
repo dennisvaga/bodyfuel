@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
 import express, { Request, Response, Router } from "express";
 import { assignImageUrlToProducts } from "../services/s3Service.js";
@@ -14,6 +14,7 @@ const router: Router = express.Router();
 // Get collection by slug with paginated products
 router.get("/:slug", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
     const { slug } = req.params;
     const { currentPage, itemsPerPage, skip } = parsePaginationParams(
       req.query
@@ -77,6 +78,7 @@ router.get("/:slug", async (req: Request, res: Response) => {
 // Get all collections
 router.get("/", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
     const includeProducts = req.query.includeProducts === "true";
     const usePagination = req.query.paginate === "true";
     const { currentPage, itemsPerPage, skip } = parsePaginationParams(

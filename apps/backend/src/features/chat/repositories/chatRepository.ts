@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import {
   ProductData,
   ChatbotSearchCriteria,
@@ -25,6 +25,8 @@ export async function findProducts(
   limit: number = 10
 ): Promise<ProductData[]> {
   try {
+    const prisma = await getPrisma();
+
     // Build the where clause based on the criteria
     const whereClause: any = buildWhereClause(criteria);
 
@@ -67,6 +69,8 @@ export async function findProducts(
  * @returns Category ID or null if not found
  */
 export async function findCategoryByName(name: string): Promise<number | null> {
+  const prisma = await getPrisma();
+
   try {
     const category = await prisma.category.findFirst({
       where: {

@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 
 /**
  * Interface for category data with normalized search terms
@@ -93,6 +93,8 @@ export async function getCategoriesWithSearchTerms(): Promise<
   }
 
   try {
+    const prisma = await getPrisma();
+
     // Fetch categories from database
     const categories = await prisma.category.findMany();
 

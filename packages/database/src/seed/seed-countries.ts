@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import { getPrisma } from "@repo/database";
 import type { Country } from "@prisma/client";
 
-const prisma = new PrismaClient();
+const prisma = await getPrisma();
 
 // Country structure of the external api
 type externalCountry = { name: { common: string }; cca2: string };

@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { getPrisma } from "@repo/database";
 
-const prisma = new PrismaClient();
+const prisma = await getPrisma();
 
 async function main() {
   console.log("Seeding categories...");

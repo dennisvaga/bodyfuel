@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { getPrisma } from "@repo/database";
 import express, { Request, Response, Router } from "express";
 import { handleError } from "../utils/handleErrors.js";
 import bcrypt from "bcryptjs";
@@ -8,6 +8,8 @@ const router: Router = express.Router();
 
 router.post("/signup", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const { name, email, password } = req.body;
 
     // 1) Validate request data
@@ -55,6 +57,8 @@ router.post("/signup", async (req: Request, res: Response) => {
 
 router.post("/signin", async (req: Request, res: Response) => {
   try {
+    const prisma = await getPrisma();
+
     const { email, password } = req.body;
 
     const user = await prisma.user.findUnique({

@@ -1,9 +1,9 @@
-import { prisma } from "@repo/database";
-
+import { getPrisma } from "@repo/database";
 /**
  * Get cart by session ID with all items and images
  */
 export async function getCartBySession(sessionId: string) {
+  const prisma = await getPrisma();
   return prisma.cart.findUnique({
     where: { sessionId },
     include: {
@@ -19,6 +19,8 @@ export async function getCartBySession(sessionId: string) {
  * Get updated cart with all items and product details
  */
 export async function getUpdatedCart(cartId: number) {
+  const prisma = await getPrisma();
+
   return prisma.cart.findUnique({
     where: { id: cartId },
     include: {
@@ -39,6 +41,8 @@ export async function addOrUpdateCartItem(
   price: number,
   quantity: number
 ) {
+  const prisma = await getPrisma();
+
   return prisma.cartItem.upsert({
     where: {
       cartId_productId: { cartId, productId }, // Uses unique constraint
@@ -63,6 +67,8 @@ export async function updateItemQuantity(
   productId: number,
   quantity: number
 ) {
+  const prisma = await getPrisma();
+
   if (quantity < 1) {
     // Delete item from cart
     return prisma.cartItem.deleteMany({
@@ -90,6 +96,8 @@ export async function updateItemQuantity(
 }
 
 export const removeCartItem = async (sessionId: string, productId: number) => {
+  const prisma = await getPrisma();
+
   // Find the cart by session
   const cart = await getCartBySession(sessionId);
 

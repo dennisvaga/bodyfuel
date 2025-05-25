@@ -1,38 +1,40 @@
 import { PrismaClient } from "@prisma/client";
 import { getPlatformAwareUrl } from "@repo/platform-utils";
 
-// Create a default instance
-let prisma = new PrismaClient();
+// Singleton holder
+let prisma: PrismaClient | null = null;
 
-// Function to initialize Prisma with PG adapter
-async function initPrismaWithPgAdapter() {
-  if (typeof window === "undefined") {
-    try {
-      const { PrismaPg } = await import("@prisma/adapter-pg");
-      let connectionString = process.env.DATABASE_URL;
-
-      if (!connectionString) {
-        console.warn("ENV FILE NOT LOADED - DATABASE_URL is not defined");
-        return prisma;
-      }
-
-      // Use the platform-utils package to get the correct URL for Android
-      connectionString = getPlatformAwareUrl(connectionString);
-
-      const adapter = new PrismaPg({ connectionString });
-      prisma = new PrismaClient({ adapter });
-      console.log("Prisma initialized with PG adapter");
-    } catch (e) {
-      console.warn("Could not initialize Prisma with PG adapter:", e);
-    }
+/**
+ * Returns a shared PrismaClient instance, initializing with PG adapter on server only.
+ */
+export async function getPrisma(): Promise<PrismaClient> {
+  if (prisma) {
+    return prisma;
   }
+
+  // In browser, use default client without adapter
+  if (typeof window !== "undefined") {
+    prisma = new PrismaClient();
+    return prisma;
+  }
+
+  // Server environment: initialize basic client
+  let client = new PrismaClient();
+  try {
+    const { PrismaPg } = await import("@prisma/adapter-pg");
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      console.warn("DATABASE_URL is not defined");
+    } else {
+      const url = getPlatformAwareUrl(connectionString);
+      const adapter = new PrismaPg({ connectionString: url });
+      client = new PrismaClient({ adapter });
+      console.log("Prisma initialized with PG adapter");
+    }
+  } catch (error) {
+    console.warn("Failed to load Prisma PG adapter:", error);
+  }
+
+  prisma = client;
   return prisma;
 }
-
-// Start the initialization process
-initPrismaWithPgAdapter().catch((e) => {
-  console.error("Failed to initialize Prisma:", e);
-});
-
-// Export the pre-initialized instance
-export { prisma };
