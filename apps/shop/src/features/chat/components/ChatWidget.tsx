@@ -20,6 +20,8 @@ export default function ChatWidget() {
   // Initialize with false (closed) instead of true
   const [isOpen, setIsOpen] = useState(false);
   const [isWidgetInitialized, setIsWidgetInitialized] = useState(false);
+  // Track input focus state to adjust position when mobile keyboard appears
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   useEffect(() => {
     const savedState = loadFormDataFromLocalStorage<boolean>(CHAT_WIDGET_KEY);
@@ -61,6 +63,14 @@ export default function ChatWidget() {
     return null;
   }
 
+  // Calculate dynamic positioning class based on input focus for mobile keyboards
+  const widgetPositionClass = cn(
+    "fixed right-4",
+    isInputFocused && typeof window !== "undefined" && window.innerWidth < 768
+      ? "md:bottom-4 bottom-[40vh]" // Position higher when keyboard is visible on mobile
+      : "md:bottom-4 bottom-0" // Normal position
+  );
+
   if (!isOpen) {
     return (
       <Button
@@ -74,7 +84,12 @@ export default function ChatWidget() {
   }
 
   return (
-    <Card className="fixed bottom-4 right-4 w-[calc(100%-2rem)] h-[min(500px,80vh)] md:w-[400px] md:h-[min(500px,70vh)] max-w-full flex flex-col shadow-xl z-50 bg-card border-border">
+    <Card
+      className={cn(
+        widgetPositionClass,
+        "w-[calc(100%-2rem)] h-[min(500px,80vh)] md:w-[400px] md:h-[min(500px,70vh)] max-w-full flex flex-col shadow-xl z-50 bg-card border-border"
+      )}
+    >
       <CardHeader className="flex flex-row items-center justify-between p-3 border-b border-border">
         <h3 className="text-lg font-medium text-foreground">
           BodyFuel Assistant
@@ -88,7 +103,7 @@ export default function ChatWidget() {
           <X className="h-4 w-4" />
         </Button>
       </CardHeader>
-      <CardContent className="flex-1 overflow-auto p-3 pb-0 bg-background">
+      <CardContent className="flex-1 overflow-auto p-3 pb-0 bg-background min-h-0">
         {/* Always show search tips at the top */}
         <SearchTips className="mb-4" />
 
@@ -178,6 +193,8 @@ export default function ChatWidget() {
             "border-input focus:border-primary focus:ring-1 focus:ring-primary"
           )}
           disabled={isLoading}
+          onFocus={() => setIsInputFocused(true)}
+          onBlur={() => setIsInputFocused(false)}
         />
         <Button type="submit" size="sm" disabled={isLoading}>
           <Send className="h-4 w-4" />
