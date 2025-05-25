@@ -109,12 +109,14 @@ const HeroSection = () => {
                 ></div>
 
                 {/* Content container with layout class for content width control */}
-                <div className="layout !py-[0rem] relative z-10 flex flex-col gap-4 md:gap-8 md:flex-row w-full h-full">
+                <div className="layout !py-[0rem] relative z-10 flex flex-col gap-4 md:gap-8 md:flex-row w-full h-full justify-end">
                   {/* Product image container - order changes based on alignment */}
                   <div
                     className={cn(
-                      `w-full h-[300px] md:h-full relative md:order-2`,
-                      slide.alignment === "right" ? "md:order-1" : "md:order-2"
+                      `w-full h-[200px] md:h-full relative order-1 md:order-2`,
+                      slide.alignment === "right"
+                        ? "order-2 md:order-1"
+                        : "order-1  md:order-2"
                     )}
                   >
                     <div className="absolute inset-0 flex items-end justify-center">
@@ -125,7 +127,7 @@ const HeroSection = () => {
                         quality={100}
                         width={450}
                         height={0}
-                        className="object-contain pb-0"
+                        className="object-contain  pb-0"
                         style={{
                           maxWidth: "80%",
                           maxHeight: "90%",
@@ -139,8 +141,8 @@ const HeroSection = () => {
                     className={cn(
                       `w-full h-[300px] md:h-full flex flex-col items-center md:items-start justify-center p-6 md:p-10`,
                       slide.alignment === "right"
-                        ? "md:order-2 text-right md:text-right"
-                        : "md:order-1 text-left md:text-left"
+                        ? "order-1 md:order-2 text-right md:text-right"
+                        : "order-2 md:order-1 text-left md:text-left"
                     )}
                   >
                     <h2

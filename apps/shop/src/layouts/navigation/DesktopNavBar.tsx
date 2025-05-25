@@ -43,7 +43,7 @@ const DesktopNavBar = ({ navigationItems }: DesktopNavBarProps) => {
 
         {/* Icons */}
         <div className="flex items-center ms-auto *:p-5">
-          <ProductSearch width="350px" />
+          <ProductSearch className="!p-0" width="350px" />
           <ModeToggle variant="shop" />
           <AuthLink />
           <MiniCartDrawer />
