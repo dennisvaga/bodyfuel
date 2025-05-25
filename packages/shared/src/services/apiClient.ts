@@ -41,9 +41,10 @@ export const fetchData = async ({
   }
 
   // Check if env loaded correctly
-  if (!process.env.NEXT_PUBLIC_API_URL) throw new Error("NEXT_PUBLIC_API_URL is not defined");
+  if (!process.env.BACKEND_API_URL)
+    throw new Error("BACKEND_API_URL is not defined");
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${slug}`, {
+  const response = await fetch(`${process.env.BACKEND_API_URL}/api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies
@@ -65,7 +66,8 @@ export const fetchData = async ({
   if (!response.ok) {
     return {
       success: false,
-      message: result.message || `Error ${response.status}: ${response.statusText}`,
+      message:
+        result.message || `Error ${response.status}: ${response.statusText}`,
       statusCode: response.status,
     };
   }
@@ -78,7 +80,7 @@ export const fetchData = async ({
  * Fetching streaming data using HTTP methods (GET, POST)
  * This function is specifically designed for streaming responses like Server-Sent Events (SSE)
  * Unlike fetchData, it returns the raw Response object without attempting to parse it as JSON
- * 
+ *
  * @returns Raw Response object that can be used with a reader for streaming
  */
 export const fetchStreamingData = async ({
@@ -87,20 +89,21 @@ export const fetchStreamingData = async ({
   body = null,
   headers: customHeaders = {},
 }: StreamingProps): Promise<Response> => {
-  const headers: HeadersInit = { 
+  const headers: HeadersInit = {
     ...customHeaders,
-    'Accept': 'text/event-stream' 
+    Accept: "text/event-stream",
   };
 
   // Check if env loaded correctly
-  if (!process.env.NEXT_PUBLIC_API_URL) throw new Error("NEXT_PUBLIC_API_URL is not defined");
+  if (!process.env.BACKEND_API_URL)
+    throw new Error("BACKEND_API_URL is not defined");
 
   // Return the raw response without parsing it
-  return fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/${slug}`, {
+  return fetch(`${process.env.BACKEND_API_URL}/api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies
     headers,
-    cache: 'no-store', // Don't cache streaming responses
+    cache: "no-store", // Don't cache streaming responses
   });
 };
