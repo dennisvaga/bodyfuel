@@ -20,7 +20,7 @@ const app = express();
 // Get allowed origins from environment variable or use defaults
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["http://localhost:3000", "http://localhost:3001"];
+  : ["http://localhost:3000", "http://localhost:3001", "http://10.0.2.2:3000"];
 
 console.log("CORS allowed origins:", allowedOrigins);
 

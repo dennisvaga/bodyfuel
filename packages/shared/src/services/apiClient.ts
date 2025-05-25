@@ -42,13 +42,15 @@ export const fetchData = async ({
   }
 
   // Check if env loaded correctly
-  if (!process.env.BACKEND_API_URL)
-    throw new Error("BACKEND_API_URL is not defined");
+  if (!process.env.NEXT_PUBLIC_BACKEND_API) {
+    console.log("NEXT_PUBLIC_BACKEND_API is not defined");
+    throw new Error("NEXT_PUBLIC_BACKEND_API is not defined");
+  }
 
   // Get platform-aware URL that handles Android emulator
-  const baseUrl = getPlatformAwareUrl(process.env.BACKEND_API_URL);
+  const baseUrl = getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API);
 
-  const response = await fetch(`${baseUrl}/api/${slug}`, {
+  const response = await fetch(`${baseUrl}api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies
@@ -99,14 +101,14 @@ export const fetchStreamingData = async ({
   };
 
   // Check if env loaded correctly
-  if (!process.env.BACKEND_API_URL)
-    throw new Error("BACKEND_API_URL is not defined");
+  if (!process.env.NEXT_PUBLIC_BACKEND_API)
+    throw new Error("NEXT_PUBLIC_BACKEND_API is not defined");
 
   // Get platform-aware URL that handles Android emulator
-  const baseUrl = getPlatformAwareUrl(process.env.BACKEND_API_URL);
+  const baseUrl = getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API);
 
   // Return the raw response without parsing it
-  return fetch(`${baseUrl}/api/${slug}`, {
+  return fetch(`${baseUrl}api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies

@@ -1,1 +1,1 @@
-export * from "./platformUtils";
+export * from "./platformUtils.js";

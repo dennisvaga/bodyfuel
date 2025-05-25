@@ -1,8 +1,6 @@
 /**
  * Platform utilities for handling different environments
  */
-"use client";
-
 // Platform types
 export type PlatformType = "browser" | "android" | "ios";
 
@@ -52,6 +50,8 @@ export const getApiBaseUrl = (port: number = 5001): string => {
 
 /**
  * Gets the appropriate API URL with the correct host for the current platform
+ *
+ * IMPORTANT: baseUrl ends with a slash
  * @param defaultUrl The default URL from environment variables
  * @returns The URL with the correct host for the current platform
  */
