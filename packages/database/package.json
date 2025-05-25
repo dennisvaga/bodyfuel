@@ -25,7 +25,8 @@
   "dependencies": {
     "@prisma/adapter-pg": "^6.5.0",
     "@prisma/client": "^6.5.0",
-    "pg": "^8.16.0"
+    "pg": "^8.16.0",
+    "@platform-utils": "workspace:*"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",

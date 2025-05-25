@@ -1,5 +1,6 @@
 import type { ApiResult } from "#types/api";
 import { ContentType, FetchMethod } from "#types/enums";
+import { getPlatformAwareUrl } from "../../../platform-utils/src/platformUtils.js";
 
 interface Props {
   slug: string;
@@ -44,7 +45,10 @@ export const fetchData = async ({
   if (!process.env.BACKEND_API_URL)
     throw new Error("BACKEND_API_URL is not defined");
 
-  const response = await fetch(`${process.env.BACKEND_API_URL}/api/${slug}`, {
+  // Get platform-aware URL that handles Android emulator
+  const baseUrl = getPlatformAwareUrl(process.env.BACKEND_API_URL);
+
+  const response = await fetch(`${baseUrl}/api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies
@@ -98,8 +102,11 @@ export const fetchStreamingData = async ({
   if (!process.env.BACKEND_API_URL)
     throw new Error("BACKEND_API_URL is not defined");
 
+  // Get platform-aware URL that handles Android emulator
+  const baseUrl = getPlatformAwareUrl(process.env.BACKEND_API_URL);
+
   // Return the raw response without parsing it
-  return fetch(`${process.env.BACKEND_API_URL}/api/${slug}`, {
+  return fetch(`${baseUrl}/api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies

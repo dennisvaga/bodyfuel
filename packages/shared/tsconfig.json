@@ -7,6 +7,6 @@
     "jsx": "react-jsx"
   },
 
-  "include": ["src"],
+  "include": ["src", "../platform-utils/src/platformUtils.ts", "../platform-utils/src/platformUtils.ts", "../platform-utils/src/platformUtils.ts"],
   "exclude": ["node_modules", "dist"]
 }
