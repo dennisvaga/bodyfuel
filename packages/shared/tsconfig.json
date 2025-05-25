@@ -4,9 +4,8 @@
     "rootDir": "src",
     "outDir": "dist",
     "baseUrl": ".",
-    "jsx": "react-jsx"
   },
 
-  "include": ["src", "../platform-utils/src/platformUtils.ts", "../platform-utils/src/platformUtils.ts", "../platform-utils/src/platformUtils.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,6 +1,6 @@
 import type { ApiResult } from "#types/api";
 import { ContentType, FetchMethod } from "#types/enums";
-import { getPlatformAwareUrl } from "../../../platform-utils/src/platformUtils.js";
+import { getPlatformAwareUrl } from "@repo/platform-utils";
 
 interface Props {
   slug: string;

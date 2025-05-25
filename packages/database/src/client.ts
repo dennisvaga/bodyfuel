@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { convertLocalhostUrl } from "@platform-utils";
+import { getPlatformAwareUrl } from "@repo/platform-utils";
 
 // Create a default instance
 let prisma = new PrismaClient();
@@ -17,7 +17,7 @@ async function initPrismaWithPgAdapter() {
       }
 
       // Use the platform-utils package to get the correct URL for Android
-      connectionString = convertLocalhostUrl(connectionString);
+      connectionString = getPlatformAwareUrl(connectionString);
 
       const adapter = new PrismaPg({ connectionString });
       prisma = new PrismaClient({ adapter });

@@ -1,9 +1,7 @@
 /**
  * Platform utilities for handling different environments
  */
-
-// Storage key for platform override
-const PLATFORM_OVERRIDE_KEY = "platform_override";
+"use client";
 
 // Platform types
 export type PlatformType = "browser" | "android" | "ios";
@@ -18,15 +16,6 @@ export const detectPlatform = (): PlatformType => {
     return "browser"; // Default for server-side rendering
   }
 
-  // Check for platform override (for testing)
-  const override = localStorage.getItem(PLATFORM_OVERRIDE_KEY);
-  if (
-    override &&
-    (override === "android" || override === "ios" || override === "browser")
-  ) {
-    return override as PlatformType;
-  }
-
   // Detect Android
   if (/Android/i.test(window.navigator.userAgent)) {
     return "android";
@@ -39,28 +28,6 @@ export const detectPlatform = (): PlatformType => {
 
   // Default to browser
   return "browser";
-};
-
-/**
- * Set a platform override for testing
- * @param platform The platform to simulate
- */
-export const setPlatformOverride = (platform: PlatformType | null): void => {
-  if (typeof window === "undefined") return;
-
-  if (platform) {
-    localStorage.setItem(PLATFORM_OVERRIDE_KEY, platform);
-  } else {
-    localStorage.removeItem(PLATFORM_OVERRIDE_KEY);
-  }
-};
-
-/**
- * Clear any platform override
- */
-export const clearPlatformOverride = (): void => {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(PLATFORM_OVERRIDE_KEY);
 };
 
 /**

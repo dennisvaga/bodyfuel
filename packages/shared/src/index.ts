@@ -57,7 +57,6 @@ export * from "./utils/onErrors.js";
 export * from "./utils/zodUtils.js";
 export * from "./utils/storageUtils.js";
 export * from "./utils/featureFlags.js";
-export * from "../../platform-utils/src/platformUtils.js";
 
 // Commented out to avoid duplicate export with orders/utils/formatters.js
 // export * from "./utils/formatters.js";

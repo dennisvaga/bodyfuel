@@ -126,7 +126,7 @@ importers:
         version: 9.27.0
       '@next/eslint-plugin-next':
         specifier: ^15.1.8
-        version: 15.1.8
+        version: 15.2.4
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -368,7 +368,7 @@ importers:
         version: 9.27.0
       '@next/eslint-plugin-next':
         specifier: ^15.1.8
-        version: 15.1.8
+        version: 15.2.4
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -405,6 +405,9 @@ importers:
       '@prisma/client':
         specifier: ^6.5.0
         version: 6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
+      '@repo/platform-utils':
+        specifier: workspace:*
+        version: link:../platform-utils
       pg:
         specifier: ^8.16.0
         version: 8.16.0
@@ -437,6 +440,12 @@ importers:
         specifier: ^15.2.4
         version: 15.3.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
+  packages/platform-utils:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+
   packages/shared:
     dependencies:
       '@auth/prisma-adapter':
@@ -448,6 +457,9 @@ importers:
       '@repo/database':
         specifier: workspace:*
         version: link:../database
+      '@repo/platform-utils':
+        specifier: workspace:*
+        version: link:../platform-utils
       '@tanstack/react-query':
         specifier: ^5.69.0
         version: 5.76.2(react@19.0.0)
@@ -1241,9 +1253,6 @@ packages:
 
   '@next/env@15.3.2':
     resolution: {integrity: sha512-xURk++7P7qR9JG1jJtLzPzf0qEvqCN0A/T3DXf8IPMKo9/6FfjxtEffRJIIew/bIL4T3C2jLLqBor8B/zVlx6g==}
-
-  '@next/eslint-plugin-next@15.1.8':
-    resolution: {integrity: sha512-1VC0ctUmwQjI9gZJRQgw2c8GKkr4+DTXVu2yLje3PpFfnxnuuZ8Mrv1Whn9tF+CYkMHiEgCaqyGvT44qYNLVcw==}
 
   '@next/eslint-plugin-next@15.2.4':
     resolution: {integrity: sha512-O8ScvKtnxkp8kL9TpJTTKnMqlkZnS+QxwoQnJwPGBxjBbzd6OVVPEJ5/pMNrktSyXQD/chEfzfFzYLM6JANOOQ==}
@@ -5450,10 +5459,6 @@ snapshots:
     optional: true
 
   '@next/env@15.3.2': {}
-
-  '@next/eslint-plugin-next@15.1.8':
-    dependencies:
-      fast-glob: 3.3.1
 
   '@next/eslint-plugin-next@15.2.4':
     dependencies:
