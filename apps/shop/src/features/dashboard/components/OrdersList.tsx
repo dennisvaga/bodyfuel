@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/ui/card";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { OrderWithItems } from "@repo/database/types/order";
 import Link from "next/link";
 import { formatCurrency } from "@repo/shared";

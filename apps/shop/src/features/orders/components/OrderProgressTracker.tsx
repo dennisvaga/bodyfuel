@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { Package, Truck, CheckCircle } from "lucide-react";
 
 interface OrderProgressTrackerProps {

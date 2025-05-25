@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ChatProductCardProps } from "../components/ChatProductCard";
-import { JSONValue } from "ai";
+import { getPlatformAwareUrl } from "@repo/platform-utils";
 
 /**
  * Custom hook for managing chat interactions with AI-powered product search
@@ -16,7 +16,6 @@ import { JSONValue } from "ai";
  */
 export function useProductChat() {
   const [processingMessages, setProcessingMessages] = useState<boolean>(false);
-  const latestMessageRef = useRef<string | null>(null);
   const [streamedProducts, setStreamedProducts] = useState<
     Omit<ChatProductCardProps, "className">[]
   >([]);
@@ -42,7 +41,7 @@ export function useProductChat() {
           "Hi there! I can help you find products or answer questions about BodyFuel. What are you looking for today?",
       },
     ],
-    api: `${process.env.BACKEND_API_URL}/api/chat`,
+    api: `${getPlatformAwareUrl(process.env.BACKEND_API_URL || "")}/api/chat`,
     onError: (error) => {
       console.error("Chat error:", error);
       setProcessingMessages(false);

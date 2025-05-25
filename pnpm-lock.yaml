@@ -18,18 +18,12 @@ importers:
       turbo:
         specifier: ^2.4.4
         version: 2.5.3
-      typescript:
-        specifier: ^5.8.3
-        version: 5.8.3
 
   apps/admin:
     dependencies:
       '@hookform/resolvers':
         specifier: ^4.1.3
         version: 4.1.3(react-hook-form@7.56.4(react@19.0.0))
-      '@prisma/client':
-        specifier: ^6.8.2
-        version: 6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.6
         version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -77,7 +71,7 @@ importers:
         version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: ^5.69.0
-        version: 5.76.2(react@19.0.0)
+        version: 5.77.0(react@19.0.0)
       '@tanstack/react-table':
         specifier: ^8.21.2
         version: 8.21.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -119,14 +113,14 @@ importers:
         version: 11.1.0
       zod:
         specifier: ^3.24.2
-        version: 3.25.23
+        version: 3.25.28
     devDependencies:
       '@eslint/js':
         specifier: ^9.27.0
         version: 9.27.0
       '@next/eslint-plugin-next':
         specifier: ^15.1.8
-        version: 15.2.4
+        version: 15.3.2
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -165,13 +159,13 @@ importers:
     dependencies:
       '@ai-sdk/deepseek':
         specifier: ^0.2.13
-        version: 0.2.14(zod@3.25.23)
+        version: 0.2.14(zod@3.25.28)
       '@aws-sdk/client-s3':
         specifier: ^3.774.0
-        version: 3.816.0
+        version: 3.817.0
       '@aws-sdk/s3-request-presigner':
         specifier: ^3.774.0
-        version: 3.816.0
+        version: 3.817.0
       '@panva/hkdf':
         specifier: ^1.2.1
         version: 1.2.1
@@ -186,13 +180,13 @@ importers:
         version: link:../../packages/shared
       '@tanstack/react-query':
         specifier: ^5.69.0
-        version: 5.76.2(react@19.0.0)
+        version: 5.77.0(react@19.0.0)
       '@tanstack/react-table':
         specifier: ^8.21.2
         version: 8.21.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       ai:
         specifier: ^4.3.10
-        version: 4.3.16(react@19.0.0)(zod@3.25.23)
+        version: 4.3.16(react@19.0.0)(zod@3.25.28)
       bcryptjs:
         specifier: ^3.0.2
         version: 3.0.2
@@ -222,7 +216,7 @@ importers:
         version: 1.4.5-lts.2
       zod:
         specifier: ^3.24.2
-        version: 3.25.23
+        version: 3.25.28
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -252,20 +246,17 @@ importers:
         specifier: ^4.19.4
         version: 4.19.4
       typescript:
-        specifier: ^5.8.2
+        specifier: ^5.8.3
         version: 5.8.3
 
   apps/shop:
     dependencies:
       '@ai-sdk/react':
         specifier: ^1.2.9
-        version: 1.2.12(react@19.0.0)(zod@3.25.23)
+        version: 1.2.12(react@19.0.0)(zod@3.25.28)
       '@hookform/resolvers':
         specifier: ^4.1.3
         version: 4.1.3(react-hook-form@7.56.4(react@19.0.0))
-      '@prisma/client':
-        specifier: ^6.8.2
-        version: 6.8.2(prisma@6.8.2(typescript@5.8.3))(typescript@5.8.3)
       '@radix-ui/react-alert-dialog':
         specifier: ^1.1.6
         version: 1.1.14(@types/react-dom@19.1.5(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -302,6 +293,9 @@ importers:
       '@repo/nextjs-config':
         specifier: workspace:*
         version: link:../../packages/nextjs-config
+      '@repo/platform-utils':
+        specifier: workspace:*
+        version: link:../../packages/platform-utils
       '@repo/shared':
         specifier: workspace:*
         version: link:../../packages/shared
@@ -313,10 +307,10 @@ importers:
         version: link:../../packages/ui
       '@tanstack/react-query':
         specifier: ^5.69.0
-        version: 5.76.2(react@19.0.0)
+        version: 5.77.0(react@19.0.0)
       ai:
         specifier: ^4.3.10
-        version: 4.3.16(react@19.0.0)(zod@3.25.23)
+        version: 4.3.16(react@19.0.0)(zod@3.25.28)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -334,7 +328,7 @@ importers:
         version: 5.0.0-beta.28(next@15.3.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
       openai:
         specifier: ^4.96.0
-        version: 4.103.0(zod@3.25.23)
+        version: 4.103.0(zod@3.25.28)
       postcss:
         specifier: ^8.5.3
         version: 8.5.3
@@ -361,14 +355,14 @@ importers:
         version: 1.1.2(@types/react-dom@19.1.5(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       zod:
         specifier: ^3.24.2
-        version: 3.25.23
+        version: 3.25.28
     devDependencies:
       '@eslint/js':
         specifier: ^9.27.0
         version: 9.27.0
       '@next/eslint-plugin-next':
         specifier: ^15.1.8
-        version: 15.2.4
+        version: 15.3.2
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -445,6 +439,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      typescript:
+        specifier: ^5.0.0
+        version: 5.8.3
 
   packages/shared:
     dependencies:
@@ -462,7 +459,7 @@ importers:
         version: link:../platform-utils
       '@tanstack/react-query':
         specifier: ^5.69.0
-        version: 5.76.2(react@19.0.0)
+        version: 5.77.0(react@19.0.0)
       '@tanstack/react-table':
         specifier: ^8.21.2
         version: 8.21.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -480,7 +477,7 @@ importers:
         version: 7.56.4(react@19.0.0)
       zod:
         specifier: ^3.24.2
-        version: 3.25.23
+        version: 3.25.28
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -615,7 +612,7 @@ importers:
         version: 1.1.2(@types/react-dom@19.1.5(@types/react@19.0.12))(@types/react@19.0.12)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       zod:
         specifier: ^3.24.2
-        version: 3.25.23
+        version: 3.25.28
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
@@ -729,12 +726,12 @@ packages:
   '@aws-crypto/util@5.2.0':
     resolution: {integrity: sha512-4RkU9EsI6ZpBve5fseQlGNUWKMa1RLPQ1dnjnQoe07ldfIzcsGb5hC5W0Dm7u423KWzawlrpbjXBrXCEv9zazQ==}
 
-  '@aws-sdk/client-s3@3.816.0':
-    resolution: {integrity: sha512-WsVDoXrQ6YWyse04EJyP2vg7dGcHbb5cYtTUZTDwbldsNBu8IH67pTx61lDh07cXeav4UwdzJvSD86zTT7nHPg==}
+  '@aws-sdk/client-s3@3.817.0':
+    resolution: {integrity: sha512-nZyjhlLMEXDs0ofWbpikI8tKoeKuuSgYcIb6eEZJk90Nt5HkkXn6nkWOs/kp2FdhpoGJyTILOVsDgdm7eutnLA==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/client-sso@3.816.0':
-    resolution: {integrity: sha512-2D2bc6wVDgGxwHjqSyxGYXUHa3ni0R21Isiq0OzJk6nBc8Vi6HpYoimok6UaUfPJsG6OEWfQ9vubcR30BCBmqQ==}
+  '@aws-sdk/client-sso@3.817.0':
+    resolution: {integrity: sha512-fCh5rUHmWmWDvw70NNoWpE5+BRdtNi45kDnIoeoszqVg7UKF79SlG+qYooUT52HKCgDNHqgbWaXxMOSqd2I/OQ==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/core@3.816.0':
@@ -749,24 +746,24 @@ packages:
     resolution: {integrity: sha512-gcWGzMQ7yRIF+ljTkR8Vzp7727UY6cmeaPrFQrvcFB8PhOqWpf7g0JsgOf5BSaP8CkkSQcTQHc0C5ZYAzUFwPg==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-ini@3.816.0':
-    resolution: {integrity: sha512-60FiF4PFgrnIQ7vizAMN4imrjFzlXPEvXKk05cs47W7qtA54MudRvTITN9Gji4vD5j6CDp9fOb0HS0+N83YEAA==}
+  '@aws-sdk/credential-provider-ini@3.817.0':
+    resolution: {integrity: sha512-kyEwbQyuXE+phWVzloMdkFv6qM6NOon+asMXY5W0fhDKwBz9zQLObDRWBrvQX9lmqq8BbDL1sCfZjOh82Y+RFw==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-node@3.816.0':
-    resolution: {integrity: sha512-NsjMzCHWXpFXNdJYliY4GM2vtsmP8w9OyjrNcHq4mmdp7lAzM3BvRKavVuhBXrSHQFzLkGWaTGd+fkkTZtYHXQ==}
+  '@aws-sdk/credential-provider-node@3.817.0':
+    resolution: {integrity: sha512-b5mz7av0Lhavs1Bz3Zb+jrs0Pki93+8XNctnVO0drBW98x1fM4AR38cWvGbM/w9F9Q0/WEH3TinkmrMPrP4T/w==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/credential-provider-process@3.816.0':
     resolution: {integrity: sha512-9Tm+AxMoV2Izvl5b9tyMQRbBwaex8JP06HN7ZeCXgC5sAsSN+o8dsThnEhf8jKN+uBpT6CLWKN1TXuUMrAmW1A==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-sso@3.816.0':
-    resolution: {integrity: sha512-wxNqvPrRpKwkNQ41uGE/y3Y95TsWnJnMpcTIMhGEub0Jq5ifnUEev3gJ60857uaut133mwpGfupE2fk8V68e6A==}
+  '@aws-sdk/credential-provider-sso@3.817.0':
+    resolution: {integrity: sha512-gFUAW3VmGvdnueK1bh6TOcRX+j99Xm0men1+gz3cA4RE+rZGNy1Qjj8YHlv0hPwI9OnTPZquvPzA5fkviGREWg==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/credential-provider-web-identity@3.816.0':
-    resolution: {integrity: sha512-guKv76eRTMQkGOHsv9tY8XP9y1TZ0U4w6RD5kHQYNuzoBf5HOpZcib9OGmWJA2n+BC+byCOOftl6mMmYtRfcpQ==}
+  '@aws-sdk/credential-provider-web-identity@3.817.0':
+    resolution: {integrity: sha512-A2kgkS9g6NY0OMT2f2EdXHpL17Ym81NhbGnQ8bRXPqESIi7TFypFD2U6osB2VnsFv+MhwM+Ke4PKXSmLun22/A==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/middleware-bucket-endpoint@3.808.0':
@@ -809,24 +806,24 @@ packages:
     resolution: {integrity: sha512-bHRSlWZ0xDsFR8E2FwDb//0Ff6wMkVx4O+UKsfyNlAbtqCiiHRt5ANNfKPafr95cN2CCxLxiPvFTFVblQM5TsQ==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/nested-clients@3.816.0':
-    resolution: {integrity: sha512-N1jSEa53QHLvIH37Rrm8cD9MlC6ucTEpDhbO+fN9UHBimRnpt9kqk0iiBCu5FK7GEKWYM5kiawfUtbB3PN65CQ==}
+  '@aws-sdk/nested-clients@3.817.0':
+    resolution: {integrity: sha512-vQ2E06A48STJFssueJQgxYD8lh1iGJoLJnHdshRDWOQb8gy1wVQR+a7MkPGhGR6lGoS0SCnF/Qp6CZhnwLsqsQ==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/region-config-resolver@3.808.0':
     resolution: {integrity: sha512-9x2QWfphkARZY5OGkl9dJxZlSlYM2l5inFeo2bKntGuwg4A4YUe5h7d5yJ6sZbam9h43eBrkOdumx03DAkQF9A==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/s3-request-presigner@3.816.0':
-    resolution: {integrity: sha512-zxHLYmGGd2uaBITm4+PYSKCu1QL9DT65vyJnn/OuJjAdXc9FPD5JZ33cCu8R++ThPYLOqEV/OUJkWBDZZv3NDQ==}
+  '@aws-sdk/s3-request-presigner@3.817.0':
+    resolution: {integrity: sha512-FMV0YefefGwPqIbGcHdkkHaiVWKIZoI0wOhYhYDZI129aUD5+CEOtTi7KFp1iJjAK+Cx9bW5tAYc+e9shaWEyQ==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/signature-v4-multi-region@3.816.0':
     resolution: {integrity: sha512-idcr9NW86sSIXASSej3423Selu6fxlhhJJtMgpAqoCH/HJh1eQrONJwNKuI9huiruPE8+02pwxuePvLW46X2mw==}
     engines: {node: '>=18.0.0'}
 
-  '@aws-sdk/token-providers@3.816.0':
-    resolution: {integrity: sha512-OFeeq7j3JsI5OrUW4vw/Lckwq8I+HNffi7IXenfqzE83vhgXQF9BfCg+TGHDfxiDt6NUaS6F0QzhfkW6/AORlA==}
+  '@aws-sdk/token-providers@3.817.0':
+    resolution: {integrity: sha512-CYN4/UO0VaqyHf46ogZzNrVX7jI3/CfiuktwKlwtpKA6hjf2+ivfgHSKzPpgPBcSEfiibA/26EeLuMnB6cpSrQ==}
     engines: {node: '>=18.0.0'}
 
   '@aws-sdk/types@3.804.0':
@@ -1256,6 +1253,9 @@ packages:
 
   '@next/eslint-plugin-next@15.2.4':
     resolution: {integrity: sha512-O8ScvKtnxkp8kL9TpJTTKnMqlkZnS+QxwoQnJwPGBxjBbzd6OVVPEJ5/pMNrktSyXQD/chEfzfFzYLM6JANOOQ==}
+
+  '@next/eslint-plugin-next@15.3.2':
+    resolution: {integrity: sha512-ijVRTXBgnHT33aWnDtmlG+LJD+5vhc9AKTJPquGG5NKXjpKNjc62woIhFtrAcWdBobt8kqjCoaJ0q6sDQoX7aQ==}
 
   '@next/swc-darwin-arm64@15.3.2':
     resolution: {integrity: sha512-2DR6kY/OGcokbnCsjHpNeQblqCZ85/1j6njYSkzRdpLn5At7OkSdmk7WyAmB9G0k25+VgqVZ/u356OSoQZ3z0g==}
@@ -2133,11 +2133,11 @@ packages:
   '@tailwindcss/postcss@4.1.7':
     resolution: {integrity: sha512-88g3qmNZn7jDgrrcp3ZXEQfp9CVox7xjP1HN2TFKI03CltPVd/c61ydn5qJJL8FYunn0OqBaW5HNUga0kmPVvw==}
 
-  '@tanstack/query-core@5.76.2':
-    resolution: {integrity: sha512-PFGwWh5ss9cJQ67l6bZ7hqXbisX2gy13G2jP+VGY1bgdbCfOMWh6UBVnN62QbFXro6CCoX9hYzTnZHr6Rz00YQ==}
+  '@tanstack/query-core@5.77.0':
+    resolution: {integrity: sha512-PFeWjgMQjOsnxBwnW/TJoO0pCja2dzuMQoZ3Diho7dPz7FnTUwTrjNmdf08evrhSE5nvPIKeqV6R0fvQfmhGeg==}
 
-  '@tanstack/react-query@5.76.2':
-    resolution: {integrity: sha512-rGkWberCrFdIxMdvSAJM/UOKeu0O/JVTbMmfhQoJpiU9Uq0EDx2EMCadnNuJWbXR4smDA2t7DY3NKkYFmDVS5A==}
+  '@tanstack/react-query@5.77.0':
+    resolution: {integrity: sha512-jX52ot8WxWzWnAknpRSEWj6PTR/7nkULOfoiaVPk6nKu0otwt30UMBC9PTg/m1x0uhz1g71/imwjViTm/oYHxA==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -4618,54 +4618,54 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.25.23:
-    resolution: {integrity: sha512-Od2bdMosahjSrSgJtakrwjMDb1zM1A3VIHCPGveZt/3/wlrTWBya2lmEh2OYe4OIu8mPTmmr0gnLHIWQXdtWBg==}
+  zod@3.25.28:
+    resolution: {integrity: sha512-/nt/67WYKnr5by3YS7LroZJbtcCBurDKKPBPWWzaxvVCGuG/NOsiKkrjoOhI8mJ+SQUXEbUzeB3S+6XDUEEj7Q==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@ai-sdk/deepseek@0.2.14(zod@3.25.23)':
+  '@ai-sdk/deepseek@0.2.14(zod@3.25.28)':
     dependencies:
-      '@ai-sdk/openai-compatible': 0.2.14(zod@3.25.23)
+      '@ai-sdk/openai-compatible': 0.2.14(zod@3.25.28)
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.23)
-      zod: 3.25.23
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.28)
+      zod: 3.25.28
 
-  '@ai-sdk/openai-compatible@0.2.14(zod@3.25.23)':
+  '@ai-sdk/openai-compatible@0.2.14(zod@3.25.28)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.23)
-      zod: 3.25.23
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.28)
+      zod: 3.25.28
 
-  '@ai-sdk/provider-utils@2.2.8(zod@3.25.23)':
+  '@ai-sdk/provider-utils@2.2.8(zod@3.25.28)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
       nanoid: 3.3.11
       secure-json-parse: 2.7.0
-      zod: 3.25.23
+      zod: 3.25.28
 
   '@ai-sdk/provider@1.1.3':
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@1.2.12(react@19.0.0)(zod@3.25.23)':
+  '@ai-sdk/react@1.2.12(react@19.0.0)(zod@3.25.28)':
     dependencies:
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.23)
-      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.23)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.28)
+      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.28)
       react: 19.0.0
       swr: 2.3.3(react@19.0.0)
       throttleit: 2.1.0
     optionalDependencies:
-      zod: 3.25.23
+      zod: 3.25.28
 
-  '@ai-sdk/ui-utils@1.2.11(zod@3.25.23)':
+  '@ai-sdk/ui-utils@1.2.11(zod@3.25.28)':
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.23)
-      zod: 3.25.23
-      zod-to-json-schema: 3.24.5(zod@3.25.23)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.28)
+      zod: 3.25.28
+      zod-to-json-schema: 3.24.5(zod@3.25.28)
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -4738,13 +4738,13 @@ snapshots:
       '@smithy/util-utf8': 2.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/client-s3@3.816.0':
+  '@aws-sdk/client-s3@3.817.0':
     dependencies:
       '@aws-crypto/sha1-browser': 5.2.0
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
       '@aws-sdk/core': 3.816.0
-      '@aws-sdk/credential-provider-node': 3.816.0
+      '@aws-sdk/credential-provider-node': 3.817.0
       '@aws-sdk/middleware-bucket-endpoint': 3.808.0
       '@aws-sdk/middleware-expect-continue': 3.804.0
       '@aws-sdk/middleware-flexible-checksums': 3.816.0
@@ -4799,7 +4799,7 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/client-sso@3.816.0':
+  '@aws-sdk/client-sso@3.817.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -4877,15 +4877,15 @@ snapshots:
       '@smithy/util-stream': 4.2.1
       tslib: 2.8.1
 
-  '@aws-sdk/credential-provider-ini@3.816.0':
+  '@aws-sdk/credential-provider-ini@3.817.0':
     dependencies:
       '@aws-sdk/core': 3.816.0
       '@aws-sdk/credential-provider-env': 3.816.0
       '@aws-sdk/credential-provider-http': 3.816.0
       '@aws-sdk/credential-provider-process': 3.816.0
-      '@aws-sdk/credential-provider-sso': 3.816.0
-      '@aws-sdk/credential-provider-web-identity': 3.816.0
-      '@aws-sdk/nested-clients': 3.816.0
+      '@aws-sdk/credential-provider-sso': 3.817.0
+      '@aws-sdk/credential-provider-web-identity': 3.817.0
+      '@aws-sdk/nested-clients': 3.817.0
       '@aws-sdk/types': 3.804.0
       '@smithy/credential-provider-imds': 4.0.5
       '@smithy/property-provider': 4.0.3
@@ -4895,14 +4895,14 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/credential-provider-node@3.816.0':
+  '@aws-sdk/credential-provider-node@3.817.0':
     dependencies:
       '@aws-sdk/credential-provider-env': 3.816.0
       '@aws-sdk/credential-provider-http': 3.816.0
-      '@aws-sdk/credential-provider-ini': 3.816.0
+      '@aws-sdk/credential-provider-ini': 3.817.0
       '@aws-sdk/credential-provider-process': 3.816.0
-      '@aws-sdk/credential-provider-sso': 3.816.0
-      '@aws-sdk/credential-provider-web-identity': 3.816.0
+      '@aws-sdk/credential-provider-sso': 3.817.0
+      '@aws-sdk/credential-provider-web-identity': 3.817.0
       '@aws-sdk/types': 3.804.0
       '@smithy/credential-provider-imds': 4.0.5
       '@smithy/property-provider': 4.0.3
@@ -4921,11 +4921,11 @@ snapshots:
       '@smithy/types': 4.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/credential-provider-sso@3.816.0':
+  '@aws-sdk/credential-provider-sso@3.817.0':
     dependencies:
-      '@aws-sdk/client-sso': 3.816.0
+      '@aws-sdk/client-sso': 3.817.0
       '@aws-sdk/core': 3.816.0
-      '@aws-sdk/token-providers': 3.816.0
+      '@aws-sdk/token-providers': 3.817.0
       '@aws-sdk/types': 3.804.0
       '@smithy/property-provider': 4.0.3
       '@smithy/shared-ini-file-loader': 4.0.3
@@ -4934,10 +4934,10 @@ snapshots:
     transitivePeerDependencies:
       - aws-crt
 
-  '@aws-sdk/credential-provider-web-identity@3.816.0':
+  '@aws-sdk/credential-provider-web-identity@3.817.0':
     dependencies:
       '@aws-sdk/core': 3.816.0
-      '@aws-sdk/nested-clients': 3.816.0
+      '@aws-sdk/nested-clients': 3.817.0
       '@aws-sdk/types': 3.804.0
       '@smithy/property-provider': 4.0.3
       '@smithy/types': 4.3.0
@@ -5037,7 +5037,7 @@ snapshots:
       '@smithy/types': 4.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/nested-clients@3.816.0':
+  '@aws-sdk/nested-clients@3.817.0':
     dependencies:
       '@aws-crypto/sha256-browser': 5.2.0
       '@aws-crypto/sha256-js': 5.2.0
@@ -5089,7 +5089,7 @@ snapshots:
       '@smithy/util-middleware': 4.0.3
       tslib: 2.8.1
 
-  '@aws-sdk/s3-request-presigner@3.816.0':
+  '@aws-sdk/s3-request-presigner@3.817.0':
     dependencies:
       '@aws-sdk/signature-v4-multi-region': 3.816.0
       '@aws-sdk/types': 3.804.0
@@ -5109,10 +5109,10 @@ snapshots:
       '@smithy/types': 4.3.0
       tslib: 2.8.1
 
-  '@aws-sdk/token-providers@3.816.0':
+  '@aws-sdk/token-providers@3.817.0':
     dependencies:
       '@aws-sdk/core': 3.816.0
-      '@aws-sdk/nested-clients': 3.816.0
+      '@aws-sdk/nested-clients': 3.817.0
       '@aws-sdk/types': 3.804.0
       '@smithy/property-provider': 4.0.3
       '@smithy/shared-ini-file-loader': 4.0.3
@@ -5461,6 +5461,10 @@ snapshots:
   '@next/env@15.3.2': {}
 
   '@next/eslint-plugin-next@15.2.4':
+    dependencies:
+      fast-glob: 3.3.1
+
+  '@next/eslint-plugin-next@15.3.2':
     dependencies:
       fast-glob: 3.3.1
 
@@ -6432,11 +6436,11 @@ snapshots:
       postcss: 8.5.3
       tailwindcss: 4.1.7
 
-  '@tanstack/query-core@5.76.2': {}
+  '@tanstack/query-core@5.77.0': {}
 
-  '@tanstack/react-query@5.76.2(react@19.0.0)':
+  '@tanstack/react-query@5.77.0(react@19.0.0)':
     dependencies:
-      '@tanstack/query-core': 5.76.2
+      '@tanstack/query-core': 5.77.0
       react: 19.0.0
 
   '@tanstack/react-table@8.21.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
@@ -6726,15 +6730,15 @@ snapshots:
     dependencies:
       humanize-ms: 1.2.1
 
-  ai@4.3.16(react@19.0.0)(zod@3.25.23):
+  ai@4.3.16(react@19.0.0)(zod@3.25.28):
     dependencies:
       '@ai-sdk/provider': 1.1.3
-      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.23)
-      '@ai-sdk/react': 1.2.12(react@19.0.0)(zod@3.25.23)
-      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.23)
+      '@ai-sdk/provider-utils': 2.2.8(zod@3.25.28)
+      '@ai-sdk/react': 1.2.12(react@19.0.0)(zod@3.25.28)
+      '@ai-sdk/ui-utils': 1.2.11(zod@3.25.28)
       '@opentelemetry/api': 1.9.0
       jsondiffpatch: 0.6.0
-      zod: 3.25.23
+      zod: 3.25.28
     optionalDependencies:
       react: 19.0.0
 
@@ -8424,7 +8428,7 @@ snapshots:
 
   on-headers@1.0.2: {}
 
-  openai@4.103.0(zod@3.25.23):
+  openai@4.103.0(zod@3.25.28):
     dependencies:
       '@types/node': 18.19.103
       '@types/node-fetch': 2.6.12
@@ -8434,7 +8438,7 @@ snapshots:
       formdata-node: 4.4.1
       node-fetch: 2.7.0
     optionalDependencies:
-      zod: 3.25.23
+      zod: 3.25.28
     transitivePeerDependencies:
       - encoding
 
@@ -9385,10 +9389,10 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.24.5(zod@3.25.23):
+  zod-to-json-schema@3.24.5(zod@3.25.28):
     dependencies:
-      zod: 3.25.23
+      zod: 3.25.28
 
-  zod@3.25.23: {}
+  zod@3.25.28: {}
 
   zwitch@2.0.4: {}

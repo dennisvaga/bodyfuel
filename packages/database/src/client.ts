@@ -12,7 +12,7 @@ async function initPrismaWithPgAdapter() {
       let connectionString = process.env.DATABASE_URL;
 
       if (!connectionString) {
-        console.warn("No DATABASE_URL provided for PG adapter");
+        console.warn("ENV FILE NOT LOADED - DATABASE_URL is not defined");
         return prisma;
       }
 

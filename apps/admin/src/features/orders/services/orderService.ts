@@ -1,7 +1,7 @@
 "use client";
 
 import { orderService as sharedOrderService } from "@repo/shared";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { fetchData } from "@repo/shared";
 import { FetchMethod, ContentType } from "@repo/shared";
 

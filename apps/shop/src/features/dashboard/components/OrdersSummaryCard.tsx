@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/ui/card";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { OrderWithItems } from "@repo/database/types/order";
 
 interface OrdersSummaryCardProps {

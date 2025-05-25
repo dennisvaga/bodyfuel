@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/ui/card";
-import { ShippingInfo } from "@prisma/client";
+import { ShippingInfo } from "@repo/database/types/prismaTypes";
 import { MapPin, Phone, Truck, Clock } from "lucide-react";
 
 interface AdminShippingInfoCardProps {

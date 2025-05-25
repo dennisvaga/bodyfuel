@@ -2,16 +2,11 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
   "globalDependencies": [".env"],
-  "globalEnv": ["DATABASE_URL", "GOOGLE_ID", "GOOGLE_SECRET", "AUTH_SECRET"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build", "generate"],
+      "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
-    },
-    "generate": {
-      "cache": true,
-      "outputs": [".prisma/**", "node_modules/.prisma/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]

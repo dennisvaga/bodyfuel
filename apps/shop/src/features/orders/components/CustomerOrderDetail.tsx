@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/ui/card";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { OrderWithItems } from "@repo/database/types/order";
 import { Button } from "@repo/ui/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -40,7 +40,7 @@ const CustomerOrderDetail = ({ order }: CustomerOrderDetailProps) => {
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to dashboard
         </Link>
-        <OrderStatusBadge status={order.status} />
+        <OrderStatusBadge status={order.status as OrderStatus} />
       </div>
 
       <Card>
@@ -52,7 +52,7 @@ const CustomerOrderDetail = ({ order }: CustomerOrderDetailProps) => {
         </CardHeader>
         <CardContent className="flex flex-col">
           {/* Order progress visualization */}
-          <OrderProgressTracker status={order.status} />
+          <OrderProgressTracker status={order.status as OrderStatus} />
 
           {/* Shipping and order items in responsive layout */}
           <div className="flex flex-col md:flex-row gap-6 mt-6">

@@ -10,7 +10,7 @@ import {
 } from "@repo/ui/components/ui/card";
 import { ArrowLeft, Calendar } from "lucide-react";
 import Link from "next/link";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { OrderStatusBadge } from "@repo/ui/components/features/orders/OrderStatusBadge";
 import { OrderItemsTable } from "@repo/ui/components/features/orders/OrderItemsTable";
 import { CustomerInfoCard } from "@repo/ui/components/features/orders/CustomerInfoCard";

@@ -1,4 +1,4 @@
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { OrderWithItems } from "@repo/database/types/order";
 import { formatOrderCurrency, formatOrderDate } from "./formatters.js";
 
@@ -41,4 +41,4 @@ export const getCustomerNameFromOrder = (order: OrderWithItems): string => {
  */
 export const formatOrderTotal = (order: OrderWithItems): string => {
   return formatOrderCurrency(order.total);
-}; 
+};

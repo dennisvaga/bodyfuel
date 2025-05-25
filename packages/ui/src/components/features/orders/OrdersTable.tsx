@@ -3,7 +3,7 @@
 import * as React from "react";
 import { OrderWithItems } from "@repo/database/types/order";
 import { Button } from "@repo/ui/components/ui/button";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 import { formatOrderCurrency, formatOrderDate } from "../utils/formatters.js";
 import { getOrderStatusClass } from "../utils/orderColumnUtils.js";
 import { ColumnDef, Row } from "@tanstack/react-table";

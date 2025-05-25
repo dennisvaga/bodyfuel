@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { OrderStatus } from "@prisma/client";
+import { OrderStatus } from "@repo/database/types/prismaTypes";
 
 interface OrderStatusBadgeProps {
   status: OrderStatus;
