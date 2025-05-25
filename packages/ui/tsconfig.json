@@ -3,6 +3,6 @@
   "compilerOptions": {
     "baseUrl": "."
   },
-  "include": ["src"],
+  "include": ["src", "../../apps/shop/src/features/chat/hooks/useKeyboardHeight.ts"],
   "exclude": ["node_modules"]
 }

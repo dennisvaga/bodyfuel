@@ -3,11 +3,14 @@ import { DataStreamWriter } from "ai";
 import { ProductData } from "../types/chat.types.js";
 
 /**
- * Set up SSE headers for streaming
+ * Sets up Server-Sent Events (SSE) headers for streaming responses
  *
- * @param res Express response
- * @param conversationId Conversation ID
- * @param isProductQuery Whether this is a product query
+ * Configures the HTTP response headers required for SSE connections,
+ * including conversation tracking and product query identification.
+ *
+ * @param res Express response object to configure
+ * @param conversationId Unique identifier for the current conversation
+ * @param isProductQuery Whether this response contains product search results
  */
 export function setupSSEHeaders(
   res: ExpressResponse,
@@ -30,10 +33,10 @@ export function setupSSEHeaders(
 }
 
 /**
- * Copy headers from one response to another
+ * Copies all headers from a fetch Response to an Express Response
  *
- * @param fromResponse Source response
- * @param toResponse Target response
+ * @param fromResponse Source fetch Response object
+ * @param toResponse Target Express Response object
  */
 export function copyResponseHeaders(
   fromResponse: globalThis.Response,
@@ -49,10 +52,13 @@ export function copyResponseHeaders(
 }
 
 /**
- * Process a stream to an Express response
+ * Processes a fetch Response stream and pipes it to an Express Response
  *
- * @param response Stream response
- * @param res Express response
+ * Reads chunks from the fetch Response body stream and writes them
+ * to the Express Response, handling completion and error cases.
+ *
+ * @param response Fetch Response object containing a readable stream
+ * @param res Express Response object to write to
  */
 export async function processStreamToResponse(
   response: globalThis.Response,
@@ -99,11 +105,14 @@ export async function processStreamToResponse(
 }
 
 /**
- * Write status to data stream
+ * Sends a status update to the client through the data stream
  *
- * @param dataStream Data stream writer
- * @param status Status code
- * @param message Status message
+ * Writes a structured status object with type, status code, and message
+ * to inform the client about search progress or state changes.
+ *
+ * @param dataStream AI SDK's data stream writer
+ * @param status Status identifier (e.g., "searching", "complete")
+ * @param message Human-readable status message
  */
 export function writeStatusToStream(
   dataStream: DataStreamWriter,
@@ -119,10 +128,10 @@ export function writeStatusToStream(
 }
 
 /**
- * Write text to data stream
+ * Sends text content to the client through the data stream
  *
- * @param dataStream Data stream writer
- * @param text Text to write
+ * @param dataStream AI SDK's data stream writer
+ * @param text Content text to send to the client
  */
 export function writeTextToStream(
   dataStream: DataStreamWriter,
@@ -136,9 +145,12 @@ export function writeTextToStream(
 }
 
 /**
- * Write finish to data stream
+ * Signals completion of the stream to the client
  *
- * @param dataStream Data stream writer
+ * Sends a finish event to indicate all data has been transmitted
+ * and the client can finalize rendering or processing.
+ *
+ * @param dataStream AI SDK's data stream writer
  */
 export function writeFinishToStream(dataStream: DataStreamWriter): void {
   // Use the dataStream.writeData method instead of direct write
@@ -148,11 +160,14 @@ export function writeFinishToStream(dataStream: DataStreamWriter): void {
 }
 
 /**
- * Write products to data stream
+ * Streams product data to the client
  *
- * @param dataStream Data stream writer
- * @param products Products to write
- * @param productCount Product count
+ * Sends product search results through the data stream with
+ * count information for client-side processing and display.
+ *
+ * @param dataStream AI SDK's data stream writer
+ * @param products Array of product data objects to stream
+ * @param productCount Total number of products in the results
  */
 export function writeProductsToStream(
   dataStream: DataStreamWriter,
@@ -168,10 +183,13 @@ export function writeProductsToStream(
 }
 
 /**
- * Extract product data from HTML
+ * Parses embedded product data from HTML content
  *
- * @param html HTML string
- * @returns Product data array or null if not found
+ * Extracts JSON-formatted product information embedded within
+ * product-data tags in HTML responses from the AI model.
+ *
+ * @param html HTML string potentially containing product data
+ * @returns Parsed array of product data or null if not found/valid
  */
 export function extractProductDataFromHtml(html: string): ProductData[] | null {
   // Extract product data from HTML

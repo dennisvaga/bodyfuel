@@ -9,7 +9,13 @@ export interface ChatProductListProps {
   className?: string;
 }
 
-// Using memo to prevent unnecessary re-renders
+/**
+ * Memoized component that displays a grid of product cards from chat results
+ *
+ * Renders a collection of products returned by the AI in response to user queries,
+ * displaying them in a visually consistent container with a helpful count indicator.
+ * Returns null when no products are available.
+ */
 export const ChatProductList = memo(function ChatProductList({
   products,
   className,

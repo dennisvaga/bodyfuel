@@ -105,8 +105,11 @@ const MessageContent = memo(function MessageContent({
 });
 
 /**
- * ChatMessage component that handles different message types and formats
- * Displays user or assistant messages with appropriate styling
+ * Chat message component for displaying user and AI messages in conversation
+ *
+ * Renders different message types with appropriate styling based on the role.
+ * Handles complex message structures including embedded product listings and
+ * supports both single content strings and multi-part messages.
  */
 export function ChatMessage({
   id,

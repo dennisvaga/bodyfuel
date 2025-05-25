@@ -1,5 +1,8 @@
 /**
- * Utilities for processing and formatting chat messages
+ * Utilities for processing and formatting chat messages and product data
+ *
+ * Contains functions for cleaning message content, extracting product information,
+ * and determining styles based on message roles for consistent UI rendering.
  */
 
 /**
@@ -39,12 +42,12 @@ export function cleanHtmlContent(content: string): string {
  * @see ProductWithImageUrl in @repo/database/src/types/product.ts for the full model
  */
 export interface Product {
-  id?: string; // Optional to match data from various sources
-  name: string; // Product name (required in DB)
-  price: number; // Product price (required in DB)
-  description?: string; // Product description (optional in DB)
-  imageUrl?: string; // URL for product image (derived from images[] in DB)
-  slug: string; // URL slug (required in DB)
+  id?: string;
+  name: string;
+  price: number;
+  description?: string;
+  imageUrl?: string;
+  slug: string;
 }
 
 export interface ExtractedProductData {
@@ -55,7 +58,10 @@ export interface ExtractedProductData {
 }
 
 /**
- * Helper for determining text styles based on message role
+ * Determines appropriate CSS classes for message styling based on sender role
+ *
+ * @param role The message sender role ("user" or "assistant")
+ * @returns Object containing CSS class names for text color, background color, and margin
  */
 export function getMessageStyles(role: string) {
   return {

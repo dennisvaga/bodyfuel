@@ -13,6 +13,13 @@ export interface ChatProductCardProps {
   className?: string;
 }
 
+/**
+ * Interactive card component for displaying product information in chat results
+ *
+ * Renders a compact product card with image, name, and price that navigates
+ * to the product detail page when clicked. Handles image loading states and
+ * fallbacks for missing images.
+ */
 export function ChatProductCard({
   name,
   price,

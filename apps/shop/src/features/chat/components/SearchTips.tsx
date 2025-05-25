@@ -6,6 +6,12 @@ interface SearchTipsProps {
   className?: string;
 }
 
+/**
+ * Collapsible component that displays example search queries for the product chat
+ *
+ * Provides users with sample prompts that demonstrate the capabilities of the
+ * chat interface for finding specific product categories or price ranges.
+ */
 const SearchTips = ({ className }: SearchTipsProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 

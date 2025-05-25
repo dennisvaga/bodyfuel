@@ -7,10 +7,13 @@ import {
 } from "./categoryMatcher.js";
 
 /**
- * Build where clause for product queries
+ * Constructs a Prisma query filter for product searches
  *
- * @param criteria Search criteria
- * @returns Where clause object
+ * Creates a structured query object with text search, price ranges,
+ * and category filters based on the provided search criteria.
+ *
+ * @param criteria Search parameters including query text, price range, and categories
+ * @returns Prisma-compatible where clause object for product queries
  */
 export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
   const whereClause: any = {};
@@ -72,13 +75,18 @@ export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
 }
 
 /**
- * Stream products based on search criteria
- * This function returns a generator that yields products one by one
+ * Asynchronous generator for streaming product search results
  *
- * @param criteria Search criteria or search query string
- * @param minPrice Minimum price (optional, used only if criteria is a string)
- * @param maxPrice Maximum price (optional, used only if criteria is a string)
- * @returns AsyncGenerator that yields products one by one
+ * Performs an intelligent product search using natural language processing to:
+ * - Expand search terms with related keywords
+ * - Identify product categories from query text
+ * - Apply price filters
+ * - Stream matching products one by one as they're found
+ *
+ * @param criteria Search criteria object or search query string
+ * @param minPrice Optional minimum price (used only if criteria is a string)
+ * @param maxPrice Optional maximum price (used only if criteria is a string)
+ * @returns AsyncGenerator that yields product objects as they're found
  */
 export async function* streamProducts(
   criteria: ChatbotSearchCriteria | string,

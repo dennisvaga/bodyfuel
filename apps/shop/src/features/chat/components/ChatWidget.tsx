@@ -13,6 +13,7 @@ import {
   loadFormDataFromLocalStorage,
   saveFormDataToLocalStorage,
 } from "@repo/shared";
+import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
 
 const CHAT_WIDGET_KEY = "chatWidgetOpen";
 
@@ -22,6 +23,8 @@ export default function ChatWidget() {
   const [isWidgetInitialized, setIsWidgetInitialized] = useState(false);
   // Track input focus state to adjust position when mobile keyboard appears
   const [isInputFocused, setIsInputFocused] = useState(false);
+  // Use keyboard height detection hook
+  const { isKeyboardVisible, keyboardPercentage } = useKeyboardHeight();
 
   useEffect(() => {
     const savedState = loadFormDataFromLocalStorage<boolean>(CHAT_WIDGET_KEY);
@@ -66,8 +69,11 @@ export default function ChatWidget() {
   // Calculate dynamic positioning class based on input focus for mobile keyboards
   const widgetPositionClass = cn(
     "fixed right-4",
-    isInputFocused && typeof window !== "undefined" && window.innerWidth < 768
-      ? "md:bottom-4 bottom-[40vh]" // Position higher when keyboard is visible on mobile
+    isInputFocused &&
+      isKeyboardVisible &&
+      typeof window !== "undefined" &&
+      window.innerWidth < 768
+      ? `md:bottom-4 bottom-[${keyboardPercentage + 5}vh]` // Position above keyboard with 5% extra space
       : "md:bottom-4 bottom-0" // Normal position
   );
 

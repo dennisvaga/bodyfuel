@@ -5,6 +5,15 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { ChatProductCardProps } from "../components/ChatProductCard";
 import { JSONValue } from "ai";
 
+/**
+ * Custom hook for managing chat interactions with AI-powered product search
+ *
+ * Handles streaming product data, message state, and content processing.
+ * Provides methods for submitting queries, extracting product information,
+ * and managing the chat interface state.
+ *
+ * @returns Chat state and control methods for the product chat interface
+ */
 export function useProductChat() {
   const [processingMessages, setProcessingMessages] = useState<boolean>(false);
   const latestMessageRef = useRef<string | null>(null);
@@ -50,10 +59,15 @@ export function useProductChat() {
   // Track product slugs to prevent duplicates
   const productSlugsRef = useRef<Set<string>>(new Set());
 
-  // Process streamed data from the server
+  /**
+   * Processes streamed data from the server
+   *
+   * Handles product data and status updates in the streaming response,
+   * filters duplicate products by slug, and updates UI state.
+   */
   useEffect(() => {
     if (!data || data.length === 0) {
-      // Reset products when starting a new conversation
+      // Reset products on new conversation
       setStreamedProducts([]);
       setProductStatus("");
       productSlugsRef.current.clear();
@@ -100,12 +114,20 @@ export function useProductChat() {
     if (isLoading) {
       setProcessingMessages(true);
     } else {
-      // Immediately set processing to false when loading is done
       setProcessingMessages(false);
     }
   }, [isLoading]);
 
-  // Function to extract and parse product data from message content
+  /**
+   * Extracts and parses product data from message content
+   *
+   * Searches for product information embedded in special tags within message content,
+   * extracts JSON data, and returns a structured object with product information
+   * and surrounding text content.
+   *
+   * @param text - The message text to parse for product data
+   * @returns Object containing extracted products and text segments
+   */
   const extractProductData = useCallback((text: string) => {
     // Use a global regex to find all product-data and product-stream tags
     const productDataPattern = /<product-data>([^]*?)<\/product-data>/g;
@@ -189,16 +211,12 @@ export function useProductChat() {
     return { hasProductData: false };
   }, []);
 
-  // Custom submit handler to set processing state
-  const customHandleSubmit = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
-      setProcessingMessages(true);
-      handleSubmit(e);
-    },
-    [handleSubmit]
-  );
-
-  // Function to clear streamed products
+  /**
+   * Clears all streamed products and related state
+   *
+   * Resets the product list, status messages, and tracking references
+   * when starting a new search or conversation.
+   */
   const clearStreamedProducts = useCallback(() => {
     setStreamedProducts([]);
     setProductStatus("");
@@ -206,7 +224,14 @@ export function useProductChat() {
     productSlugsRef.current.clear(); // Clear the set of seen product slugs
   }, [setData]);
 
-  // Reset products when submitting a new message
+  /**
+   * Enhanced submit handler that resets product state before submission
+   *
+   * Ensures a clean slate for new search results by clearing previous products
+   * before sending the user's query to the API.
+   *
+   * @param e - Form submission event
+   */
   const customHandleSubmitWithReset = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       setProcessingMessages(true);
