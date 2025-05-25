@@ -73,9 +73,18 @@ export default function ChatWidget() {
       isKeyboardVisible &&
       typeof window !== "undefined" &&
       window.innerWidth < 768
-      ? `md:bottom-4 bottom-[${keyboardPercentage + 5}vh]` // Position above keyboard with 5% extra space
+      ? "bottom-20" // Fixed fallback position when keyboard is visible
       : "md:bottom-4 bottom-0" // Normal position
   );
+
+  // Apply direct style for more precise positioning when keyboard is visible
+  const widgetStyle =
+    isInputFocused &&
+    isKeyboardVisible &&
+    typeof window !== "undefined" &&
+    window.innerWidth < 768
+      ? { bottom: `${keyboardPercentage + 5}vh` }
+      : {};
 
   if (!isOpen) {
     return (
@@ -95,6 +104,7 @@ export default function ChatWidget() {
         widgetPositionClass,
         "w-[calc(100%-2rem)] h-[min(500px,80vh)] md:w-[400px] md:h-[min(500px,70vh)] max-w-full flex flex-col shadow-xl z-50 bg-card border-border"
       )}
+      style={widgetStyle}
     >
       <CardHeader className="flex flex-row items-center justify-between p-3 border-b border-border">
         <h3 className="text-lg font-medium text-foreground">
