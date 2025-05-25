@@ -22,7 +22,7 @@ const QuickActionsCard = () => {
         <Button asChild variant="outline" size="sm">
           <Link href="/contact-us">Contact Support</Link>
         </Button>
-        <Button asChild variant="outline" size="sm">
+        <Button asChild variant="destructive" size="sm">
           <Link href="/signout">Sign Out</Link>
         </Button>
       </CardContent>

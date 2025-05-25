@@ -131,7 +131,7 @@ export const CheckoutDetails = () => {
           <FloatingInput field={field} label="Apartment (Optional)" />
         )}
       />
-      <div className="flex flex-row gap-4">
+      <div className="flex lg:flex-row flex-col gap-4">
         <FormField
           control={control}
           name="shippingInfo.city"

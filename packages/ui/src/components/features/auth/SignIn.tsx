@@ -87,50 +87,54 @@ const SignIn = ({ callbackUrl, isAdmin = false }: signInProps) => {
                 onSubmit={form.handleSubmit(handleCredentialsSignIn, onErrors)}
                 className="grid gap-4"
               >
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input {...field} placeholder="john@example.com" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <div className="flex flex-col gap-4 pb-5">
+                  {/* Email Field */}
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input {...field} placeholder="john@example.com" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  {/* Password Field */}
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <div className="flex items-center">
+                          <FormLabel>Password</FormLabel>
+                          <Link
+                            href="#"
+                            className="ml-auto inline-block text-base underline"
+                          >
+                            Forgot your password?
+                          </Link>
+                        </div>
 
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <div className="flex items-center">
-                        <FormLabel>Password</FormLabel>
-                        <Link
-                          href="#"
-                          className="ml-auto inline-block text-base underline"
-                        >
-                          Forgot your password?
-                        </Link>
-                      </div>
+                        <FormControl>
+                          <Input {...field} type="password" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                      <FormControl>
-                        <Input {...field} type="password" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
+                {/* Login Button */}
                 <Button type="submit" className="w-full">
                   Login
                 </Button>
               </form>
             </Form>
-            {/* OAUTH (Google) */}
 
+            {/* OAUTH (Google) */}
             {!isAdmin &&
               Object.values(providerMap).map((provider) => (
                 <Button
@@ -145,6 +149,7 @@ const SignIn = ({ callbackUrl, isAdmin = false }: signInProps) => {
                 </Button>
               ))}
           </div>
+          {/* Sign Up Link */}
           {!isAdmin && (
             <div className="mt-4 text-center text-base">
               Don&apos;t have an account?{" "}

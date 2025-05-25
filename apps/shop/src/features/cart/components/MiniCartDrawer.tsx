@@ -20,6 +20,7 @@ const MiniCartDrawer = () => {
   const { cart, total, openMiniCart, setOpenMiniCart } = useCart();
   const router = useRouter();
 
+  // Check if cart is empty to conditionally render content
   const isEmpty = !cart?.cartItems || cart.cartItems.length === 0;
 
   return (
@@ -29,8 +30,10 @@ const MiniCartDrawer = () => {
       direction="right"
       handleOnly
     >
+      {/* Cart trigger button that acts as drawer handle */}
       <Link
         onClick={(e) => {
+          // Navigate to cart page if empty, otherwise open mini cart drawer
           if (isEmpty) {
             return;
           }
@@ -42,7 +45,7 @@ const MiniCartDrawer = () => {
       >
         <ShoppingCart />
         {!isEmpty && (
-          // Cart item count badge
+          // Display item count badge when cart has items
           <span className="absolute top-1 right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
             {cart.cartItems.length}
           </span>
@@ -50,14 +53,13 @@ const MiniCartDrawer = () => {
       </Link>
       {/* Drawer content */}
       <DrawerContent
-        className="md:w-[330px] w-full py-4 px-5"
+        className="md:w-[330px] w-full"
         onOpenAutoFocus={(e: Event) => e.preventDefault()}
       >
         <div className="flex justify-between items-center mb-6">
           <DrawerHeader>
             <DrawerTitle className="text-lg font-bold">Your Cart</DrawerTitle>
           </DrawerHeader>
-          {/* Close button with X icon */}
           <DrawerClose className="text-dark hover:bg-gray-100 rounded-full">
             <div className="p-2">
               <X className="w-5 h-5" />
@@ -65,20 +67,20 @@ const MiniCartDrawer = () => {
           </DrawerClose>
         </div>
 
-        {/* If cart is empty, show empty state */}
-
+        {/* Conditional rendering based on cart state */}
         {isEmpty ? (
+          // Empty cart view
           <div className="flex flex-col items-center justify-center p-6">
             <ShoppingCart className="w-12 h-12 text-muted-foreground mb-2" />
             <p className="text-muted-foreground">Your cart is empty</p>
           </div>
         ) : (
-          <div className="flex flex-col h-full justify-between">
+          <div className="flex flex-col h-full max-h-[calc(100vh-80px)] justify-between">
+            {/* Cart items list */}
             <div className="overflow-y-auto scrollbar divide-y px-4">
-              {/* Cart items */}
               <CartItemsList showTotal={false} variant={CartVariants.mini} />
             </div>
-            {/* Buttons */}
+            {/* Cart summary and action buttons */}
             <div className="flex flex-col p-4 gap-4 border-t">
               <div className="flex flex-row justify-between">
                 <Label className="text-base">Total</Label>
