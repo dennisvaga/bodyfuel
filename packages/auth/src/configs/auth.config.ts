@@ -6,7 +6,7 @@ import type { Provider } from "next-auth/providers";
 
 import Credentials from "next-auth/providers/credentials";
 
-import { authService } from "#auth/services/authService";
+import { authService } from "#services/authService";
 import Google from "next-auth/providers/google";
 
 const providers: Provider[] = [

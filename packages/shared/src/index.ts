@@ -1,12 +1,3 @@
-// ------ Auth -------------------------------------------------------------------
-export {
-  default as authConfig,
-  providerMap,
-} from "./features/auth/configs/auth.config.js";
-export * from "./features/auth/schema/authSchema.js";
-export * from "./features/auth/services/authService.js";
-export * from "./features/auth/types/next-auth.js";
-
 // ------ Categories -------------------------------------------------------------
 export * from "./features/categories/utils/categoriesUtils.js";
 export * from "./features/categories/services/categoryService.js";

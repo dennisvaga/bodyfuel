@@ -2,7 +2,7 @@ import NextAuth, { NextAuthResult } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { getPrisma } from "@repo/database";
 
-import authConfig from "#auth/configs/auth.config";
+import authConfig from "#configs/auth.config";
 
 /**
  * Files with server-side functionallity should be exported separately

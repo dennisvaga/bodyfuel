@@ -22,7 +22,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "#hooks/use-toast";
 import { useRouter } from "next/navigation";
-import { authService, onErrors, SignUpInput, signUpSchema } from "@repo/shared";
+import { authService, SignUpInput, signUpSchema } from "@repo/auth";
+import { onErrors } from "@repo/shared";
 
 const SignUp = () => {
   const { toast } = useToast();

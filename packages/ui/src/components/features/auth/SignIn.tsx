@@ -25,7 +25,8 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { onErrors, providerMap, SignInInput, signInSchema } from "@repo/shared";
+import { providerMap, SignInInput, signInSchema } from "@repo/auth";
+import { onErrors } from "@repo/shared";
 
 interface signInProps {
   callbackUrl?: string;

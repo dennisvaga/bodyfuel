@@ -1,6 +1,6 @@
-import { ContentType, FetchMethod } from "#types/enums";
-import { fetchData } from "#services/apiClient";
-import { SignInInput, SignUpInput } from "#auth/schema/authSchema";
+import { ContentType, FetchMethod } from "@repo/shared";
+import { fetchData } from "@repo/shared";
+import { SignInInput, SignUpInput } from "#schema/authSchema";
 
 export const authService = {
   signUp: async (data: SignUpInput) => {
