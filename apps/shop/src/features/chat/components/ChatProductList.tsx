@@ -41,11 +41,11 @@ export const ChatProductList = memo(function ChatProductList({
       </div>
 
       {/* Show a message indicating these are the top products */}
-      {products.length > 0 && (
+      {/* {products.length > 0 && (
         <div className="text-xs text-muted-foreground text-start pt-1 pl-2">
           Here are the top {products.length} products matching your search
         </div>
-      )}
+      )} */}
     </div>
   );
 });

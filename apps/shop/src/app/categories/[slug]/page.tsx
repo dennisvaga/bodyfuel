@@ -4,7 +4,7 @@ import React from "react";
 import { categoryService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
 import { notFound, usePathname } from "next/navigation";
-import { LoadingSpinner } from "@repo/ui/components/ui/LoadingSpinner";
+import { Loader2 } from "lucide-react";
 
 const Page = () => {
   const pathname = usePathname();
@@ -21,7 +21,7 @@ const Page = () => {
   if (isLoading)
     return (
       <div className="layout flex justify-center">
-        <LoadingSpinner />
+        <Loader2 className="h-5 w-5 animate-spin text-primary" />
       </div>
     );
   if (!category) notFound();

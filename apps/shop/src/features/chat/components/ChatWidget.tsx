@@ -104,18 +104,24 @@ export default function ChatWidget() {
             return null;
           })}
 
+          {/* Show streamed products if available */}
           {streamedProducts.length > 0 && (
             <div className="mb-4">
               <ChatProductList products={streamedProducts} />
             </div>
           )}
 
-          {isLoading && (
-            <ChatLoadingIndicator
-              productStatus={productStatus}
-              productCount={streamedProducts.length}
-            />
-          )}
+          {/* Show loading indicator only if the last message is from the assistant and is still loading */}
+          {isLoading &&
+            !messages.some(
+              (m) =>
+                m.role === "assistant" &&
+                m.id === messages[messages.length - 1]?.id &&
+                m.content?.trim() !== ""
+            ) &&
+            streamedProducts.length === 0 && (
+              <ChatLoadingIndicator productStatus={null} productCount={0} />
+            )}
 
           <div ref={messagesEndRef} />
         </div>

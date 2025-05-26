@@ -1,5 +1,4 @@
-import React from "react";
-import { Loader2 } from "lucide-react";
+import React, { useState, useEffect } from "react";
 
 interface ChatLoadingIndicatorProps {
   productStatus: string | null;
@@ -8,21 +7,29 @@ interface ChatLoadingIndicatorProps {
 
 export function ChatLoadingIndicator({
   productStatus,
-  productCount,
 }: ChatLoadingIndicatorProps) {
+  const [dots, setDots] = useState(".");
+
+  // Cycle through dots for loading indicator
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDots((prev) => {
+        if (prev === ".") return "..";
+        if (prev === "..") return "...";
+        return ".";
+      });
+    }, 400);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="bg-muted p-3 rounded-lg mr-8 border border-border">
       <div className="flex space-x-3 items-center">
-        <Loader2 className="h-5 w-5 animate-spin text-primary" />
         <div>
           <span className="text-sm font-medium text-foreground">
-            {productStatus || "Processing your request"}
+            {productStatus || dots}
           </span>
-          <p className="text-xs text-muted-foreground mt-1">
-            {productCount > 0
-              ? `Found ${productCount} products so far...`
-              : "This may take a moment..."}
-          </p>
         </div>
       </div>
     </div>
