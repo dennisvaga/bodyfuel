@@ -21,7 +21,11 @@ const SignOut = ({ callbackUrl }: { callbackUrl?: string }) => {
       });
   }, [status]);
 
-  return <p>Logging out...</p>;
+  return (
+    <div className="layout flex items-center justify-center min-h-[calc(50vh)]">
+      <p>Logging out...</p>
+    </div>
+  );
 };
 
 export default SignOut;

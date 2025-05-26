@@ -60,7 +60,7 @@ const MiniCartDrawer = () => {
           <DrawerHeader>
             <DrawerTitle className="text-lg font-bold">Your Cart</DrawerTitle>
           </DrawerHeader>
-          <DrawerClose className="text-dark hover:bg-gray-100 rounded-full">
+          <DrawerClose className="text-dark hover:cursor-pointer rounded-full">
             <div className="p-2">
               <X className="w-5 h-5" />
             </div>

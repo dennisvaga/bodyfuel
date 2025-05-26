@@ -54,7 +54,7 @@ const MobileNavDrawer = ({
             <DrawerTitle className="text-lg font-bold">Menu</DrawerTitle>
           </DrawerHeader>
           {/* Close button with X icon */}
-          <DrawerClose className="text-dark hover:bg-gray-100 rounded-full">
+          <DrawerClose className="text-dark hover:cursor-pointer rounded-full">
             <div className="p-2">
               <X className="w-5 h-5" />
             </div>

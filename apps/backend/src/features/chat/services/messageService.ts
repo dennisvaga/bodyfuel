@@ -86,7 +86,6 @@ export function createSystemMessage(
  * @returns Simple response message
  */
 export function createSimpleResponseMessage(productCount: number): string {
-  return "";
   return `Here are the top ${Math.min(productCount, 5)} products matching your search.`;
 }
 
