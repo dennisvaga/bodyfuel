@@ -41,7 +41,7 @@ export function useProductChat() {
           "Hi there! I can help you find products or answer questions about BodyFuel. What are you looking for today?",
       },
     ],
-    api: `${getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API || "")}/api/chat`,
+    api: `${getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API || "")}api/chat`,
     onError: (error) => {
       console.error("Chat error:", error);
       setProcessingMessages(false);

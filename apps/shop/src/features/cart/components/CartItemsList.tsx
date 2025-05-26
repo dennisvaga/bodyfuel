@@ -86,49 +86,52 @@ const CartItemsList = ({
     switch (variant) {
       case CartVariants.mini:
         return cart.cartItems.map((item: CartItemWithProduct) => (
-          <Product className="px-4 py-6" key={item.productId}>
-            <div className="flex flex-row gap-2">
-              {/* Remove button */}
-              <button
-                onClick={() => removeFromCart(item.productId)}
-                className="flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer"
-                aria-label="Remove item"
-              >
-                <X />
-              </button>
+          <div key={item.productId}>
+            <Product className="px-4 py-6">
+              <div className="relative flex flex-row gap-2">
+                {/* Remove button */}
+                <button
+                  onClick={() => removeFromCart(item.productId)}
+                  className="absolute left-0 top-0 z-10 flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer"
+                  aria-label="Remove item"
+                >
+                  <X />
+                </button>
 
-              {/* Product image */}
-              <Product.Image
-                src={item.product.images?.[0]?.imageUrl || "/"}
-                width={90}
-                onClick={() => handleProductClick(item)}
-                className="items-start"
-              />
-            </div>
-
-            <div className="flex flex-col gap-4 text-end">
-              <div className="flex justify-between items-start">
-                {/* Product name */}
-                <Product.Name
-                  name={item.product.name}
+                {/* Product image */}
+                <Product.Image
+                  src={item.product.images?.[0]?.imageUrl || "/"}
+                  width={100}
                   onClick={() => handleProductClick(item)}
+                  className="items-end"
                 />
               </div>
-              {/* Product price */}
-              <Product.Price price={item.product.price} />
-              <div className="flex flex-row justify-end">
-                {changeQuantity && (
-                  <Product.QuantityControls
-                    quantity={item.quantity}
-                    onChangeQuantity={(newQty: number) => {
-                      changeQuantity(item.productId, newQty);
-                    }}
-                    className="items-end"
+
+              <div className="flex flex-col gap-4 text-end">
+                <div className="flex justify-between items-start">
+                  {/* Product name */}
+                  <Product.Name
+                    name={item.product.name}
+                    onClick={() => handleProductClick(item)}
                   />
-                )}
+                </div>
+                {/* Product price */}
+                <Product.Price price={item.product.price} />
+                <div className="flex flex-row justify-end">
+                  {changeQuantity && (
+                    <Product.QuantityControls
+                      quantity={item.quantity}
+                      onChangeQuantity={(newQty: number) => {
+                        changeQuantity(item.productId, newQty);
+                      }}
+                      className="items-end"
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          </Product>
+            </Product>
+            <div className="border-b border mt-8"></div>
+          </div>
         ));
 
       case CartVariants.checkout:

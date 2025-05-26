@@ -24,6 +24,7 @@
     "./components/features/auth/*": "./src/components/features/auth/*.tsx",
     "./components/features/orders/*": "./src/components/features/orders/*.tsx",
     "./hooks/*": "./src/hooks/*.ts",
+    "./hooks/use-media-query": "./src/hooks/use-media-query.tsx",
     "./lib/*": "./src/lib/*.ts",
     "./globals.css": "./src/globals.css",
     "./tailwind.config": "./tailwind.config.ts"

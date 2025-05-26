@@ -13,24 +13,14 @@ import {
   loadFormDataFromLocalStorage,
   saveFormDataToLocalStorage,
 } from "@repo/shared";
+import { useMediaQuery } from "@repo/ui/hooks/use-media-query";
 
 const CHAT_WIDGET_KEY = "chatWidgetOpen";
 
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isWidgetInitialized, setIsWidgetInitialized] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  // Check if device is mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   useEffect(() => {
     const savedState = loadFormDataFromLocalStorage<boolean>(CHAT_WIDGET_KEY);
@@ -66,18 +56,6 @@ export default function ChatWidget() {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages, streamedProducts, isOpen]);
-
-  // If body scrolling should be disabled when chat is open on mobile
-  useEffect(() => {
-    if (isMobile && isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isMobile, isOpen]);
 
   // Don't render anything until we've checked localStorage
   if (!isWidgetInitialized) {
@@ -135,17 +113,27 @@ export default function ChatWidget() {
         {/* Always show search tips at the top */}
         <SearchTips className="mb-4" />
 
+        {/* Show error message if there's an error */}
         {error && (
           <div className="bg-destructive/10 border border-destructive text-destructive px-4 py-3 rounded mb-4">
-            <p>{error.message || "An error occurred"}</p>
-            <Button
-              onClick={() => reload()}
-              variant="destructive"
-              size="sm"
-              className="mt-2"
-            >
-              Retry
-            </Button>
+            <p>
+              {
+                "We couldn't connect to our assistant right now. Please try again."
+              }
+            </p>
+            <div className="flex justify-between items-center mt-2">
+              <Button onClick={() => reload()} variant="destructive" size="sm">
+                Retry
+              </Button>
+              {process.env.NODE_ENV === "development" && (
+                <span
+                  className="text-xs text-muted-foreground truncate max-w-[200px]"
+                  title={error.message}
+                >
+                  {error.message}
+                </span>
+              )}
+            </div>
           </div>
         )}
         <div className="space-y-4">
