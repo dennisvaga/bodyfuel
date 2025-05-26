@@ -49,3 +49,5 @@ next-env.d.ts
 examples/
 .clinerules/
 memory-bank/
+
+problems.md

@@ -5,12 +5,16 @@ import { getPrisma } from "@repo/database";
 import authConfig from "#configs/auth.config";
 
 /**
- * Files with server-side functionallity should be exported separately
+ * Files with server-side functionality should be exported separately
+ *
+ * This file is designed to work in both backend and frontend contexts:
+ * - In backend: Uses PrismaAdapter with direct database access
+ * - In frontend: Uses JWT strategy without database access
  */
-const prisma = await getPrisma();
+const isBackend = !!process.env.DATABASE_URL;
 
 const result = NextAuth({
-  adapter: PrismaAdapter(prisma),
+  adapter: isBackend ? PrismaAdapter(await getPrisma()) : undefined,
   session: { strategy: "jwt" },
   ...authConfig,
   pages: {
@@ -19,19 +23,28 @@ const result = NextAuth({
   },
   callbacks: {
     jwt({ token, user }) {
+      // Store user role in JWT token
       if (user) {
         token.role = user.role;
-      } // Store role inside token
+      }
       return token;
     },
     session({ session, token }) {
-      session.user.role = token.role; // Assign role from token to session
+      // Add role from token to session
+      session.user.role = token.role;
       return session;
     },
   },
 });
 
-// Exported this way to fix bug
+// Log the current environment for debugging
+if (process.env.NODE_ENV !== "production") {
+  console.log(
+    `NextAuth initialized in ${isBackend ? "backend" : "frontend"} mode`
+  );
+}
+
+// Export NextAuth handlers and utilities
 export const handlers: NextAuthResult["handlers"] = result.handlers;
 export const auth: NextAuthResult["auth"] = result.auth;
 export const signIn: NextAuthResult["signIn"] = result.signIn;
