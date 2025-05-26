@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@repo/ui/components/ui/button";
 import { Card, CardContent, CardHeader } from "@repo/ui/components/ui/card";
-import { MessageSquare, X, Send, Loader2 } from "lucide-react";
+import { MessageSquare, X, Send, Loader2, ArrowLeft } from "lucide-react";
 import { useProductChat } from "../hooks/useProductChat";
 import { ChatMessage } from "./ChatMessage";
 import { ChatProductList } from "./ChatProductList";
@@ -13,18 +13,24 @@ import {
   loadFormDataFromLocalStorage,
   saveFormDataToLocalStorage,
 } from "@repo/shared";
-import { useKeyboardHeight } from "../hooks/useKeyboardHeight";
 
 const CHAT_WIDGET_KEY = "chatWidgetOpen";
 
 export default function ChatWidget() {
-  // Initialize with false (closed) instead of true
   const [isOpen, setIsOpen] = useState(false);
   const [isWidgetInitialized, setIsWidgetInitialized] = useState(false);
-  // Track input focus state to adjust position when mobile keyboard appears
-  const [isInputFocused, setIsInputFocused] = useState(false);
-  // Use keyboard height detection hook
-  const { isKeyboardVisible, keyboardPercentage } = useKeyboardHeight();
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const savedState = loadFormDataFromLocalStorage<boolean>(CHAT_WIDGET_KEY);
@@ -61,30 +67,22 @@ export default function ChatWidget() {
     }
   }, [messages, streamedProducts, isOpen]);
 
+  // If body scrolling should be disabled when chat is open on mobile
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobile, isOpen]);
+
   // Don't render anything until we've checked localStorage
   if (!isWidgetInitialized) {
     return null;
   }
-
-  // Calculate dynamic positioning class based on input focus for mobile keyboards
-  const widgetPositionClass = cn(
-    "fixed right-4",
-    isInputFocused &&
-      isKeyboardVisible &&
-      typeof window !== "undefined" &&
-      window.innerWidth < 768
-      ? "bottom-20" // Fixed fallback position when keyboard is visible
-      : "md:bottom-4 bottom-0" // Normal position
-  );
-
-  // Apply direct style for more precise positioning when keyboard is visible
-  const widgetStyle =
-    isInputFocused &&
-    isKeyboardVisible &&
-    typeof window !== "undefined" &&
-    window.innerWidth < 768
-      ? { bottom: `${keyboardPercentage + 5}vh` }
-      : {};
 
   if (!isOpen) {
     return (
@@ -98,28 +96,42 @@ export default function ChatWidget() {
     );
   }
 
+  // Different styling for mobile vs desktop
+  const cardClassName = isMobile
+    ? "fixed inset-0 w-full h-full flex flex-col z-50 bg-card border-none rounded-none"
+    : "fixed bottom-4 right-4 w-[400px] h-[min(500px,70vh)] max-w-full flex flex-col shadow-xl z-50 bg-card border-border";
+
   return (
-    <Card
-      className={cn(
-        widgetPositionClass,
-        "w-[calc(100%-2rem)] h-[min(500px,80vh)] md:w-[400px] md:h-[min(500px,70vh)] max-w-full flex flex-col shadow-xl z-50 bg-card border-border"
-      )}
-      style={widgetStyle}
-    >
+    <Card className={cardClassName}>
       <CardHeader className="flex flex-row items-center justify-between p-3 border-b border-border">
+        {isMobile ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close chat"
+            className="mr-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+        ) : null}
         <h3 className="text-lg font-medium text-foreground">
           BodyFuel Assistant
         </h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => setIsOpen(false)}
-          aria-label="Close chat"
-        >
-          <X className="h-4 w-4" />
-        </Button>
+        {!isMobile ? (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close chat"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        ) : (
+          <div className="w-4"></div> // Spacer for alignment
+        )}
       </CardHeader>
-      <CardContent className="flex-1 overflow-auto p-3 pb-0 bg-background min-h-0">
+      <CardContent className="flex-1 overflow-auto p-3 pb-0 bg-background">
         {/* Always show search tips at the top */}
         <SearchTips className="mb-4" />
 
@@ -137,9 +149,9 @@ export default function ChatWidget() {
           </div>
         )}
         <div className="space-y-4">
+          {/* Message rendering code */}
           {messages.map((message) => {
-            // Always show user messages
-            // For assistant messages, show them unless they're empty and still loading
+            // Keep existing message rendering logic
             const shouldHideMessage =
               message.role === "assistant" &&
               message.id === messages[messages.length - 1].id &&
@@ -192,7 +204,6 @@ export default function ChatWidget() {
             </div>
           )}
 
-          {/* Search tips are now always shown at the top of the chat */}
           <div ref={messagesEndRef} />
         </div>
       </CardContent>
@@ -209,8 +220,6 @@ export default function ChatWidget() {
             "border-input focus:border-primary focus:ring-1 focus:ring-primary"
           )}
           disabled={isLoading}
-          onFocus={() => setIsInputFocused(true)}
-          onBlur={() => setIsInputFocused(false)}
         />
         <Button type="submit" size="sm" disabled={isLoading}>
           <Send className="h-4 w-4" />
