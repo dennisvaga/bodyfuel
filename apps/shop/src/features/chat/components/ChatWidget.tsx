@@ -21,6 +21,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isWidgetInitialized, setIsWidgetInitialized] = useState(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const savedState = loadFormDataFromLocalStorage<boolean>(CHAT_WIDGET_KEY);
@@ -61,6 +62,25 @@ export default function ChatWidget() {
   if (!isWidgetInitialized) {
     return null;
   }
+
+  // Add a new effect to handle mobile keyboard visibility
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleFocus = () => {
+      // Use a short timeout to ensure the keyboard has appeared
+      setTimeout(() => {
+        inputRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 300);
+    };
+
+    const input = inputRef.current;
+    input?.addEventListener("focus", handleFocus);
+
+    return () => {
+      input?.removeEventListener("focus", handleFocus);
+    };
+  }, [isMobile, isOpen]);
 
   if (!isOpen) {
     return (
@@ -200,6 +220,7 @@ export default function ChatWidget() {
         className="p-3 border-t border-border flex gap-2 bg-card items-center"
       >
         <input
+          ref={inputRef}
           value={input}
           onChange={handleInputChange}
           placeholder="Ask about our products..."
