@@ -232,7 +232,7 @@ export function useProductChat() {
    * @param e - Form submission event
    */
   const customHandleSubmitWithReset = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    (e: React.FormEvent) => {
       setProcessingMessages(true);
       clearStreamedProducts();
       handleSubmit(e);
