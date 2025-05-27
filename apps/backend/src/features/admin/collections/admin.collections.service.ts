@@ -1,5 +1,5 @@
 import { CollectionInput } from "@repo/shared";
-import { slugifyNative } from "../../../utils/utils.js";
+import { slugifyNative } from "@utils/utils.js";
 import adminCollectionsRepository from "./admin.collections.repository.js";
 import { prepareCollectionUpdateData } from "./admin.collections.utils.js";
 

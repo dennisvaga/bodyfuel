@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import authService from "./auth.service.js";
-import { handleError } from "../../utils/handleErrors.js";
-import { sendResponse } from "../../utils/apiResponse.js";
+import { handleError } from "@utils/handleErrors.js";
+import { sendResponse } from "@utils/apiResponse.js";
 
 /**
  * Auth controller responsible for handling HTTP requests related to authentication

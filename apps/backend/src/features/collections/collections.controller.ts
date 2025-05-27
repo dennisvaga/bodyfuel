@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import collectionsService from "./collections.service.js";
-import { handleError } from "../../utils/handleErrors.js";
-import { sendResponse } from "../../utils/apiResponse.js";
-import { parsePaginationParams } from "../../utils/paginationUtils.js";
+import { handleError } from "@utils/handleErrors.js";
+import { sendResponse } from "@utils/apiResponse.js";
+import { parsePaginationParams } from "@utils/paginationUtils.js";
 
 /**
  * Collections controller responsible for handling HTTP requests related to collections

@@ -1,5 +1,5 @@
 import { ProductInput } from "@repo/shared";
-import { slugifyNative } from "../../../utils/utils.js";
+import { slugifyNative } from "@utils/utils.js";
 import adminProductsRepository from "./admin.products.repository.js";
 import {
   uploadProductImages,

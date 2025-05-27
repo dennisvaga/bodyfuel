@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import productService from "./products.service.js";
-import { handleError } from "../../utils/handleErrors.js";
-import { sendResponse } from "../../utils/apiResponse.js";
-import { parsePaginationParams } from "../../utils/paginationUtils.js";
+import { handleError } from "@utils/handleErrors.js";
+import { sendResponse } from "@utils/apiResponse.js";
+import { parsePaginationParams } from "@utils/paginationUtils.js";
 
 /**
  * Product controller responsible for handling HTTP requests related to products

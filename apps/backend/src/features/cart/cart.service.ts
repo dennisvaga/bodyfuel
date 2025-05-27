@@ -1,6 +1,6 @@
 import { CartWithItems } from "@repo/database/types/cart";
 import cartRepository from "./cart.repository.js";
-import { assignImageUrlToCart } from "../../services/s3Service.js";
+import { assignImageUrlToCart } from "@services/s3Service.js";
 
 /**
  * Cart service responsible for cart-related business logic
