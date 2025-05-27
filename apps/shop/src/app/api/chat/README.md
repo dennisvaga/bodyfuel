@@ -57,6 +57,7 @@ flowchart TD
 ### Types
 
 - **types/chatTypes.ts**: Core chat-related types
+
   - `ChatMessage`: Message structure for conversations
   - `AIMessageFormat`: Format for AI processing
   - `ChatbotSearchCriteria`: Product search parameters
@@ -69,17 +70,20 @@ flowchart TD
 ### Utilities
 
 - **utils/aiUtils.ts**: AI model configuration
+
   - DeepSeek client initialization
   - AI configuration constants
   - Model settings and parameters
 
 - **utils/messageUtils.ts**: Message processing
+
   - `getCurrentMessage`: Extract current message from request
   - `formatMessagesForAI`: Format messages for AI consumption
   - `isProductQuery`: Detect product-related queries
   - `createMessage`: Create properly formatted messages
 
 - **utils/productUtils.ts**: Product search and formatting
+
   - `parseChatbotQuery`: Extract search criteria from messages
   - `searchProductsForChat`: Search products using shared service
   - `formatProductsForAI`: Format products for AI context
@@ -102,21 +106,24 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validationResult = chatRequestSchema.safeParse(body);
     const validation = validateChatRequest(validationResult);
-    
+
     if (!validation.success) {
       return validation.response;
     }
 
     const { message, messages = [] } = validation.data;
     const currentMessage = getCurrentMessage(message, messages);
-    
+
     if (isProductQuery(currentMessage)) {
       return await handleProductQuery(currentMessage, messages);
     } else {
       return await handleGeneralChat(currentMessage, messages);
     }
   } catch (error) {
-    return createErrorResponse("Internal server error", "Failed to process chat request");
+    return createErrorResponse(
+      "Internal server error",
+      "Failed to process chat request"
+    );
   }
 }
 ```
@@ -157,17 +164,20 @@ if (!validation.success) {
 ## Architecture Benefits
 
 ### Simplified Structure
+
 - **Easy Navigation**: Clear utility-based organization
 - **Focused Files**: Each utility file has a specific purpose
 - **Reduced Complexity**: All logic consolidated in route.ts
 - **Better Maintainability**: CamelCase naming and clear structure
 
 ### Utility-Based Design
+
 - **Reusable Functions**: Utilities can be easily tested and reused
 - **Single Responsibility**: Each utility handles one concern
 - **Clear Dependencies**: Easy to understand what each file does
 
 ### Next.js API Route Integration
+
 - **Modern Framework**: Uses Next.js 13+ App Router
 - **TypeScript Native**: Full TypeScript support
 - **Streaming Support**: Built-in streaming with AI SDK
@@ -197,12 +207,14 @@ import { analyzeSentiment } from "./utils/sentimentUtils";
 ## Dependencies
 
 ### Core Dependencies
+
 - **@ai-sdk/deepseek**: DeepSeek AI integration
-- **ai**: AI SDK for streaming responses  
+- **ai**: AI SDK for streaming responses
 - **zod**: Schema validation
 - **@repo/shared**: Shared product service
 
 ### Environment Variables
+
 - `DEEPSEEK_API`: DeepSeek API key (required)
 
 ## File Structure Benefits
