@@ -1,3 +1,8 @@
+/**
+ * Query parsing utilities for extracting structured search criteria from natural language chat messages.
+ * Handles search terms, price ranges, categories, and product query detection for the BodyFuel chat API.
+ */
+
 import { categoryService } from "@repo/shared";
 import { ChatbotSearchCriteria } from "../types/chatTypes";
 
@@ -188,7 +193,7 @@ export async function parseChatbotQuery(
   userMessage: string
 ): Promise<ChatbotSearchCriteria> {
   const searchQuery = extractSearchQuery(userMessage);
-  const priceRange = extractPriceRange(userMessage);
+  const priceRange = extractPriceFromQuery(userMessage);
   const category = await extractCategoryFromMessage(userMessage);
 
   return {

@@ -1,3 +1,8 @@
+/**
+ * API request validation and error response utilities for the chat endpoint.
+ * Handles request validation, message validation, and standardized error response creation.
+ */
+
 import { ChatRequestType } from "../schema/apiSchema";
 import { ErrorResponse } from "../schema/apiSchema";
 

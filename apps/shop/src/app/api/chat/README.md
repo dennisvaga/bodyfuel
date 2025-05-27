@@ -8,14 +8,15 @@ This directory contains the chat API implementation for the BodyFuel application
 apps/shop/src/app/api/chat/
 ├── config/
 │   └── aiConfig.ts     # AI configuration and DeepSeek setup
+├── schema/
+│   └── apiSchema.ts    # Zod schemas and validation types
 ├── types/
-│   ├── chatTypes.ts    # Chat-related types and interfaces
-│   └── apiTypes.ts     # API request/response schemas and types
+│   └── chatTypes.ts    # Chat-related types and interfaces
 ├── utils/
-│   ├── chatUtils.ts    # Message parsing & query extraction functions
+│   ├── queryUtils.ts   # Message parsing & query extraction functions
 │   ├── messageUtils.ts # Message processing and formatting utilities
 │   ├── productUtils.ts # Product formatting for AI and HTML output
-│   └── validationUtils.ts # Request validation and error handling
+│   └── apiHelpers.ts   # Request validation and error handling
 ├── route.ts           # Next.js API route using shared productService directly
 └── README.md          # This documentation
 ```
@@ -28,12 +29,13 @@ The chat API follows a simplified, utility-based architecture optimized for Next
 flowchart TD
     Client[Client] --> Route[route.ts]
     Route --> MessageUtils[messageUtils.ts]
-    Route --> ValidationUtils[validationUtils.ts]
-    Route --> ChatUtils[chatUtils.ts]
+    Route --> ApiHelpers[apiHelpers.ts]
+    Route --> QueryUtils[queryUtils.ts]
     Route --> ProductUtils[productUtils.ts]
     Route --> AIConfig[config/aiConfig.ts]
+    Route --> Schema[schema/apiSchema.ts]
     Route --> AI[DeepSeek AI]
-    ChatUtils --> CategoryService[Shared Category Service]
+    QueryUtils --> CategoryService[Shared Category Service]
     Route --> ProductService[Shared Product Service]
     ProductService --> Database[(Database)]
 ```
@@ -42,11 +44,14 @@ flowchart TD
 
 1. **Client Request**: The client sends a chat message to the `/api/chat` Next.js API route
 2. **Route Handler**: `route.ts` handles the POST request and processes the entire flow
-3. **Validation**: Uses `validationUtils.ts` to validate and parse the request
-4. **Message Processing**: Uses `messageUtils.ts` to determine if it's a product query and format messages
-5. **Product Search**: If product query, uses `productUtils.ts` to search and format products
-6. **AI Integration**: Uses `aiUtils.ts` to configure and interact with DeepSeek AI
-7. **Streaming Response**: Returns streaming AI response with optional product data
+3. **Schema Validation**: Uses `schema/apiSchema.ts` for Zod schema validation
+4. **Request Validation**: Uses `apiHelpers.ts` to validate and parse the request
+5. **Message Processing**: Uses `messageUtils.ts` to format messages and detect product queries
+6. **Query Parsing**: Uses `queryUtils.ts` to extract search criteria from natural language
+7. **Product Search**: If product query, uses shared `productService` directly for search
+8. **Product Formatting**: Uses `productUtils.ts` to format products for AI and HTML output
+9. **AI Integration**: Uses `config/aiConfig.ts` to configure and interact with DeepSeek AI
+10. **Streaming Response**: Returns streaming AI response with optional product data
 
 ## Key Components
 
@@ -58,53 +63,68 @@ flowchart TD
   - Manages streaming responses with DeepSeek AI
   - Supports both single message and message array formats
 
-### Types
+### Schema & Types
+
+- **schema/apiSchema.ts**: Zod schemas and validation types
+
+  - `chatRequestSchema`: Request validation schema
+  - `chatMessageSchema`: Message structure validation
+  - `ChatRequestType` & `ChatMessageType`: Inferred types
+  - `ErrorResponse` & `SuccessResponse`: API response types
 
 - **types/chatTypes.ts**: Core chat-related types
-
   - `ChatMessage`: Message structure for conversations
   - `AIMessageFormat`: Format for AI processing
   - `ChatbotSearchCriteria`: Product search parameters
   - `StreamProductResponse`: Product streaming response format
 
-- **types/apiTypes.ts**: API schemas and validation
-  - `chatRequestSchema`: Zod schema for request validation
-  - `ErrorResponse` & `SuccessResponse`: Standardized API responses
+### Configuration
+
+- **config/aiConfig.ts**: AI model configuration
+  - DeepSeek client initialization
+  - AI configuration constants (`temperature`, `maxTokens`)
+  - Model settings and parameters
 
 ### Utilities
 
-- **utils/aiUtils.ts**: AI model configuration
+- **utils/queryUtils.ts**: Message parsing & query extraction
 
-  - DeepSeek client initialization
-  - AI configuration constants
-  - Model settings and parameters
+  - `extractSearchQuery`: Extract search terms from messages
+  - `extractPriceFromQuery`: Parse price ranges from queries
+  - `parseChatbotQuery`: Extract complete search criteria
+  - `isProductQuery`: Detect product-related queries
 
-- **utils/messageUtils.ts**: Message processing
+- **utils/messageUtils.ts**: Message processing and formatting
 
   - `getCurrentMessage`: Extract current message from request
   - `formatMessagesForAI`: Format messages for AI consumption
-  - `isProductQuery`: Detect product-related queries
   - `createMessage`: Create properly formatted messages
-
-- **utils/productUtils.ts**: Product search and formatting
-
-  - `parseChatbotQuery`: Extract search criteria from messages
-  - `searchProductsForChat`: Search products using shared service
-  - `formatProductsForAI`: Format products for AI context
-  - `createProductHtml`: Generate product display HTML
   - `createSystemMessage`: Generate AI system prompts
 
-- **utils/validationUtils.ts**: Request validation and error handling
-  - `validateChatRequest`: Validate incoming requests
+- **utils/productUtils.ts**: Product formatting for AI and HTML output
+
+  - `formatProductsForAI`: Format products for AI context
+  - `createProductHtml`: Generate product display HTML
+
+- **utils/apiHelpers.ts**: Request validation and error handling
+  - `validateChatRequest`: Validate incoming requests using schemas
   - `validateMessage`: Ensure message content exists
   - `createErrorResponse`: Generate standardized error responses
 
 ## Usage Examples
 
+### Schema Validation
+
+```typescript
+import { chatRequestSchema } from "./schema/apiSchema";
+
+const body = await request.json();
+const validationResult = chatRequestSchema.safeParse(body);
+```
+
 ### Processing a Chat Message
 
 ```typescript
-// The main route handler in route.ts
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -136,19 +156,19 @@ export async function POST(request: NextRequest) {
 
 ```typescript
 // Detecting product queries
-import { isProductQuery } from "./utils/messageUtils";
+import { isProductQuery } from "./utils/queryUtils";
 
 const message = "I'm looking for protein powder under $50";
 const isProduct = isProductQuery(message); // true
 
 // Parsing product queries
-import { parseChatbotQuery } from "./utils/productUtils";
+import { parseChatbotQuery } from "./utils/queryUtils";
 
 const criteria = await parseChatbotQuery(message);
 // Returns: { query: "protein powder", maxPrice: 50, ... }
 
 // Validating requests
-import { validateChatRequest } from "./utils/validationUtils";
+import { validateChatRequest } from "./utils/apiHelpers";
 
 const validation = validateChatRequest(validationResult);
 if (!validation.success) {
@@ -158,21 +178,29 @@ if (!validation.success) {
 
 ## Best Practices
 
-1. **Utility-Based Architecture**: Organize related functionality into focused utility files
-2. **Shared Services**: Leverage existing shared services (`@repo/shared`) for consistency
-3. **Type Safety**: Use Zod schemas and TypeScript types throughout
-4. **Streaming Responses**: Utilize AI SDK's streaming for better UX
-5. **Error Handling**: Implement proper validation and error responses
-6. **Separation of Concerns**: Keep utilities focused on single responsibilities
+1. **Schema-First Validation**: Use Zod schemas in `schema/` folder for all validation
+2. **Utility-Based Architecture**: Organize related functionality into focused utility files
+3. **Shared Services**: Leverage existing shared services (`@repo/shared`) for consistency
+4. **Type Safety**: Use Zod schemas and TypeScript types throughout
+5. **Streaming Responses**: Utilize AI SDK's streaming for better UX
+6. **Error Handling**: Implement proper validation and error responses
+7. **Separation of Concerns**: Keep utilities focused on single responsibilities
 
 ## Architecture Benefits
 
-### Simplified Structure
+### Clean Separation
 
-- **Easy Navigation**: Clear utility-based organization
-- **Focused Files**: Each utility file has a specific purpose
-- **Reduced Complexity**: All logic consolidated in route.ts
-- **Better Maintainability**: CamelCase naming and clear structure
+- **schema/**: Validation schemas and API types
+- **config/**: Configuration and setup
+- **types/**: Business logic types
+- **utils/**: Focused utility functions
+- **route.ts**: Single entry point with integrated logic
+
+### Schema-Driven Development
+
+- **Type Safety**: Zod schemas ensure runtime validation
+- **Consistent APIs**: Centralized schema definitions
+- **Better DX**: IntelliSense and type checking
 
 ### Utility-Based Design
 
@@ -180,24 +208,25 @@ if (!validation.success) {
 - **Single Responsibility**: Each utility handles one concern
 - **Clear Dependencies**: Easy to understand what each file does
 
-### Next.js API Route Integration
-
-- **Modern Framework**: Uses Next.js 13+ App Router
-- **TypeScript Native**: Full TypeScript support
-- **Streaming Support**: Built-in streaming with AI SDK
-
 ## Extending the API
 
 When extending the chat API:
 
-1. **Add Types**: Update type files in `types/` folder
-2. **Add Utilities**: Create new utility functions in appropriate `utils/` files
-3. **Update Route**: Modify `route.ts` to integrate new functionality
-4. **Maintain Structure**: Keep utilities focused and single-purpose
+1. **Add Schemas**: Update schema files in `schema/` folder
+2. **Add Types**: Update type files in `types/` folder
+3. **Add Utilities**: Create new utility functions in appropriate `utils/` files
+4. **Update Route**: Modify `route.ts` to integrate new functionality
+5. **Maintain Structure**: Keep utilities focused and single-purpose
 
 ### Adding New Features
 
 ```typescript
+// Example: Adding new request schema
+// File: schema/apiSchema.ts
+export const newFeatureSchema = z.object({
+  // New schema definition
+});
+
 // Example: Adding sentiment analysis utility
 // File: utils/sentimentUtils.ts
 export async function analyzeSentiment(message: string) {
@@ -205,6 +234,7 @@ export async function analyzeSentiment(message: string) {
 }
 
 // Then use in route.ts
+import { newFeatureSchema } from "./schema/apiSchema";
 import { analyzeSentiment } from "./utils/sentimentUtils";
 ```
 
@@ -215,7 +245,7 @@ import { analyzeSentiment } from "./utils/sentimentUtils";
 - **@ai-sdk/deepseek**: DeepSeek AI integration
 - **ai**: AI SDK for streaming responses
 - **zod**: Schema validation
-- **@repo/shared**: Shared product service
+- **@repo/shared**: Shared product and category services
 
 ### Environment Variables
 
@@ -223,9 +253,11 @@ import { analyzeSentiment } from "./utils/sentimentUtils";
 
 ## File Structure Benefits
 
-- **types/**: Centralized type definitions
+- **schema/**: Centralized validation schemas
+- **config/**: Configuration and setup
+- **types/**: Business logic type definitions
 - **utils/**: Focused utility functions
 - **route.ts**: Single entry point with integrated logic
-- **README.md**: Updated documentation
+- **README.md**: Complete documentation
 
-This structure eliminates unnecessary complexity while maintaining clean separation of concerns.
+This structure provides clear separation between validation schemas, business types, configuration, and utilities while maintaining simplicity and ease of maintenance.

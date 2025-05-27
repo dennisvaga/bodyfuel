@@ -1,3 +1,8 @@
+/**
+ * Product formatting utilities for AI context and HTML output generation.
+ * Transforms product data into AI-readable formats and creates HTML elements for chat responses.
+ */
+
 import type { ProductWithImageUrl } from "@repo/database/types/product";
 
 /**

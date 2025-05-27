@@ -1,3 +1,8 @@
+/**
+ * Message handling utilities for chat API requests and AI conversation management.
+ * Provides functions for message extraction, formatting, creation, and AI system prompt generation.
+ */
+
 import { ChatMessage, AIMessageFormat } from "../types/chatTypes";
 
 /**
