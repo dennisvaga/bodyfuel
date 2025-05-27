@@ -52,7 +52,6 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes); // Added contact route usage
-app.use("/api/chat", chatRoutes); // Added chat route usage
 
 // Admin routes - secured by authenticatedAdmin middleware
 app.use("/api/admin", adminRoutes);

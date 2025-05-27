@@ -13,6 +13,28 @@ type TempIdMapping = Record<string, number>;
  * Product repository responsible for all database operations related to products
  */
 export class ProductRepository {
+  static createProductVariants(
+    tx: any,
+    id: any,
+    variants: {
+      id: string | number;
+      price: number;
+      stock: number;
+      variantOptionValues?:
+        | {
+            optionValueId: string | number;
+            optionValue: {
+              id? // Create VariantOptionValue // Create VariantOptionValue
+              : string | number | undefined;
+              value?: string | undefined;
+            };
+          }[]
+        | undefined;
+    }[],
+    tempOptValueIdToRealId: Record<string, number>
+  ) {
+    throw new Error("Method not implemented.");
+  }
   /**
    * Find all products
    */

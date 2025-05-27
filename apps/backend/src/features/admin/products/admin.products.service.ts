@@ -5,13 +5,8 @@ import {
   uploadProductImages,
   prepareProductCreateData,
   prepareProductUpdateData,
-} from "../../../services/productService.js";
-import {
-  createProductOptions,
-  createProductVariants,
-  updateProductOptions,
-  updateProductVariants,
-} from "../../../repositories/productRepository.js";
+} from "./admin.products.utils.js";
+import productsRepository from "@features/products/products.repository.js";
 
 /**
  * Admin products service responsible for product management business logic
@@ -41,7 +36,7 @@ export class AdminProductsService {
 
       // Create product options + option values
       if (validatedData.options?.length) {
-        await createProductOptions(
+        await productsRepository.createProductOptions(
           tx,
           createdProduct.id,
           validatedData.options,
@@ -51,7 +46,7 @@ export class AdminProductsService {
 
       // Create product variants + variant option values
       if (validatedData.variants?.length) {
-        await createProductVariants(
+        await productsRepository.createProductVariants(
           tx,
           createdProduct.id,
           validatedData.variants,
@@ -107,7 +102,7 @@ export class AdminProductsService {
       const tempOptValToRealId: Record<string, number> = {};
 
       // Update options
-      await updateProductOptions(
+      await productsRepository.updateProductOptions(
         tx,
         productId,
         validatedData.options ?? [],
@@ -115,7 +110,7 @@ export class AdminProductsService {
       );
 
       // Update variants + VariantOptionValue
-      await updateProductVariants(
+      await productsRepository.updateProductVariants(
         tx,
         productId,
         validatedData.variants ?? [],

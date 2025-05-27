@@ -1,7 +1,7 @@
 import { CollectionInput } from "@repo/shared";
 import { slugifyNative } from "../../../utils/utils.js";
 import adminCollectionsRepository from "./admin.collections.repository.js";
-import { prepareCollectionUpdateData } from "../../../services/collectionService.js";
+import { prepareCollectionUpdateData } from "./admin.collections.utils.js";
 
 /**
  * Admin collections service responsible for collection management business logic

@@ -1,6 +1,6 @@
 import { OrderInput } from "@repo/shared";
 import adminOrdersRepository from "./admin.orders.repository.js";
-import { prepareOrderItems } from "../../../services/orderService.js";
+import { prepareOrderItems } from "./admin.orders.utils.js";
 
 /**
  * Admin orders service responsible for order management business logic
