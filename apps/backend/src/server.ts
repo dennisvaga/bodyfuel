@@ -5,16 +5,15 @@ import cors from "cors";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import cartRoutes from "./routes/cart.js";
-import categoriesRoutes from "./routes/categories.js";
-import collectionsRoutes from "./routes/collections.js";
-import countriesRoutes from "./routes/countries.js";
-import productsRoutes from "./routes/products.js";
-import ordersRoutes from "./routes/orders.js";
-import authRoutes from "./routes/auth.js";
-import contactRoutes from "./routes/contact.js"; // Added contact route import
-import chatRoutes from "./features/chat/router.js"; // Updated chat route import
-import adminRoutes from "./routes/admin/index.js";
+import cartRoutes from "./features/cart/cart.routes.js";
+import categoriesRoutes from "./features/categories/categories.routes.js";
+import collectionsRoutes from "./features/collections/collections.routes.js";
+import countriesRoutes from "./features/countries/countries.routes.js";
+import productsRoutes from "./features/products/products.routes.js";
+import ordersRoutes from "./features/orders/orders.routes.js";
+import authRoutes from "./features/auth/auth.routes.js";
+import contactRoutes from "./features/contact/contact.routes.js"; // Contact route import
+import adminRoutes from "./features/admin/admin.routes.js";
 
 const app = express();
 // Get allowed origins from environment variable or use defaults
