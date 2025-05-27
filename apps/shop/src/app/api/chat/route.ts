@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { streamText, createDataStreamResponse } from "ai";
-import { deepseek } from "./config/aiConfig";
+import { deepseek, AI_CONFIG } from "./config/aiConfig";
 import { chatRequestSchema } from "./schema/apiSchema";
 import * as queryService from "./utils/queryUtils";
 import * as messageService from "./utils/messageUtils";
@@ -127,6 +127,8 @@ async function handleProductQuery(
           messages: messagesForAI
             .slice(-5)
             .map((msg) => ({ role: msg.role, content: msg.content })),
+          temperature: AI_CONFIG.temperature,
+          maxTokens: AI_CONFIG.maxTokensProduct,
         });
 
         // Merge the AI response into the data stream
@@ -174,6 +176,8 @@ async function handleNormalQuery(
       messages: messagesForAI
         .slice(-5)
         .map((msg) => ({ role: msg.role, content: msg.content })),
+      temperature: AI_CONFIG.temperature,
+      maxTokens: AI_CONFIG.maxTokensGeneral,
     });
 
     // Create a Response object using toDataStreamResponse
