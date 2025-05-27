@@ -13,6 +13,7 @@ import productsRoutes from "./features/products/products.routes.js";
 import ordersRoutes from "./features/orders/orders.routes.js";
 import authRoutes from "./features/auth/auth.routes.js";
 import contactRoutes from "./features/contact/contact.routes.js"; // Contact route import
+import chatRoutes from "./features/chat/chat.routes.js";
 import adminRoutes from "./features/admin/admin.routes.js";
 
 const app = express();
@@ -52,6 +53,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", ordersRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/contact", contactRoutes); // Added contact route usage
+app.use("/api/chat", chatRoutes);
 
 // Admin routes - secured by authenticatedAdmin middleware
 app.use("/api/admin", adminRoutes);

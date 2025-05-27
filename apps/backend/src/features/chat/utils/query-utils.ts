@@ -1,8 +1,5 @@
 import { ChatbotSearchCriteria } from "../chat.types.js";
-import {
-  extractCategoryFromMessage,
-  findCategoryBySearchTerm,
-} from "./category-matcher.js";
+import { extractCategoryFromMessage } from "./category-matcher.js";
 import {
   PRICE_PATTERNS,
   SEARCH_PATTERNS,

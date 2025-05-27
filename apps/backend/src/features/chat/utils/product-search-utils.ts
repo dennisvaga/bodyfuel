@@ -4,7 +4,7 @@ import {
   extractCategoryFromMessage,
   findCategoryBySearchTerm,
   expandSearchQuery,
-} from "./categoryMatcher.js";
+} from "./category-matcher.js";
 
 /**
  * Constructs a Prisma query filter for product searches
