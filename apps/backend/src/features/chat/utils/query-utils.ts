@@ -1,15 +1,15 @@
-import { ChatbotSearchCriteria } from "../types/chatTypes.js";
+import { ChatbotSearchCriteria } from "../chat.types.js";
 import {
   extractCategoryFromMessage,
   findCategoryBySearchTerm,
-} from "./categoryMatcher.js";
+} from "./category-matcher.js";
 import {
   PRICE_PATTERNS,
   SEARCH_PATTERNS,
   CATEGORY_TERMS,
   PRODUCT_QUERY_PATTERN,
   FALLBACK_TERMS,
-} from "../config/queryPatterns.js";
+} from "../config/query-patterns.js";
 
 /**
  * Extract search query from user message

@@ -3,7 +3,7 @@ import {
   chatRequestSchema,
   chatResponseSchema,
   errorResponseSchema,
-} from "../schema/apiSchema.js";
+} from "./schema/api-schema.js";
 import { z } from "zod";
 
 // Type exports from schemas

@@ -1,15 +1,15 @@
 import { NextRequest } from "next/server";
 import { streamText, createDataStreamResponse } from "ai";
-import { deepseek, AI_CONFIG } from "./config/aiConfig.js";
-import { chatRequestSchema } from "./schema/apiSchema.js";
-import * as queryService from "./utils/queryUtils.js";
-import * as messageService from "./utils/messageUtils.js";
-import * as streamingService from "./services/chatStreamingService.js";
+import { deepseek, AI_CONFIG } from "./config/ai-config.js";
+import { chatRequestSchema } from "./schema/api-schema.js";
+import * as queryService from "./utils/query-utils.js";
+import * as messageService from "./utils/message-utils.js";
+import * as streamingService from "./services/chat.service.js";
 import {
   createValidationErrorResponse,
   createErrorResponse,
   createInternalErrorResponse,
-} from "./utils/errorHandler.js";
+} from "./utils/error-handler.js";
 
 /**
  * Handle POST requests to the chat API

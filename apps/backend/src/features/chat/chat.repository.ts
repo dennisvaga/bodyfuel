@@ -1,9 +1,9 @@
 import { getPrisma } from "@repo/database";
-import { ProductData, ChatbotSearchCriteria } from "../types/chatTypes.js";
+import { ProductData, ChatbotSearchCriteria } from "./chat.types.js";
 import {
   buildWhereClause,
   streamProducts,
-} from "../utils/productSearchUtils.js";
+} from "./utils/product-search-utils.js";
 
 // Re-export streamProducts for backward compatibility
 export { streamProducts };

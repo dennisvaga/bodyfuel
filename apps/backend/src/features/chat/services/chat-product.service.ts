@@ -1,5 +1,5 @@
-import { ChatbotSearchCriteria, ProductData } from "../types/chatTypes.js";
-import * as chatRepository from "../repository/chatRepository.js";
+import { ChatbotSearchCriteria, ProductData } from "../chat.types.js";
+import * as chatRepository from "../chat.repository.js";
 
 /**
  * Search for products based on search criteria
