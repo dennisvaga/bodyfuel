@@ -1,5 +1,5 @@
 import { ProductWithImageUrl } from "@repo/database/types/product";
-import { assignImageUrlToProducts } from "../../../services/s3Service.js";
+import { assignImageUrlToProducts } from "../../../../../../backend/src/services/s3Service.js";
 import { ChatbotSearchCriteria, ProductData } from "../types/chat.types.js";
 import * as chatRepository from "../repositories/chatRepository.js";
 
