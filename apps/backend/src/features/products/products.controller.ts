@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import productService from "./products.service.js";
 import { handleError } from "@/src/utils/handle-errors.js";
-import { sendResponse } from "@utils/api-response.js";
+import { sendResponse } from "@utils/apiResponse.js";
 import { parsePaginationParams } from "@/src/utils/pagination-utils.js";
 
 /**

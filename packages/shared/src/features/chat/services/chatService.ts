@@ -12,10 +12,7 @@ export const chatService = {
    * @param conversationId Optional conversation ID for continuing a conversation
    * @returns API result with the assistant's response
    */
-  sendMessage: async (
-    messages: ChatMessage[],
-    conversationId?: string
-  ): Promise<ApiResult<any>> => {
+  sendMessage: async (messages: ChatMessage[], conversationId?: string): Promise<ApiResult<any>> => {
     return await fetchData({
       slug: "chat",
       method: FetchMethod.POST,

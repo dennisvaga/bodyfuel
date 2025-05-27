@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import adminOrdersService from "./admin.orders.service.js";
 import { handleError } from "@/src/utils/handle-errors.js";
-import { sendResponse } from "@utils/api-response.js";
+import { sendResponse } from "@utils/apiResponse.js";
 
 /**
  * Admin orders controller responsible for handling HTTP requests related to admin order management

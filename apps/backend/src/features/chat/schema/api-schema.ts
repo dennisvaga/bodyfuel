@@ -34,3 +34,8 @@ export const errorResponseSchema = z.object({
   message: z.string(),
   error: z.string().optional(),
 });
+
+// Type exports
+export type ChatRequestType = z.infer<typeof chatRequestSchema>;
+export type ChatResponseType = z.infer<typeof chatResponseSchema>;
+export type ErrorResponse = z.infer<typeof errorResponseSchema>;
