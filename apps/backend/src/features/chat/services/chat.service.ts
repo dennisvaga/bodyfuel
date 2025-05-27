@@ -1,7 +1,12 @@
-import { ChatbotSearchCriteria, StreamProductResponse } from "../chat.types.js";
+import {
+  ChatbotSearchCriteria,
+  StreamProductResponse,
+  ChatMessage,
+} from "../chat.types.js";
 import * as chatRepository from "../chat.repository.js";
 import * as productService from "./chat-product.service.js";
 import * as streamUtils from "../utils/stream-utils.js";
+import * as conversationService from "./conversation.service.js";
 import { DataStreamWriter } from "ai";
 import { createSimpleResponseMessage } from "../utils/message-utils.js";
 
@@ -13,6 +18,7 @@ import { createSimpleResponseMessage } from "../utils/message-utils.js";
  * @returns AsyncGenerator that yields product info and HTML
  */
 export async function* streamProductSearch(
+  userMessage: string,
   searchCriteria: ChatbotSearchCriteria
 ): AsyncGenerator<StreamProductResponse, void, unknown> {
   const { searchQuery, targetPrice } = searchCriteria;
@@ -89,11 +95,13 @@ export async function* streamProductSearch(
  * @param dataStream The data stream writer
  * @param userMessage The user's message
  * @param searchCriteria The search criteria
+ * @param conversationId Optional conversation ID to save product info
  */
 export async function handleProductStreaming(
   dataStream: DataStreamWriter,
   userMessage: string,
-  searchCriteria: ChatbotSearchCriteria
+  searchCriteria: ChatbotSearchCriteria,
+  conversationId?: string
 ): Promise<number> {
   // Initial status update
   streamUtils.writeStatusToStream(
@@ -104,6 +112,7 @@ export async function handleProductStreaming(
 
   let productCount = 0;
   let allProducts: any[] = [];
+  let productInfoForConversation = "";
 
   // Process each product as it comes in
   const productGenerator = streamProductSearch(userMessage, searchCriteria);
@@ -130,6 +139,26 @@ export async function handleProductStreaming(
           productCount
         );
 
+        // Save product info for conversation
+        if (conversationId && productData[0]) {
+          const product = productData[0];
+
+          // Save the actual product HTML to the conversation
+          // This is what the frontend expects to display the product
+          const assistantMessage: ChatMessage = {
+            role: "assistant",
+            content: productHtml, // Save the HTML directly
+          };
+
+          // Add this product to the conversation
+          conversationService.handleConversation(conversationId, [
+            assistantMessage,
+          ]);
+
+          // Also keep track for the summary
+          productInfoForConversation += `Product: ${product.name} - $${product.price}\n`;
+        }
+
         console.log(
           `Streaming product ${productCount}: ${productData[0]?.name} - $${productData[0]?.price}`
         );
@@ -148,11 +177,17 @@ export async function handleProductStreaming(
     );
   } else {
     // Signal that all products have been found with a clear "complete" status
-    streamUtils.writeStatusToStream(
-      dataStream,
-      "complete",
-      `Found ${Math.min(productCount, 5)} products matching your search.`
-    );
+    const statusMessage = `Found ${Math.min(productCount, 5)} products matching your search.`;
+    streamUtils.writeStatusToStream(dataStream, "complete", statusMessage);
+
+    // Save a summary message to the conversation
+    if (conversationId) {
+      const summaryMessage: ChatMessage = {
+        role: "assistant",
+        content: statusMessage,
+      };
+      conversationService.handleConversation(conversationId, [summaryMessage]);
+    }
   }
 
   return productCount;
@@ -163,10 +198,14 @@ export async function handleProductStreaming(
  *
  * @param dataStream The data stream writer
  * @param productCount The number of products found
+ * @param conversationId Optional conversation ID to save the product info
+ * @param productInfo Optional product information to save to the conversation
  */
 export function completeProductStreaming(
   dataStream: DataStreamWriter,
-  productCount: number
+  productCount: number,
+  conversationId?: string,
+  productInfo?: string
 ): void {
   // Create a simple response message
   const responseMessage = createSimpleResponseMessage(5);

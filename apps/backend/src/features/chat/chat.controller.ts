@@ -2,10 +2,12 @@ import { Request, Response } from "express";
 import { streamText, createDataStreamResponse } from "ai";
 import { getDeepSeek, AI_CONFIG } from "./config/ai-config.js";
 import { chatRequestSchema } from "./schema/api-schema.js";
+import { ChatMessage } from "./chat.types.js";
 import * as queryService from "./utils/query-utils.js";
 import * as messageService from "./utils/message-utils.js";
 import * as streamService from "./services/chat.service.js";
 import * as streamUtils from "./utils/stream-utils.js";
+import * as conversationService from "./services/conversation.service.js";
 import { handleError } from "@/src/utils/handle-errors.js";
 import { sendResponse } from "@utils/api-response.js";
 
@@ -38,10 +40,18 @@ export class ChatController {
         return;
       }
 
-      // Get the latest user message (last message in the array)
-      const userMessage = messages[messages.length - 1];
+      // Handle conversation management using the service
+      const conversation = conversationService.handleConversation(
+        conversationId,
+        messages
+      );
 
-      if (!userMessage || userMessage.role !== "user") {
+      // Get the latest user message
+      const userMessage = conversationService.getLatestUserMessage(
+        conversation.messages
+      );
+
+      if (!userMessage) {
         sendResponse(res, 400, {
           success: false,
           message: "No user message found in the conversation.",
@@ -53,10 +63,12 @@ export class ChatController {
       const isProductQuery = queryService.isProductQuery(userMessage.content);
 
       // Format messages for AI
-      const messagesForAI = messageService.formatMessagesForAI(messages);
+      const messagesForAI = messageService.formatMessagesForAI(
+        conversation.messages
+      );
 
-      // Generate a simple conversation ID if not provided
-      const sessionId = conversationId || `chat_${Date.now()}`;
+      // Use the conversation ID from the conversation service
+      const sessionId = conversation.id;
 
       // If it's a product query, we'll stream products one by one
       if (isProductQuery) {
@@ -102,7 +114,8 @@ export class ChatController {
         const productCount = await streamService.handleProductStreaming(
           dataStream,
           userMessage,
-          searchCriteria
+          searchCriteria,
+          conversationId
         );
 
         // If no products were found, generate an AI response
@@ -126,11 +139,32 @@ export class ChatController {
 
           // Merge the AI response into the data stream
           result.mergeIntoDataStream(dataStream);
+
+          // Save the "no products found" message to the conversation
+          const assistantMessage: ChatMessage = {
+            role: "assistant",
+            content: noProductsMessage,
+          };
+          conversationService.handleConversation(conversationId, [
+            assistantMessage,
+          ]);
+
           return;
         }
 
         // Complete the product streaming with a simple response
         streamService.completeProductStreaming(dataStream, productCount);
+
+        // Save the product response to the conversation
+        const responseMessage =
+          messageService.createSimpleResponseMessage(productCount);
+        const assistantMessage: ChatMessage = {
+          role: "assistant",
+          content: responseMessage,
+        };
+        conversationService.handleConversation(conversationId, [
+          assistantMessage,
+        ]);
       },
       onError: (error) => {
         console.error("Data stream error:", error);
@@ -189,10 +223,26 @@ export class ChatController {
       // Process the stream
       await streamUtils.processStreamToResponse(response, res);
 
-      // Handle any errors in processing the assistant response
-      result.text.catch((err) =>
-        console.error("Error processing assistant response:", err)
-      );
+      // Save the AI response to the conversation
+      try {
+        const aiResponse = await result.text;
+        if (aiResponse) {
+          // Create a properly formatted assistant message
+          const assistantMessage: ChatMessage = {
+            role: "assistant",
+            content: aiResponse,
+          };
+
+          // Save the message to the conversation
+          conversationService.handleConversation(conversationId, [
+            assistantMessage,
+          ]);
+
+          console.log("Saved AI response to conversation:", conversationId);
+        }
+      } catch (err) {
+        console.error("Error processing assistant response:", err);
+      }
     } catch (streamError: unknown) {
       console.error("Stream error:", streamError);
       if (!res.headersSent) {

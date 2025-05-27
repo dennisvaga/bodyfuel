@@ -1,7 +1,10 @@
-import { ChatMessage, Conversation } from "../chat.types.js";
+import { ChatMessage } from "../chat.types.js";
 
 // In-memory storage for conversations (persists until server restart)
-const conversations = new Map<string, Conversation>();
+const conversations = new Map<
+  string,
+  { id: string; messages: ChatMessage[] }
+>();
 
 /**
  * Handle conversation management
@@ -11,46 +14,51 @@ const conversations = new Map<string, Conversation>();
  * @param messages Array of messages
  * @returns A conversation object with ID and messages
  */
-export async function handleConversation(
+export function handleConversation(
   conversationId: string | undefined,
   messages: ChatMessage[]
-): Promise<Conversation> {
+): { id: string; messages: ChatMessage[] } {
   // If conversation ID is provided, try to retrieve the conversation
   if (conversationId && conversations.has(conversationId)) {
     const existingConversation = conversations.get(conversationId)!;
 
-    // Update the conversation with new messages
-    existingConversation.messages = messages;
-    conversations.set(conversationId, existingConversation);
+    // Update the existing conversation with new messages
+    const updatedMessages = [...existingConversation.messages];
 
-    return existingConversation;
+    // Add any new messages that aren't already in the conversation
+    for (const message of messages) {
+      // Check if this message is already in the conversation
+      const messageExists = updatedMessages.some(
+        (m) => m.content === message.content && m.role === message.role
+      );
+
+      if (!messageExists) {
+        updatedMessages.push(message);
+      }
+    }
+
+    const updatedConversation = {
+      id: conversationId,
+      messages: updatedMessages,
+    };
+
+    // Update the conversation in the map
+    conversations.set(conversationId, updatedConversation);
+
+    return updatedConversation;
   }
 
   // Create a new conversation
-  const newConversationId =
-    conversationId ||
-    `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const newConversation: Conversation = {
+  const newConversationId = conversationId || `conv_${Date.now()}`;
+  const newConversation = {
     id: newConversationId,
     messages,
   };
 
-  // Store in memory
+  // Store the new conversation
   conversations.set(newConversationId, newConversation);
 
   return newConversation;
-}
-
-/**
- * Get conversation by ID
- *
- * @param conversationId Conversation ID
- * @returns Conversation object or null if not found
- */
-export async function getConversationById(
-  conversationId: string
-): Promise<Conversation | null> {
-  return conversations.get(conversationId) || null;
 }
 
 /**
@@ -90,65 +98,4 @@ export function limitMessagesForContext(
 
   // Otherwise, return the most recent messages up to the limit
   return messages.slice(-limit);
-}
-
-/**
- * Add a system message to the beginning of the messages array
- *
- * @param messages Array of messages
- * @param systemMessage System message content
- * @returns Array of messages with system message at the beginning
- */
-export function addSystemMessage(
-  messages: ChatMessage[],
-  systemMessage: string
-): ChatMessage[] {
-  // Create a copy of the messages array
-  const messagesWithSystem = [...messages];
-
-  // Add the system message at the beginning
-  messagesWithSystem.unshift({
-    role: "system",
-    content: systemMessage,
-  });
-
-  return messagesWithSystem;
-}
-
-/**
- * Add an assistant message to the messages array
- *
- * @param messages Array of messages
- * @param assistantMessage Assistant message content
- * @returns Array of messages with assistant message at the end
- */
-export function addAssistantMessage(
-  messages: ChatMessage[],
-  assistantMessage: string
-): ChatMessage[] {
-  // Create a copy of the messages array
-  const messagesWithAssistant = [...messages];
-
-  // Add the assistant message at the end
-  messagesWithAssistant.push({
-    role: "assistant",
-    content: assistantMessage,
-  });
-
-  return messagesWithAssistant;
-}
-
-/**
- * Clear all conversations from memory
- * Useful for testing or memory management
- */
-export function clearAllConversations(): void {
-  conversations.clear();
-}
-
-/**
- * Get conversation count (for debugging/monitoring)
- */
-export function getConversationCount(): number {
-  return conversations.size;
 }
