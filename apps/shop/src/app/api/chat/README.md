@@ -6,15 +6,17 @@ This directory contains the chat API implementation for the BodyFuel application
 
 ```
 apps/shop/src/app/api/chat/
+├── config/
+│   └── aiConfig.ts     # AI configuration and DeepSeek setup
 ├── types/
 │   ├── chatTypes.ts    # Chat-related types and interfaces
 │   └── apiTypes.ts     # API request/response schemas and types
 ├── utils/
-│   ├── aiUtils.ts      # AI model initialization and configuration
+│   ├── chatUtils.ts    # Message parsing & query extraction functions
 │   ├── messageUtils.ts # Message processing and formatting utilities
-│   ├── productUtils.ts # Product search, parsing, and formatting
+│   ├── productUtils.ts # Product formatting for AI and HTML output
 │   └── validationUtils.ts # Request validation and error handling
-├── route.ts           # Next.js API route with integrated logic
+├── route.ts           # Next.js API route using shared productService directly
 └── README.md          # This documentation
 ```
 
@@ -27,10 +29,12 @@ flowchart TD
     Client[Client] --> Route[route.ts]
     Route --> MessageUtils[messageUtils.ts]
     Route --> ValidationUtils[validationUtils.ts]
+    Route --> ChatUtils[chatUtils.ts]
     Route --> ProductUtils[productUtils.ts]
-    Route --> AIUtils[aiUtils.ts]
+    Route --> AIConfig[config/aiConfig.ts]
     Route --> AI[DeepSeek AI]
-    ProductUtils --> ProductService[Shared Product Service]
+    ChatUtils --> CategoryService[Shared Category Service]
+    Route --> ProductService[Shared Product Service]
     ProductService --> Database[(Database)]
 ```
 

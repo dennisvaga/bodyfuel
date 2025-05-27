@@ -1,12 +1,14 @@
-import { ChatRequestType } from "../types/apiTypes";
-import { ErrorResponse } from "../types/apiTypes";
+import { ChatRequestType } from "../schema/apiSchema";
+import { ErrorResponse } from "../schema/apiSchema";
 
 /**
  * Validate chat request and return parsed data or error response
  */
 export function validateChatRequest(
   validationResult: any
-): { success: true; data: ChatRequestType } | { success: false; response: Response } {
+):
+  | { success: true; data: ChatRequestType }
+  | { success: false; response: Response } {
   if (!validationResult.success) {
     return {
       success: false,
@@ -22,7 +24,7 @@ export function validateChatRequest(
       ),
     };
   }
-  
+
   return { success: true, data: validationResult.data };
 }
 

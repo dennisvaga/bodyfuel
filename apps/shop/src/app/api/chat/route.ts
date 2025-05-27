@@ -1,25 +1,25 @@
 import { NextRequest } from "next/server";
 import { streamText, createDataStreamResponse } from "ai";
-import { chatRequestSchema } from "./types/apiTypes";
+import { productService } from "@repo/shared";
+import { chatRequestSchema } from "./schema/apiSchema";
 import { ChatMessage } from "./types/chatTypes";
-import { deepseek, AI_CONFIG } from "./utils/aiUtils";
-import { 
-  getCurrentMessage, 
-  formatMessagesForAI, 
-  createMessage, 
-  isProductQuery 
+import { deepseek, AI_CONFIG } from "./config/aiConfig";
+import {
+  getCurrentMessage,
+  formatMessagesForAI,
+  createMessage,
+  isProductQuery,
 } from "./utils/messageUtils";
-import { 
-  validateChatRequest, 
-  validateMessage, 
-  createErrorResponse 
-} from "./utils/validationUtils";
-import { 
-  parseChatbotQuery, 
-  searchProductsForChat, 
-  formatProductsForAI, 
-  createProductHtml, 
-  createSystemMessage 
+import {
+  validateChatRequest,
+  validateMessage,
+  createErrorResponse,
+} from "./utils/apiHelpers";
+import { parseChatbotQuery } from "./utils/chatUtils";
+import {
+  formatProductsForAI,
+  createProductHtml,
+  createSystemMessage,
 } from "./utils/productUtils";
 
 export async function POST(request: NextRequest) {
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     // Validate request body
     const validationResult = chatRequestSchema.safeParse(body);
     const validation = validateChatRequest(validationResult);
-    
+
     if (!validation.success) {
       return validation.response;
     }
@@ -73,15 +73,31 @@ async function handleProductQuery(message: string, messages: ChatMessage[]) {
     // Use createDataStreamResponse for proper streaming
     return createDataStreamResponse({
       execute: async (dataStream) => {
-        // Search for products
-        const products = await searchProductsForChat(searchCriteria);
+        // Search for products using shared service
+        const productsResult = await productService.searchProducts(
+          searchCriteria.query
+        );
+        const products = productsResult.success
+          ? productsResult.data || []
+          : [];
+
+        // Apply price filtering if needed
+        const filteredProducts = products
+          .filter((product) => {
+            const price = product.price;
+            return (
+              (!searchCriteria.minPrice || price >= searchCriteria.minPrice) &&
+              (!searchCriteria.maxPrice || price <= searchCriteria.maxPrice)
+            );
+          })
+          .slice(0, 5); // Limit for chat
 
         // If products found, stream them
-        if (products && products.length > 0) {
+        if (filteredProducts && filteredProducts.length > 0) {
           // Send product data through the stream
           dataStream.writeData({
             type: "product",
-            products: products.map((product) => ({
+            products: filteredProducts.map((product) => ({
               id: product.id,
               name: product.name,
               slug: product.slug,
@@ -96,12 +112,12 @@ async function handleProductQuery(message: string, messages: ChatMessage[]) {
           dataStream.writeData({
             type: "status",
             status: "complete",
-            message: `Found ${products.length} products`,
+            message: `Found ${filteredProducts.length} products`,
           });
 
           // Format products for AI context
-          const productInfo = formatProductsForAI(products);
-          const productHtml = createProductHtml(products);
+          const productInfo = formatProductsForAI(filteredProducts);
+          const productHtml = createProductHtml(filteredProducts);
 
           // Create system message with product context
           const systemMessage = createSystemMessage(
