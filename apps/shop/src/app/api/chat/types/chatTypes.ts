@@ -1,26 +1,16 @@
+import {
+  chatMessageSchema,
+  chatRequestSchema,
+  chatResponseSchema,
+  errorResponseSchema,
+} from "../schema/apiSchema";
 import { z } from "zod";
 
-/**
- * Chat message schema
- */
-export const chatMessageSchema = z.object({
-  id: z.string().optional(),
-  role: z.enum(["system", "user", "assistant"]),
-  content: z.string(),
-});
-
-/**
- * Chat request schema
- */
-export const chatRequestSchema = z.object({
-  conversationId: z.string().optional(),
-  messages: z.array(chatMessageSchema),
-});
-
-/**
- * Chat message type
- */
+// Type exports from schemas
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
+export type ChatRequestType = z.infer<typeof chatRequestSchema>;
+export type ChatResponseType = z.infer<typeof chatResponseSchema>;
+export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 
 /**
  * AI message format

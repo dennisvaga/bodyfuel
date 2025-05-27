@@ -5,6 +5,11 @@ import { chatRequestSchema } from "./schema/apiSchema";
 import * as queryService from "./utils/queryUtils";
 import * as messageService from "./utils/messageUtils";
 import * as streamingService from "./services/chatStreamingService";
+import {
+  createValidationErrorResponse,
+  createErrorResponse,
+  createInternalErrorResponse,
+} from "./utils/errorHandler";
 
 /**
  * Handle POST requests to the chat API
@@ -16,46 +21,22 @@ export async function POST(req: NextRequest) {
     const parseResult = chatRequestSchema.safeParse(body);
 
     if (!parseResult.success) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "Invalid request format: " + parseResult.error.message,
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return createValidationErrorResponse(parseResult.error.message);
     }
 
     const { conversationId, messages } = parseResult.data;
 
     if (!messages || messages.length === 0) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "No messages provided",
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      return createErrorResponse("No messages provided", 400);
     }
 
     // Get the latest user message (last message in the array)
     const userMessage = messages[messages.length - 1];
 
     if (!userMessage || userMessage.role !== "user") {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: "No user message found in the conversation.",
-        }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+      return createErrorResponse(
+        "No user message found in the conversation.",
+        400
       );
     }
 
@@ -77,17 +58,7 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     console.error("Chat API error:", error);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        message:
-          error instanceof Error ? error.message : "Internal server error",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return createInternalErrorResponse(error);
   }
 }
 
@@ -202,16 +173,6 @@ async function handleNormalQuery(
     });
   } catch (streamError: unknown) {
     console.error("Stream error:", streamError);
-    return new Response(
-      JSON.stringify({
-        success: false,
-        message:
-          streamError instanceof Error ? streamError.message : "Stream error",
-      }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+    return createInternalErrorResponse(streamError);
   }
 }
