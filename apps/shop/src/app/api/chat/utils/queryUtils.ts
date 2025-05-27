@@ -39,9 +39,9 @@ export function extractSearchQuery(userMessage: string): string {
 }
 
 /**
- * Extract price range from user message
+ * Extract price range from user query
  */
-export function extractPriceRange(userMessage: string): {
+export function extractPriceFromQuery(userMessage: string): {
   minPrice?: number;
   maxPrice?: number;
   targetPrice?: number;
@@ -196,4 +196,83 @@ export async function parseChatbotQuery(
     ...priceRange,
     category: category?.name,
   };
+}
+
+/**
+ * Determine if a message is a product query
+ */
+export function isProductQuery(message: string): boolean {
+  const lowerMessage = message.toLowerCase();
+
+  // Product-related keywords
+  const productKeywords = [
+    "protein",
+    "creatine",
+    "vitamin",
+    "supplement",
+    "bcaa",
+    "omega",
+    "collagen",
+    "pre workout",
+    "post workout",
+    "whey",
+    "casein",
+    "amino",
+    "mass gainer",
+    "fat burner",
+    "probiotic",
+    "glutamine",
+    "arginine",
+    "carnitine",
+    "zinc",
+    "magnesium",
+    "calcium",
+    "multivitamin",
+    "fish oil",
+    "caffeine",
+    "beta alanine",
+  ];
+
+  // Action keywords
+  const actionKeywords = [
+    "find",
+    "search",
+    "looking for",
+    "show me",
+    "do you have",
+    "suggest",
+    "recommend",
+    "want",
+    "need",
+    "buy",
+    "purchase",
+    "what",
+    "which",
+    "any",
+    "help me find",
+    "i need",
+    "show",
+  ];
+
+  // Check for product keywords
+  const hasProductKeyword = productKeywords.some((keyword) =>
+    lowerMessage.includes(keyword)
+  );
+
+  // Check for action keywords
+  const hasActionKeyword = actionKeywords.some((keyword) =>
+    lowerMessage.includes(keyword)
+  );
+
+  // Check for price-related queries
+  const hasPriceQuery =
+    /\$\d+|price|cost|cheap|expensive|under|over|between/.test(lowerMessage);
+
+  // Check for category mentions
+  const hasCategoryQuery = /category|type|kind|brand/.test(lowerMessage);
+
+  return (
+    hasProductKeyword ||
+    (hasActionKeyword && (hasPriceQuery || hasCategoryQuery))
+  );
 }

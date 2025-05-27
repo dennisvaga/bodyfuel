@@ -8,19 +8,15 @@ import {
   getCurrentMessage,
   formatMessagesForAI,
   createMessage,
-  isProductQuery,
+  createSystemMessage,
 } from "./utils/messageUtils";
 import {
   validateChatRequest,
   validateMessage,
   createErrorResponse,
 } from "./utils/apiHelpers";
-import { parseChatbotQuery } from "./utils/chatUtils";
-import {
-  formatProductsForAI,
-  createProductHtml,
-  createSystemMessage,
-} from "./utils/productUtils";
+import { parseChatbotQuery, isProductQuery } from "./utils/queryUtils";
+import { formatProductsForAI, createProductHtml } from "./utils/productUtils";
 
 export async function POST(request: NextRequest) {
   try {
