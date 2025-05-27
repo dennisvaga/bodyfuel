@@ -1,4 +1,6 @@
 import { getPrisma } from "@repo/database";
+import { DataStreamWriter } from "ai";
+import { ChatbotSearchCriteria, ProductData } from "./chat.types";
 
 /**
  * Interface for category data with normalized search terms
@@ -35,9 +37,6 @@ const PRODUCT_VARIATIONS: ProductVariations = {
 
 /**
  * Get variations for a product type
- *
- * @param productType The base product type
- * @returns Array of variations for the product type
  */
 export function getProductVariations(productType: string): string[] {
   const normalizedType = productType.toLowerCase().trim();
@@ -46,9 +45,6 @@ export function getProductVariations(productType: string): string[] {
 
 /**
  * Expand search query with common variations
- *
- * @param searchQuery The original search query
- * @returns Array of expanded search queries
  */
 export function expandSearchQuery(searchQuery: string): string[] {
   if (!searchQuery) return [];
@@ -288,4 +284,149 @@ export async function extractCategoryFromMessage(
   }
 
   return null;
+}
+
+/**
+ * Constructs a Prisma query filter for product searches
+ */
+export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
+  const whereClause: any = {};
+  const orConditions: any[] = [];
+
+  // Add search query conditions
+  if (criteria.searchQuery) {
+    // Create an array of search terms by splitting the query
+    const searchTerms = criteria.searchQuery
+      .split(" ")
+      .filter((term) => term.length > 2)
+      .map((term) => term.trim());
+
+    // If we have valid search terms, add them to the OR conditions
+    if (searchTerms.length > 0) {
+      searchTerms.forEach((term) => {
+        orConditions.push(
+          {
+            name: {
+              contains: term,
+              mode: "insensitive" as const,
+            },
+          },
+          {
+            description: {
+              contains: term,
+              mode: "insensitive" as const,
+            },
+          }
+        );
+      });
+    }
+  }
+
+  // Add price range conditions
+  if (criteria.priceRange?.min !== undefined) {
+    whereClause.price = {
+      ...whereClause.price,
+      gte: criteria.priceRange.min,
+    };
+  }
+
+  if (criteria.priceRange?.max !== undefined) {
+    whereClause.price = {
+      ...whereClause.price,
+      lte: criteria.priceRange.max,
+    };
+  }
+
+  // Add category filter
+  if (criteria.categories && criteria.categories.length > 0) {
+    whereClause.categories = {
+      some: {
+        id: {
+          in: criteria.categories,
+        },
+      },
+    };
+  }
+
+  // Add OR conditions if we have any
+  if (orConditions.length > 0) {
+    whereClause.OR = orConditions;
+  }
+
+  return whereClause;
+}
+
+/**
+ * Stream products as they are processed
+ */
+export async function streamProducts(
+  dataStream: DataStreamWriter,
+  products: ProductData[]
+): Promise<void> {
+  try {
+    // Stream each product
+    for (const product of products) {
+      await dataStream.writeData({
+        type: "product",
+        product,
+      });
+
+      // Small delay to allow for proper streaming
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+
+    // Send completion signal
+    await dataStream.writeData({
+      type: "products_complete",
+      count: products.length,
+    });
+  } catch (error) {
+    console.error("Error streaming products:", error);
+    await dataStream.writeData({
+      type: "error",
+      message: "Error streaming products",
+    });
+  }
+}
+
+/**
+ * Stream text chunks with typing effect
+ */
+export async function streamTextChunks(
+  dataStream: DataStreamWriter,
+  text: string,
+  chunkSize: number = 3
+): Promise<void> {
+  try {
+    const words = text.split(" ");
+    let currentChunk = "";
+
+    for (let i = 0; i < words.length; i++) {
+      currentChunk += (i > 0 ? " " : "") + words[i];
+
+      // Send chunk when we reach the chunk size or at the end
+      if ((i + 1) % chunkSize === 0 || i === words.length - 1) {
+        await dataStream.writeData({
+          type: "text_chunk",
+          content: currentChunk,
+        });
+
+        currentChunk = "";
+
+        // Small delay for typing effect
+        await new Promise((resolve) => setTimeout(resolve, 50));
+      }
+    }
+
+    // Send completion signal
+    await dataStream.writeData({
+      type: "text_complete",
+    });
+  } catch (error) {
+    console.error("Error streaming text:", error);
+    await dataStream.writeData({
+      type: "error",
+      message: "Error streaming text",
+    });
+  }
 }
