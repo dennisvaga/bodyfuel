@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { normalizeFiles } from "@utils/utils.js";
 import { parseProductBody, validateData, productSchema } from "@repo/shared";
-import { handleError } from "@utils/handleErrors.js";
+import { handleError } from "@/src/utils/handle-errors.js";
 import { sendResponse } from "@utils/apiResponse.js";
 import adminProductsService from "./admin.products.service.js";
 

@@ -4,6 +4,8 @@ import {
   buildWhereClause,
   streamProducts,
 } from "./utils/product-search-utils.js";
+import { assignImageUrlToProducts } from "../../services/s3Service.js";
+import type { ProductWithImageUrl } from "@repo/database/types/product";
 
 // Re-export streamProducts for backward compatibility
 export { streamProducts };
@@ -25,7 +27,7 @@ export async function findProducts(
     // Build the where clause based on the criteria
     const whereClause: any = buildWhereClause(criteria);
 
-    // Query the database
+    // Query the database with the full structure needed for S3 service
     const products = await prisma.product.findMany({
       where: whereClause,
       take: limit,
@@ -33,21 +35,29 @@ export async function findProducts(
         createdAt: "desc",
       },
       include: {
-        images: {
-          take: 1,
-        },
+        images: true,
         category: true,
+        options: { include: { optionValues: true } },
+        variants: {
+          include: { variantOptionValues: { include: { optionValue: true } } },
+        },
+        collections: true,
       },
     });
 
+    // Use S3 service to assign proper image URLs
+    const productsWithImageUrls = await assignImageUrlToProducts(
+      products as unknown as ProductWithImageUrl[]
+    );
+
     // Map the products to the expected format
-    return products.map((product) => ({
+    return productsWithImageUrls.map((product) => ({
       name: product.name,
       price: product.price,
       description: product.description || "No description available",
       imageUrl:
         product.images && product.images.length > 0
-          ? `/api/images/${product.images[0].imageKey}`
+          ? product.images[0].imageUrl
           : "/media/blankImage.jpg",
       slug: product.slug,
     }));

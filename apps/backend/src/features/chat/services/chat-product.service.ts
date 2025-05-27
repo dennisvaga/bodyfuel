@@ -18,7 +18,7 @@ export async function searchProducts(
 /**
  * Create structured product data for frontend
  *
- * @param products Products array
+ * @param products Products array (should already have imageUrl from S3 service)
  * @returns Structured product data for frontend
  */
 export function createStructuredProductData(products: any[]): ProductData[] {
@@ -28,7 +28,7 @@ export function createStructuredProductData(products: any[]): ProductData[] {
     description: product.description || "No description available",
     imageUrl:
       product.images && product.images.length > 0
-        ? `/api/images/${product.images[0].imageKey}`
+        ? product.images[0].imageUrl || "/media/blankImage.jpg"
         : "/media/blankImage.jpg",
     slug: product.slug,
   }));

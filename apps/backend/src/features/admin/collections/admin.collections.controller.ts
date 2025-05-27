@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { validateData, CollectionSchema } from "@repo/shared";
-import { handleError } from "@utils/handleErrors.js";
+import { handleError } from "@/src/utils/handle-errors.js";
 import { sendResponse } from "@utils/apiResponse.js";
 import adminCollectionsService from "./admin.collections.service.js";
 

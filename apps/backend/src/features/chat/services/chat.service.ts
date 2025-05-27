@@ -1,8 +1,8 @@
-import { DataStreamWriter } from "ai";
 import { ChatbotSearchCriteria, StreamProductResponse } from "../chat.types.js";
 import * as chatRepository from "../chat.repository.js";
 import * as productService from "./chat-product.service.js";
 import * as streamUtils from "../utils/stream-utils.js";
+import { DataStreamWriter } from "ai";
 import { createSimpleResponseMessage } from "../utils/message-utils.js";
 
 /**
@@ -13,7 +13,6 @@ import { createSimpleResponseMessage } from "../utils/message-utils.js";
  * @returns AsyncGenerator that yields product info and HTML
  */
 export async function* streamProductSearch(
-  userMessage: string,
   searchCriteria: ChatbotSearchCriteria
 ): AsyncGenerator<StreamProductResponse, void, unknown> {
   const { searchQuery, targetPrice } = searchCriteria;
@@ -177,14 +176,6 @@ export function completeProductStreaming(
 
   // Write a finish message part to complete the stream
   streamUtils.writeFinishToStream(dataStream);
-
-  // Also write a direct text message for compatibility with AI SDK
-  dataStream.write(`0:"${responseMessage}"\n`);
-
-  // Write a finish message part to complete the stream in AI SDK format
-  dataStream.write(
-    `d:{"finishReason":"stop","usage":{"promptTokens":0,"completionTokens":0}}\n`
-  );
 
   console.log(`Generated response for products: "${responseMessage}"`);
 }

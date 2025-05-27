@@ -5,6 +5,8 @@ import {
   findCategoryBySearchTerm,
   expandSearchQuery,
 } from "./category-matcher.js";
+import { assignImageUrlToProducts } from "../../../services/s3Service.js";
+import type { ProductWithImageUrl } from "@repo/database/types/product";
 
 /**
  * Constructs a Prisma query filter for product searches
@@ -217,12 +219,17 @@ export async function* streamProducts(
 
   const prisma = await getPrisma();
 
-  // Execute the query
+  // Execute the query with full structure needed for S3 service
   const products = await prisma.product.findMany({
     where: whereClause,
     include: {
       images: true,
       category: true,
+      options: { include: { optionValues: true } },
+      variants: {
+        include: { variantOptionValues: { include: { optionValue: true } } },
+      },
+      collections: true,
     },
     orderBy: {
       name: "asc",
@@ -260,6 +267,11 @@ export async function* streamProducts(
       include: {
         images: true,
         category: true,
+        options: { include: { optionValues: true } },
+        variants: {
+          include: { variantOptionValues: { include: { optionValue: true } } },
+        },
+        collections: true,
       },
       orderBy: {
         price:
@@ -281,8 +293,13 @@ export async function* streamProducts(
     productsToStream = priceOnlyProducts;
   }
 
+  // Use S3 service to assign proper image URLs to all products
+  const productsWithImageUrls = await assignImageUrlToProducts(
+    productsToStream as unknown as ProductWithImageUrl[]
+  );
+
   // Yield each product one by one with a small delay to ensure frontend can process them
-  for (const product of productsToStream) {
+  for (const product of productsWithImageUrls) {
     console.log(`Streaming product: ${product.name} - $${product.price}`);
     yield product;
 

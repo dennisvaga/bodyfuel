@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import adminOrdersService from "./admin.orders.service.js";
-import { handleError } from "@utils/handleErrors.js";
+import { handleError } from "@/src/utils/handle-errors.js";
 import { sendResponse } from "@utils/apiResponse.js";
 
 /**

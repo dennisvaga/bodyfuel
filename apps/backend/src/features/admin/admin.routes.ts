@@ -3,7 +3,7 @@ import express, { Router } from "express";
 import adminProductsRoutes from "./products/admin.products.routes.js";
 import adminCollectionsRoutes from "./collections/admin.collections.routes.js";
 import adminOrdersRoutes from "./orders/admin.orders.routes.js";
-import { authenticatedAdmin } from "@middleware/adminAuth.js";
+import { authenticatedAdmin } from "@/src/middleware/admin-auth.js";
 
 const adminRouter: Router = express.Router();
 

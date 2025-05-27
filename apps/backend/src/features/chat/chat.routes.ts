@@ -3,9 +3,7 @@ import chatController from "./chat.controller.js";
 
 const router: Router = express.Router();
 
-// Handle chat messages with streaming response
-router.post("/", async (req, res) => {
-  await chatController.handleChat(req, res);
-});
+// Process chat messages and generate AI responses
+router.post("/", chatController.processChat.bind(chatController));
 
 export default router;

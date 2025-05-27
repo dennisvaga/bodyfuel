@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import cartService from "./cart.service.js";
-import { handleError } from "@utils/handleErrors.js";
+import { handleError } from "@/src/utils/handle-errors.js";
 import { sendResponse } from "@utils/apiResponse.js";
-import { addCookie } from "@utils/cookieUtils.js";
+import { addCookie } from "@/src/utils/cookie-utils.js";
 
 /**
  * Cart controller responsible for handling HTTP requests related to cart
