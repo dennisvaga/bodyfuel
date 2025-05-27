@@ -3,6 +3,13 @@ import {
   extractCategoryFromMessage,
   findCategoryBySearchTerm,
 } from "./categoryMatcher";
+import {
+  PRICE_PATTERNS,
+  SEARCH_PATTERNS,
+  CATEGORY_TERMS,
+  PRODUCT_QUERY_PATTERN,
+  FALLBACK_TERMS,
+} from "../config/queryPatterns";
 
 /**
  * Extract search query from user message
@@ -12,25 +19,15 @@ import {
  */
 export async function extractSearchQuery(userMessage: string): Promise<string> {
   // Extract search terms and price range from the user message
-  const searchTermsMatch = userMessage.match(
-    /(?:find|search|looking for|show me|do you have|suggest|get|want|give me|send me)\s+(?:some|good|best)?\s+(.*?)(?:\s+(?:for|in\s+range\s+of|around|about)\s+(\d+)(?:\.(\d+))?\s+dollars)?/i
-  );
+  const searchTermsMatch = userMessage.match(SEARCH_PATTERNS.SEARCH_TERMS);
 
   // Check for price-related queries first
   // Match both "between X and Y" and "between X-Y" formats
   const priceRangeMatch =
-    userMessage.match(
-      /between\s+\$?(\d+)(?:\.(\d+))?\$?\s+(?:and|to|-)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-    ) ||
-    userMessage.match(
-      /between\s+\$?(\d+)(?:\.(\d+))?\$?-\$?(\d+)(?:\.(\d+))?\$?/i
-    );
-  const underPriceMatch = userMessage.match(
-    /(?:under|less than|below|cheaper than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-  );
-  const overPriceMatch = userMessage.match(
-    /(?:over|above|more than|higher than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-  );
+    userMessage.match(PRICE_PATTERNS.RANGE[0]) ||
+    userMessage.match(PRICE_PATTERNS.RANGE[1]);
+  const underPriceMatch = userMessage.match(PRICE_PATTERNS.UNDER);
+  const overPriceMatch = userMessage.match(PRICE_PATTERNS.OVER);
 
   let searchQuery = "";
 
@@ -43,20 +40,19 @@ export async function extractSearchQuery(userMessage: string): Promise<string> {
       .split(/\s+/);
 
     // Check if any of the words match common category terms
-    // We'll extract this dynamically later
     const categoryMatch = categoryTerms.find((term) =>
-      /weight|loss|fat|burn|diet|vitamin|protein|creatine|pre|post|workout|supplement|bcaa|omega|fish oil|amino|collagen/i.test(
-        term
+      CATEGORY_TERMS.some((categoryTerm) =>
+        term.toLowerCase().includes(categoryTerm.toLowerCase())
       )
     );
 
     // Special handling for pre-workout and post-workout
     const preWorkoutMatch = userMessage
       .toLowerCase()
-      .match(/pre.?workout|pre workout|preworkout/i);
+      .match(SEARCH_PATTERNS.PRE_WORKOUT);
     const postWorkoutMatch = userMessage
       .toLowerCase()
-      .match(/post.?workout|post workout|postworkout/i);
+      .match(SEARCH_PATTERNS.POST_WORKOUT);
 
     if (preWorkoutMatch) {
       searchQuery = "pre-workout";
@@ -67,12 +63,12 @@ export async function extractSearchQuery(userMessage: string): Promise<string> {
     } else {
       // If no specific category term, check for product terms
       if (/\b(product|products)\b/i.test(userMessage)) {
-        // If it's a generic product query with a price range, use "supplement" as a fallback
+        // If it's a generic product query with a price range, use fallback term
         // This ensures we have a search term for price-based queries
-        searchQuery = "supplement";
+        searchQuery = FALLBACK_TERMS.DEFAULT_SUPPLEMENT;
       } else {
         // If no specific product type, use a generic search
-        searchQuery = "supplement";
+        searchQuery = FALLBACK_TERMS.GENERIC_PRODUCT;
       }
     }
   } else if (searchTermsMatch && searchTermsMatch[1]) {
@@ -85,15 +81,13 @@ export async function extractSearchQuery(userMessage: string): Promise<string> {
       searchQuery = extractedCategory.name.toLowerCase();
     } else {
       // If no specific pattern matched, extract keywords from the message
-      const keywords = userMessage.match(
-        /weight loss|fat loss|vitamin|protein|creatine|pre.?workout|pre workout|preworkout|post.?workout|post workout|postworkout|supplement|bcaa|omega|fish oil|amino|collagen/gi
-      );
+      const keywords = userMessage.match(SEARCH_PATTERNS.PRODUCT_KEYWORDS);
       if (keywords && keywords.length > 0) {
         searchQuery = keywords[0];
       } else {
         // Check for simple product queries like "give me vitamins"
         const simpleProductMatch = userMessage.match(
-          /\b(weight loss|fat loss|vitamin|protein|creatine|pre.?workout|post.?workout|supplement|bcaa|omega|fish oil|amino|collagen)s?\b/i
+          SEARCH_PATTERNS.SIMPLE_PRODUCT
         );
         if (simpleProductMatch) {
           searchQuery = simpleProductMatch[1];
@@ -126,19 +120,11 @@ export function extractPriceRange(userMessage: string): {
   // Extract price information if available
   // Match both "between X and Y" and "between X-Y" formats
   const priceRangeMatch =
-    userMessage.match(
-      /between\s+\$?(\d+)(?:\.(\d+))?\$?\s+(?:and|to|-)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-    ) ||
-    userMessage.match(
-      /between\s+\$?(\d+)(?:\.(\d+))?\$?-\$?(\d+)(?:\.(\d+))?\$?/i
-    );
-  const underPriceMatch = userMessage.match(
-    /(?:under|less than|below|cheaper than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-  );
-  const overPriceMatch = userMessage.match(
-    /(?:over|above|more than|higher than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-  );
-  const priceMatch = userMessage.match(/\$?(\d+)(?:\.(\d+))?\$?\s+dollars/i);
+    userMessage.match(PRICE_PATTERNS.RANGE[0]) ||
+    userMessage.match(PRICE_PATTERNS.RANGE[1]);
+  const underPriceMatch = userMessage.match(PRICE_PATTERNS.UNDER);
+  const overPriceMatch = userMessage.match(PRICE_PATTERNS.OVER);
+  const priceMatch = userMessage.match(PRICE_PATTERNS.EXACT);
 
   if (priceRangeMatch) {
     // Handle "between X and Y" price range
@@ -180,14 +166,7 @@ export function extractPriceRange(userMessage: string): {
  * @returns True if the message is a product query, false otherwise
  */
 export function isProductQuery(message: string): boolean {
-  // Expanded regex to catch more product-related queries
-  // Added more specific terms like "vitamins" (plural), "supplements", etc.
-  // Added common request phrases like "show me", "give me", "looking for"
-  // Added price-related terms like "over", "above", "between"
-  // Added weight loss and fat loss terms
-  return /product|supplement|protein|creatine|pre.?workout|vitamin|nutrition|bcaa|omega|fish oil|amino|collagen|weight\s+loss|fat\s+loss|fat\s+burn|diet|slimming|thermogenic|under|less than|over|above|more than|higher than|between|\$|show me|give me|looking for|do you have|can i get|recommend|suggest/i.test(
-    message
-  );
+  return PRODUCT_QUERY_PATTERN.test(message);
 }
 
 /**
