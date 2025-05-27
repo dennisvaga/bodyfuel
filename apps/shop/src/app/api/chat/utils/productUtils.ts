@@ -1,86 +1,42 @@
 import type { ProductWithImageUrl } from "@repo/database/types/product";
-import { productService } from "@repo/shared";
-import {
-  ChatbotSearchCriteria,
-  ChatMessage,
-  AIMessageFormat,
-  StreamProductResponse,
-} from "./chat.types.js";
-import { extractCategoryFromMessage, buildWhereClause } from "./chat.utils";
-import { streamProducts } from "./chat.repository.js";
-import { DataStreamWriter } from "ai";
+import { productService, categoryService } from "@repo/shared";
+import { ChatbotSearchCriteria, StreamProductResponse } from "../types/chatTypes";
 
 /**
- * Extract search query from user message
+ * Extract search query from user message - simplified version
  */
-export async function extractSearchQuery(userMessage: string): Promise<string> {
-  const searchTermsMatch = userMessage.match(
-    /(?:find|search|looking for|show me|do you have|suggest|get|want|give me|send me)\s+(?:some|good|best)?\s+(.*?)(?:\s+(?:for|in\s+range\s+of|around|about)\s+(\d+)(?:\.(\d+))?\s+dollars)?/i
+export function extractSearchQuery(userMessage: string): string {
+  // Priority 1: Look for explicit search patterns
+  const searchMatch = userMessage.match(
+    /(?:find|search|looking for|show me|do you have|suggest|want|need)\s+(?:some|good|best)?\s*([^?.!]+)/i
   );
 
-  const priceRangeMatch =
-    userMessage.match(
-      /between\s+\$?(\d+)(?:\.(\d+))?\$?\s+(?:and|to|-)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-    ) ||
-    userMessage.match(
-      /between\s+\$?(\d+)(?:\.(\d+))?\$?-\$?(\d+)(?:\.(\d+))?\$?/i
-    );
-  const underPriceMatch = userMessage.match(
-    /(?:under|less than|below|cheaper than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-  );
-  const overPriceMatch = userMessage.match(
-    /(?:over|above|more than|higher than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
-  );
-
-  let searchQuery = "";
-
-  if (priceRangeMatch || underPriceMatch || overPriceMatch) {
-    const categoryTerms = userMessage
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, " ")
-      .split(/\s+/);
-
-    const categoryMatch = categoryTerms.find((term) =>
-      /weight|loss|fat|burn|diet|vitamin|protein|creatine|pre|post|workout|supplement|bcaa|omega|fish oil|amino|collagen/i.test(
-        term
-      )
-    );
-
-    if (categoryMatch) {
-      searchQuery = categoryMatch;
-    } else {
-      searchQuery = "supplements";
-    }
-  } else if (searchTermsMatch && searchTermsMatch[1]) {
-    searchQuery = searchTermsMatch[1].trim();
-  } else {
-    const patterns = [
-      /(?:what|which|any)\s+(?:kind\s+of\s+|types?\s+of\s+)?(.*?)(?:\s+do\s+you\s+have|\s+are\s+available|$)/i,
-      /(?:I\s+need|looking\s+for|want|searching\s+for)\s+(.*?)(?:\s+supplements?|\s+products?|$)/i,
-    ];
-
-    for (const pattern of patterns) {
-      const match = userMessage.match(pattern);
-      if (match && match[1] && match[1].trim()) {
-        searchQuery = match[1].trim();
-        break;
-      }
-    }
-
-    if (!searchQuery) {
-      const keywords = userMessage
-        .toLowerCase()
-        .match(
-          /\b(?:protein|creatine|vitamin|bcaa|omega|fish\s*oil|collagen|pre\s*workout|post\s*workout)\b/g
-        );
-
-      if (keywords && keywords.length > 0) {
-        searchQuery = keywords[0].replace(/\s+/g, " ");
-      }
-    }
+  if (searchMatch && searchMatch[1]) {
+    return searchMatch[1].trim();
   }
 
-  return searchQuery || "supplements";
+  // Priority 2: Extract from question patterns
+  const questionMatch = userMessage.match(
+    /(?:what|which|any)\s+(?:kind\s+of\s+|types?\s+of\s+)?(.*?)(?:\s+do\s+you\s+have|\s+are\s+available|$)/i
+  );
+
+  if (questionMatch && questionMatch[1]) {
+    return questionMatch[1].trim();
+  }
+
+  // Priority 3: Look for common product keywords
+  const keywords = userMessage
+    .toLowerCase()
+    .match(
+      /\b(?:protein|creatine|vitamin|supplement|bcaa|omega|collagen|pre workout|post workout)\b/g
+    );
+
+  if (keywords && keywords.length > 0) {
+    return keywords[0].replace(/\s+/g, " ");
+  }
+
+  // Fallback: Use first few words
+  return userMessage.split(" ").slice(0, 3).join(" ").trim() || "supplements";
 }
 
 /**
@@ -155,55 +111,92 @@ export function extractPriceRange(userMessage: string): {
 }
 
 /**
+ * Simple category extraction using shared categoryService
+ */
+async function extractCategoryFromMessage(
+  message: string
+): Promise<{ id: number; name: string } | null> {
+  if (!message) return null;
+
+  try {
+    const categoriesResult = await categoryService.getCategoriesNames();
+    if (!categoriesResult.success || !categoriesResult.data) {
+      return null;
+    }
+
+    const categories = categoriesResult.data;
+    const lowerMessage = message.toLowerCase();
+
+    // Check for specific workout patterns first
+    if (/pre.?workout|pre workout|preworkout/i.test(message)) {
+      const preWorkout = categories.find(
+        (cat) =>
+          cat.name.toLowerCase().includes("pre") &&
+          cat.name.toLowerCase().includes("workout")
+      );
+      if (preWorkout) return { id: preWorkout.id, name: preWorkout.name };
+    }
+
+    if (/post.?workout|post workout|postworkout/i.test(message)) {
+      const postWorkout = categories.find(
+        (cat) =>
+          cat.name.toLowerCase().includes("post") &&
+          cat.name.toLowerCase().includes("workout")
+      );
+      if (postWorkout) return { id: postWorkout.id, name: postWorkout.name };
+    }
+
+    // Check for weight loss patterns
+    if (/\b(weight loss|fat loss|fat burn|diet)\b/i.test(message)) {
+      const weightLoss = categories.find(
+        (cat) =>
+          cat.name.toLowerCase().includes("weight") ||
+          cat.name.toLowerCase().includes("fat")
+      );
+      if (weightLoss) return { id: weightLoss.id, name: weightLoss.name };
+    }
+
+    // Extract words and try to match to categories
+    const words = lowerMessage.replace(/[^\w\s-]/g, " ").split(/\s+/);
+
+    for (const category of categories) {
+      const categoryName = category.name.toLowerCase();
+
+      // Direct name match
+      if (lowerMessage.includes(categoryName)) {
+        return { id: category.id, name: category.name };
+      }
+
+      // Word-based matching
+      for (const word of words) {
+        if (word.length >= 3 && categoryName.includes(word)) {
+          return { id: category.id, name: category.name };
+        }
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error extracting category:", error);
+    return null;
+  }
+}
+
+/**
  * Parse chatbot query to extract search criteria
  */
 export async function parseChatbotQuery(
   userMessage: string
 ): Promise<ChatbotSearchCriteria> {
-  const searchQuery = await extractSearchQuery(userMessage);
+  const searchQuery = extractSearchQuery(userMessage);
   const priceRange = extractPriceRange(userMessage);
-
   const category = await extractCategoryFromMessage(userMessage);
 
   return {
     query: searchQuery,
-    searchQuery, // Keep as alias for backward compatibility
     ...priceRange,
-    categoryId: category?.id,
+    category: category?.name,
   };
-}
-
-/**
- * Check if message is about products
- */
-export function isProductQuery(message: string): boolean {
-  const productKeywords = [
-    "product",
-    "supplement",
-    "vitamin",
-    "protein",
-    "creatine",
-    "bcaa",
-    "omega",
-    "fish oil",
-    "collagen",
-    "pre workout",
-    "post workout",
-    "find",
-    "search",
-    "looking for",
-    "show me",
-    "do you have",
-    "suggest",
-    "recommend",
-    "need",
-    "want",
-    "buy",
-    "purchase",
-  ];
-
-  const lowerMessage = message.toLowerCase();
-  return productKeywords.some((keyword) => lowerMessage.includes(keyword));
 }
 
 /**
@@ -248,13 +241,6 @@ function filterProductsForChat(
     });
   }
 
-  // Apply category filtering
-  if (criteria.categoryId) {
-    filtered = filtered.filter(
-      (product) => product.categoryId === criteria.categoryId
-    );
-  }
-
   return filtered.slice(0, 5); // Limit for chat
 }
 
@@ -287,19 +273,6 @@ export function createProductHtml(products: ProductWithImageUrl[]): string {
       return `<div class="product-card" data-product-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-image="${imageUrl}" data-slug="${product.slug}"></div>`;
     })
     .join("");
-}
-
-/**
- * Format conversation messages for AI
- */
-export function formatMessagesForAI(
-  messages: ChatMessage[]
-): AIMessageFormat[] {
-  return messages.map((msg) => ({
-    id: msg.id,
-    role: msg.role as AIMessageFormat["role"],
-    content: msg.content,
-  }));
 }
 
 /**
@@ -352,136 +325,4 @@ export function createSystemMessage(
   }
 
   return systemMessage;
-}
-
-/**
- * Stream products based on search criteria
- */
-export async function* streamProductSearch(
-  userMessage: string,
-  searchCriteria: ChatbotSearchCriteria
-): AsyncGenerator<StreamProductResponse, void, unknown> {
-  try {
-    // Search for products
-    const products = await searchProductsForChat(searchCriteria);
-
-    let allProductInfo = "";
-    let allProductHtml = "";
-
-    for (let i = 0; i < products.length; i++) {
-      const product = products[i];
-      const productCount = i + 1;
-
-      // Format product info for AI
-      const productInfo = `${productCount}. ${product.name} - $${product.price} - ${product.description || "No description available"}`;
-      allProductInfo += (allProductInfo ? "\n" : "") + productInfo;
-
-      // Create product HTML
-      const imageUrl = product.images?.[0]?.imageUrl || "/media/blankImage.jpg";
-      const productHtml = `<div class="product-card" data-product-id="${product.id}" data-name="${product.name}" data-price="${product.price}" data-image="${imageUrl}" data-slug="${product.slug}"></div>`;
-      allProductHtml += productHtml;
-
-      yield {
-        productInfo: allProductInfo,
-        productHtml: allProductHtml,
-        productCount,
-        hasMore: i < products.length - 1,
-        isStreaming: true,
-      };
-    }
-
-    // Yield final response if we have products
-    if (products.length > 0) {
-      yield {
-        productInfo: allProductInfo,
-        productHtml: allProductHtml,
-        productCount: products.length,
-        hasMore: false,
-        isStreaming: false,
-      };
-    }
-  } catch (error) {
-    console.error("Error streaming products:", error);
-    throw error;
-  }
-}
-
-/**
- * Create a simple response message
- */
-export function createSimpleResponseMessage(productCount: number): string {
-  return `Here are the top ${Math.min(productCount, 5)} products matching your search.`;
-}
-
-/**
- * Create a no products found message
- */
-export function createNoProductsMessage(): string {
-  return "I don't see any products matching that query. Let me help you find something else.";
-}
-
-/**
- * Main function to process user message and return streaming response
- */
-export async function processUserMessage(
-  userMessage: ChatMessage,
-  conversationId?: string
-): Promise<ReadableStream> {
-  try {
-    // Check if this is a product-related query
-    if (isProductQuery(userMessage.content)) {
-      // Parse the query to extract search criteria
-      const criteria = await parseChatbotQuery(userMessage.content);
-
-      // Create ReadableStream from the async generator
-      const encoder = new TextEncoder();
-      return new ReadableStream({
-        async start(controller) {
-          try {
-            const productGenerator = streamProductSearch(
-              userMessage.content,
-              criteria
-            );
-
-            for await (const response of productGenerator) {
-              // Send the response data
-              const chunk = JSON.stringify(response) + "\n";
-              controller.enqueue(encoder.encode(chunk));
-            }
-
-            controller.close();
-          } catch (error) {
-            console.error("Stream error:", error);
-            controller.error(error);
-          }
-        },
-      });
-    } else {
-      // For non-product queries, return a helpful message
-      const response =
-        "I'm here to help you find health and nutrition products. Try asking me about supplements, vitamins, proteins, or any specific product you're looking for!";
-
-      // Create a simple readable stream
-      const encoder = new TextEncoder();
-      return new ReadableStream({
-        start(controller) {
-          controller.enqueue(encoder.encode(response));
-          controller.close();
-        },
-      });
-    }
-  } catch (error) {
-    console.error("Error processing user message:", error);
-
-    // Return error stream
-    const errorMessage =
-      "Sorry, I encountered an error while processing your request. Please try again.";
-    const encoder = new TextEncoder();
-    return new ReadableStream({
-      start(controller) {
-        controller.enqueue(encoder.encode(errorMessage));
-        controller.close();
-      },
-    });
-  }
 }
