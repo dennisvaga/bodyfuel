@@ -46,6 +46,10 @@ export class ChatController {
         messages
       );
 
+      console.log(
+        `Controller: Created/retrieved conversation with ID: ${conversation.id}`
+      );
+
       // Get the latest user message
       const userMessage = conversationService.getLatestUserMessage(
         conversation.messages
@@ -69,6 +73,8 @@ export class ChatController {
 
       // Use the conversation ID from the conversation service
       const sessionId = conversation.id;
+
+      console.log(`Controller: Using sessionId for streaming: ${sessionId}`);
 
       // If it's a product query, we'll stream products one by one
       if (isProductQuery) {
@@ -145,9 +151,7 @@ export class ChatController {
             role: "assistant",
             content: noProductsMessage,
           };
-          conversationService.handleConversation(conversationId, [
-            assistantMessage,
-          ]);
+          conversationService.addMessage(conversationId, assistantMessage);
 
           return;
         }
@@ -155,16 +159,7 @@ export class ChatController {
         // Complete the product streaming with a simple response
         streamService.completeProductStreaming(dataStream, productCount);
 
-        // Save the product response to the conversation
-        const responseMessage =
-          messageService.createSimpleResponseMessage(productCount);
-        const assistantMessage: ChatMessage = {
-          role: "assistant",
-          content: responseMessage,
-        };
-        conversationService.handleConversation(conversationId, [
-          assistantMessage,
-        ]);
+        // Product messages are already saved in handleProductStreaming - no need to save again
       },
       onError: (error) => {
         console.error("Data stream error:", error);
@@ -233,10 +228,8 @@ export class ChatController {
             content: aiResponse,
           };
 
-          // Save the message to the conversation
-          conversationService.handleConversation(conversationId, [
-            assistantMessage,
-          ]);
+          // Save the message to the conversation using the new helper method
+          conversationService.addMessage(conversationId, assistantMessage);
 
           console.log("Saved AI response to conversation:", conversationId);
         }
@@ -254,6 +247,34 @@ export class ChatController {
       } else {
         res.end();
       }
+    }
+  }
+
+  /**
+   * Debug endpoint to see conversation state
+   */
+  async debugConversations(req: Request, res: Response): Promise<void> {
+    try {
+      conversationService.debugConversations();
+      res.json({
+        success: true,
+        message: "Check server logs for conversation debug info",
+      });
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
+  /**
+   * Get a specific conversation for debugging
+   */
+  async getConversation(req: Request, res: Response): Promise<void> {
+    try {
+      const { conversationId } = req.params;
+      const conversation = conversationService.getConversation(conversationId);
+      res.json({ success: true, conversation });
+    } catch (error) {
+      handleError(error, res);
     }
   }
 }

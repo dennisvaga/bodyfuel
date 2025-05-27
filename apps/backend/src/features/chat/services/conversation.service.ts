@@ -27,9 +27,13 @@ export function handleConversation(
 
     // Add any new messages that aren't already in the conversation
     for (const message of messages) {
-      // Check if this message is already in the conversation
+      // Improved duplicate checking - use timestamp or add unique ID
       const messageExists = updatedMessages.some(
-        (m) => m.content === message.content && m.role === message.role
+        (m) =>
+          m.content === message.content &&
+          m.role === message.role &&
+          // For assistant messages with HTML, be more lenient on duplicates
+          (m.role !== "assistant" || m.content.length < 100)
       );
 
       if (!messageExists) {
@@ -59,6 +63,81 @@ export function handleConversation(
   conversations.set(newConversationId, newConversation);
 
   return newConversation;
+}
+
+/**
+ * Add a single message to an existing conversation
+ */
+export function addMessage(conversationId: string, message: ChatMessage): void {
+  console.log(
+    `addMessage called with conversationId: ${conversationId}, message role: ${message.role}`
+  );
+
+  if (conversations.has(conversationId)) {
+    const conversation = conversations.get(conversationId)!;
+    conversation.messages.push(message);
+    console.log(
+      `Successfully added message. Conversation now has ${conversation.messages.length} messages`
+    );
+  } else {
+    console.error(
+      `Conversation ${conversationId} not found for single message! Available conversations:`,
+      Array.from(conversations.keys())
+    );
+  }
+}
+
+/**
+ * Add multiple messages to an existing conversation
+ */
+export function addMessages(
+  conversationId: string,
+  messages: ChatMessage[]
+): void {
+  console.log(
+    `addMessages called with conversationId: ${conversationId}, messages count: ${messages.length}`
+  );
+
+  if (conversations.has(conversationId)) {
+    const conversation = conversations.get(conversationId)!;
+    const beforeCount = conversation.messages.length;
+    conversation.messages.push(...messages);
+    const afterCount = conversation.messages.length;
+
+    console.log(
+      `Successfully added ${messages.length} messages. Before: ${beforeCount}, After: ${afterCount}`
+    );
+  } else {
+    console.error(
+      `Conversation ${conversationId} not found! Available conversations:`,
+      Array.from(conversations.keys())
+    );
+  }
+}
+
+/**
+ * Get a conversation by ID
+ */
+export function getConversation(
+  conversationId: string
+): { id: string; messages: ChatMessage[] } | null {
+  return conversations.get(conversationId) || null;
+}
+
+/**
+ * Debug function to list all conversations
+ */
+export function debugConversations(): void {
+  console.log("=== Current Conversations ===");
+  for (const [id, conv] of conversations.entries()) {
+    console.log(`Conversation ${id}: ${conv.messages.length} messages`);
+    conv.messages.forEach((msg, index) => {
+      console.log(
+        `  ${index + 1}. ${msg.role}: ${msg.content.substring(0, 100)}...`
+      );
+    });
+  }
+  console.log("=============================");
 }
 
 /**
@@ -98,4 +177,17 @@ export function limitMessagesForContext(
 
   // Otherwise, return the most recent messages up to the limit
   return messages.slice(-limit);
+}
+
+/**
+ * Create a conversation summary for streamed products
+ */
+export function createProductStreamSummary(
+  productCount: number,
+  searchQuery: string
+): ChatMessage {
+  return {
+    role: "assistant",
+    content: `Found ${productCount} products for "${searchQuery}". Products were streamed above.`,
+  };
 }
