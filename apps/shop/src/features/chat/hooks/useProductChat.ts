@@ -41,7 +41,7 @@ export function useProductChat() {
           "Hi there! I can help you find products or answer questions about BodyFuel. What are you looking for today?",
       },
     ],
-    api: `${getPlatformAwareUrl}api/chat`,
+    api: `/api/chat`,
     onError: (error) => {
       console.error("Chat error:", error);
       setProcessingMessages(false);
