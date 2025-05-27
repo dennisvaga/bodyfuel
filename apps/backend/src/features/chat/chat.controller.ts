@@ -7,7 +7,7 @@ import * as messageService from "./utils/message-utils.js";
 import * as streamService from "./services/chat.service.js";
 import * as streamUtils from "./utils/stream-utils.js";
 import { handleError } from "@/src/utils/handle-errors.js";
-import { sendResponse } from "@utils/apiResponse.js";
+import { sendResponse } from "@utils/api-response.js";
 
 /**
  * Chat controller responsible for handling HTTP requests related to chat

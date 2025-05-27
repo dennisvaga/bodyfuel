@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import ordersService from "./orders.service.js";
 import { handleError } from "@/src/utils/handle-errors.js";
-import { sendResponse } from "@utils/apiResponse.js";
+import { sendResponse } from "@utils/api-response.js";
 
 /**
  * Orders controller responsible for handling HTTP requests related to orders

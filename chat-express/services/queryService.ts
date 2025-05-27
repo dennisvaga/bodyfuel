@@ -1,0 +1,219 @@
+import { ChatbotSearchCriteria } from "../types/chat.types.js";
+import {
+  extractCategoryFromMessage,
+  findCategoryBySearchTerm,
+} from "../utils/categoryMatcher.js";
+
+/**
+ * Extract search query from user message
+ *
+ * @param userMessage The user's message content
+ * @returns The extracted search query
+ */
+export async function extractSearchQuery(userMessage: string): Promise<string> {
+  // Extract search terms and price range from the user message
+  const searchTermsMatch = userMessage.match(
+    /(?:find|search|looking for|show me|do you have|suggest|get|want|give me|send me)\s+(?:some|good|best)?\s+(.*?)(?:\s+(?:for|in\s+range\s+of|around|about)\s+(\d+)(?:\.(\d+))?\s+dollars)?/i
+  );
+
+  // Check for price-related queries first
+  // Match both "between X and Y" and "between X-Y" formats
+  const priceRangeMatch =
+    userMessage.match(
+      /between\s+\$?(\d+)(?:\.(\d+))?\$?\s+(?:and|to|-)\s+\$?(\d+)(?:\.(\d+))?\$?/i
+    ) ||
+    userMessage.match(
+      /between\s+\$?(\d+)(?:\.(\d+))?\$?-\$?(\d+)(?:\.(\d+))?\$?/i
+    );
+  const underPriceMatch = userMessage.match(
+    /(?:under|less than|below|cheaper than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
+  );
+  const overPriceMatch = userMessage.match(
+    /(?:over|above|more than|higher than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
+  );
+
+  let searchQuery = "";
+
+  if (priceRangeMatch || underPriceMatch || overPriceMatch) {
+    // For price range queries, extract product type if mentioned
+    // Look for category terms in the message
+    const categoryTerms = userMessage
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, " ")
+      .split(/\s+/);
+
+    // Check if any of the words match common category terms
+    // We'll extract this dynamically later
+    const categoryMatch = categoryTerms.find((term) =>
+      /weight|loss|fat|burn|diet|vitamin|protein|creatine|pre|post|workout|supplement|bcaa|omega|fish oil|amino|collagen/i.test(
+        term
+      )
+    );
+
+    // Special handling for pre-workout and post-workout
+    const preWorkoutMatch = userMessage
+      .toLowerCase()
+      .match(/pre.?workout|pre workout|preworkout/i);
+    const postWorkoutMatch = userMessage
+      .toLowerCase()
+      .match(/post.?workout|post workout|postworkout/i);
+
+    if (preWorkoutMatch) {
+      searchQuery = "pre-workout";
+    } else if (postWorkoutMatch) {
+      searchQuery = "post-workout";
+    } else if (categoryMatch) {
+      searchQuery = categoryMatch;
+    } else {
+      // If no specific category term, check for product terms
+      if (/\b(product|products)\b/i.test(userMessage)) {
+        // If it's a generic product query with a price range, use "supplement" as a fallback
+        // This ensures we have a search term for price-based queries
+        searchQuery = "supplement";
+      } else {
+        // If no specific product type, use a generic search
+        searchQuery = "supplement";
+      }
+    }
+  } else if (searchTermsMatch && searchTermsMatch[1]) {
+    searchQuery = searchTermsMatch[1].trim();
+  } else {
+    // Use the category matcher utilities to extract category from message
+    const extractedCategory = await extractCategoryFromMessage(userMessage);
+
+    if (extractedCategory) {
+      searchQuery = extractedCategory.name.toLowerCase();
+    } else {
+      // If no specific pattern matched, extract keywords from the message
+      const keywords = userMessage.match(
+        /weight loss|fat loss|vitamin|protein|creatine|pre.?workout|pre workout|preworkout|post.?workout|post workout|postworkout|supplement|bcaa|omega|fish oil|amino|collagen/gi
+      );
+      if (keywords && keywords.length > 0) {
+        searchQuery = keywords[0];
+      } else {
+        // Check for simple product queries like "give me vitamins"
+        const simpleProductMatch = userMessage.match(
+          /\b(weight loss|fat loss|vitamin|protein|creatine|pre.?workout|post.?workout|supplement|bcaa|omega|fish oil|amino|collagen)s?\b/i
+        );
+        if (simpleProductMatch) {
+          searchQuery = simpleProductMatch[1];
+        } else {
+          // Last resort: use the cleaned message as the search query
+          searchQuery = userMessage.replace(/[^\w\s]/g, "").trim();
+        }
+      }
+    }
+  }
+
+  return searchQuery;
+}
+
+/**
+ * Extract price range from user message
+ *
+ * @param userMessage The user's message content
+ * @returns Object containing minPrice, maxPrice, and targetPrice
+ */
+export function extractPriceRange(userMessage: string): {
+  minPrice?: number;
+  maxPrice?: number;
+  targetPrice?: number;
+} {
+  let targetPrice: number | undefined;
+  let minPrice: number | undefined;
+  let maxPrice: number | undefined;
+
+  // Extract price information if available
+  // Match both "between X and Y" and "between X-Y" formats
+  const priceRangeMatch =
+    userMessage.match(
+      /between\s+\$?(\d+)(?:\.(\d+))?\$?\s+(?:and|to|-)\s+\$?(\d+)(?:\.(\d+))?\$?/i
+    ) ||
+    userMessage.match(
+      /between\s+\$?(\d+)(?:\.(\d+))?\$?-\$?(\d+)(?:\.(\d+))?\$?/i
+    );
+  const underPriceMatch = userMessage.match(
+    /(?:under|less than|below|cheaper than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
+  );
+  const overPriceMatch = userMessage.match(
+    /(?:over|above|more than|higher than)\s+\$?(\d+)(?:\.(\d+))?\$?/i
+  );
+  const priceMatch = userMessage.match(/\$?(\d+)(?:\.(\d+))?\$?\s+dollars/i);
+
+  if (priceRangeMatch) {
+    // Handle "between X and Y" price range
+    const minPriceStr =
+      priceRangeMatch[1] + (priceRangeMatch[2] ? "." + priceRangeMatch[2] : "");
+    const maxPriceStr =
+      priceRangeMatch[3] + (priceRangeMatch[4] ? "." + priceRangeMatch[4] : "");
+    minPrice = parseFloat(minPriceStr);
+    maxPrice = parseFloat(maxPriceStr);
+  } else if (underPriceMatch) {
+    // Handle "under X" price
+    const priceCeiling =
+      underPriceMatch[1] + (underPriceMatch[2] ? "." + underPriceMatch[2] : "");
+    maxPrice = parseFloat(priceCeiling);
+    minPrice = 0; // Start from 0
+  } else if (overPriceMatch) {
+    // Handle "over X" price
+    const priceFloor =
+      overPriceMatch[1] + (overPriceMatch[2] ? "." + overPriceMatch[2] : "");
+    minPrice = parseFloat(priceFloor);
+    maxPrice = 10000; // Set a high upper limit
+  } else if (priceMatch) {
+    // Handle exact price with some flexibility
+    targetPrice = parseFloat(
+      priceMatch[1] + (priceMatch[2] ? "." + priceMatch[2] : "")
+    );
+    // Set a price range around the target price (±20%)
+    minPrice = targetPrice * 0.8;
+    maxPrice = targetPrice * 1.2;
+  }
+
+  return { minPrice, maxPrice, targetPrice };
+}
+
+/**
+ * Check if a message is a product query
+ *
+ * @param message The message content to check
+ * @returns True if the message is a product query, false otherwise
+ */
+export function isProductQuery(message: string): boolean {
+  // Expanded regex to catch more product-related queries
+  // Added more specific terms like "vitamins" (plural), "supplements", etc.
+  // Added common request phrases like "show me", "give me", "looking for"
+  // Added price-related terms like "over", "above", "between"
+  // Added weight loss and fat loss terms
+  return /product|supplement|protein|creatine|pre.?workout|vitamin|nutrition|bcaa|omega|fish oil|amino|collagen|weight\s+loss|fat\s+loss|fat\s+burn|diet|slimming|thermogenic|under|less than|over|above|more than|higher than|between|\$|show me|give me|looking for|do you have|can i get|recommend|suggest/i.test(
+    message
+  );
+}
+
+/**
+ * Parse a chatbot query into search criteria
+ *
+ * @param userMessage The user's message
+ * @returns Promise with the parsed search criteria
+ */
+export async function parseChatbotQuery(
+  userMessage: string
+): Promise<ChatbotSearchCriteria> {
+  const searchQuery = await extractSearchQuery(userMessage);
+  const { minPrice, maxPrice, targetPrice } = extractPriceRange(userMessage);
+
+  // Extract category if possible
+  let categoryId: number | undefined = undefined;
+  const category = await extractCategoryFromMessage(userMessage);
+  if (category) {
+    categoryId = category.id;
+  }
+
+  return {
+    searchQuery,
+    minPrice,
+    maxPrice,
+    targetPrice,
+    categoryId,
+  };
+}
