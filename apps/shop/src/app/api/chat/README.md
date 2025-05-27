@@ -1,263 +1,188 @@
-# Chat API Architecture
+# Next.js Chat API
 
-This directory contains the chat API implementation for the BodyFuel application, providing AI-powered product search and recommendations through a conversational interface using DeepSeek AI.
+This directory contains the Next.js API implementation for the BodyFuel chat feature, migrated from the Express.js implementation. It provides AI-powered product search and recommendations through a conversational interface with real-time streaming.
 
 ## Directory Structure
 
 ```
 apps/shop/src/app/api/chat/
 ├── config/
-│   └── aiConfig.ts     # AI configuration and DeepSeek setup
+│   └── aiConfig.ts              # DeepSeek AI configuration
 ├── schema/
-│   └── apiSchema.ts    # Zod schemas and validation types
+│   └── apiSchema.ts             # Zod validation schemas
 ├── types/
-│   └── chatTypes.ts    # Chat-related types and interfaces
+│   └── chatTypes.ts             # TypeScript type definitions
 ├── utils/
-│   ├── queryUtils.ts   # Message parsing & query extraction functions
-│   ├── messageUtils.ts # Message processing and formatting utilities
-│   ├── productUtils.ts # Product formatting for AI and HTML output
-│   └── apiHelpers.ts   # Request validation and error handling
-├── route.ts           # Next.js API route using shared productService directly
-└── README.md          # This documentation
+│   ├── apiHelpers.ts            # Request validation & error handling
+│   ├── messageUtils.ts          # Message formatting for AI
+│   ├── queryUtils.ts            # Query parsing & product detection
+│   ├── categoryMatcher.ts       # Category matching logic
+│   ├── productSearchUtils.ts    # Database streaming logic
+│   └── streamUtils.ts           # Next.js streaming utilities
+├── services/
+│   ├── chatProductService.ts    # Product search & formatting
+│   ├── chatStreamingService.ts  # Streaming orchestration
+│   ├── chatRepository.ts        # Database access layer
+├── route.ts                     # Main Next.js API route handler
+└── README.md                    # This documentation
 ```
 
 ## Architecture Overview
 
-The chat API follows a simplified, utility-based architecture optimized for Next.js API routes:
+The chat feature follows a clean layered architecture:
 
 ```mermaid
 flowchart TD
     Client[Client] --> Route[route.ts]
-    Route --> MessageUtils[messageUtils.ts]
-    Route --> ApiHelpers[apiHelpers.ts]
-    Route --> QueryUtils[queryUtils.ts]
-    Route --> ProductUtils[productUtils.ts]
-    Route --> AIConfig[config/aiConfig.ts]
-    Route --> Schema[schema/apiSchema.ts]
-    Route --> AI[DeepSeek AI]
-    QueryUtils --> CategoryService[Shared Category Service]
-    Route --> ProductService[Shared Product Service]
-    ProductService --> Database[(Database)]
+    Route --> QueryUtils[utils/queryUtils.ts]
+    Route --> MessageUtils[utils/messageUtils.ts]
+    Route --> StreamingService[services/chatStreamingService.ts]
+
+    StreamingService --> ProductService[services/chatProductService.ts]
+    StreamingService --> Repository[services/chatRepository.ts]
+    StreamingService --> StreamUtils[utils/streamUtils.ts]
+
+    QueryUtils --> CategoryMatcher[utils/categoryMatcher.ts]
+    Repository --> ProductSearchUtils[utils/productSearchUtils.ts]
+    ProductSearchUtils --> Database[(Database)]
+    CategoryMatcher --> Database
 ```
 
-## Request Flow
+## Key Features
 
-1. **Client Request**: The client sends a chat message to the `/api/chat` Next.js API route
-2. **Route Handler**: `route.ts` handles the POST request and processes the entire flow
-3. **Schema Validation**: Uses `schema/apiSchema.ts` for Zod schema validation
-4. **Request Validation**: Uses `apiHelpers.ts` to validate and parse the request
-5. **Message Processing**: Uses `messageUtils.ts` to format messages and detect product queries
-6. **Query Parsing**: Uses `queryUtils.ts` to extract search criteria from natural language
-7. **Product Search**: If product query, uses shared `productService` directly for search
-8. **Product Formatting**: Uses `productUtils.ts` to format products for AI and HTML output
-9. **AI Integration**: Uses `config/aiConfig.ts` to configure and interact with DeepSeek AI
-10. **Streaming Response**: Returns streaming AI response with optional product data
+### Real-time Product Streaming
 
-## Key Components
+- Products are streamed one-by-one with 500ms delays
+- Uses AI SDK's `createDataStreamResponse` for Next.js compatibility
+- Maintains the exact same user experience as the Express implementation
 
-### Route Handler
+### Advanced Search Capabilities
 
-- **route.ts**: Main Next.js API route containing all business logic
-  - Handles both product queries and general chat
-  - Integrates all utility functions
-  - Manages streaming responses with DeepSeek AI
-  - Supports both single message and message array formats
+- **Natural Language Processing**: Extracts search queries and price ranges from user messages
+- **Category Matching**: Intelligent category detection with fuzzy matching
+- **Price Filtering**: Supports "under $X", "over $X", and "between $X and $Y" queries
+- **Query Expansion**: Automatically expands search terms with common variations
 
-### Schema & Types
+### AI Integration
 
-- **schema/apiSchema.ts**: Zod schemas and validation types
+- **DeepSeek Integration**: Streaming AI responses with product context
+- **Context Management**: Maintains conversation history for better responses
+- **Product Context**: Injects product information into AI prompts
 
-  - `chatRequestSchema`: Request validation schema
-  - `chatMessageSchema`: Message structure validation
-  - `ChatRequestType` & `ChatMessageType`: Inferred types
-  - `ErrorResponse` & `SuccessResponse`: API response types
+## API Endpoints
 
-- **types/chatTypes.ts**: Core chat-related types
-  - `ChatMessage`: Message structure for conversations
-  - `AIMessageFormat`: Format for AI processing
-  - `ChatbotSearchCriteria`: Product search parameters
-  - `StreamProductResponse`: Product streaming response format
+### POST /api/chat
 
-### Configuration
+Processes chat messages and returns streaming responses.
 
-- **config/aiConfig.ts**: AI model configuration
-  - DeepSeek client initialization
-  - AI configuration constants (`temperature`, `maxTokens`)
-  - Model settings and parameters
+**Request Body:**
 
-### Utilities
+```typescript
+{
+  conversationId?: string;
+  messages: Array<{
+    id?: string;
+    role: "system" | "user" | "assistant";
+    content: string;
+  }>;
+}
+```
 
-- **utils/queryUtils.ts**: Message parsing & query extraction
+**Response:**
 
-  - `extractSearchQuery`: Extract search terms from messages
-  - `extractPriceFromQuery`: Parse price ranges from queries
-  - `parseChatbotQuery`: Extract complete search criteria
-  - `isProductQuery`: Detect product-related queries
+- Streaming response using AI SDK's data stream format
+- Headers include `X-Conversation-ID` and `X-Streaming-Products`
 
-- **utils/messageUtils.ts**: Message processing and formatting
+## Migration from Express
 
-  - `getCurrentMessage`: Extract current message from request
-  - `formatMessagesForAI`: Format messages for AI consumption
-  - `createMessage`: Create properly formatted messages
-  - `createSystemMessage`: Generate AI system prompts
+This implementation maintains 100% functional compatibility with the original Express implementation while adapting to Next.js patterns:
 
-- **utils/productUtils.ts**: Product formatting for AI and HTML output
+### Key Changes
 
-  - `formatProductsForAI`: Format products for AI context
-  - `createProductHtml`: Generate product display HTML
+1. **Route Handler**: Express controller → Next.js route handler (`route.ts`)
+2. **Streaming**: Express SSE → AI SDK `createDataStreamResponse`
+3. **Database Access**: Direct `@repo/database` imports (no API calls)
+4. **Error Handling**: Next.js Response objects instead of Express responses
+5. **Import Paths**: Removed `.js` extensions for TypeScript compatibility
 
-- **utils/apiHelpers.ts**: Request validation and error handling
-  - `validateChatRequest`: Validate incoming requests using schemas
-  - `validateMessage`: Ensure message content exists
-  - `createErrorResponse`: Generate standardized error responses
+### Preserved Functionality
+
+- ✅ Real-time product streaming with 500ms delays
+- ✅ Advanced search with category matching and price filtering
+- ✅ DeepSeek AI integration with product context
+- ✅ Database direct access using Prisma
+- ✅ All original query parsing and category matching logic
 
 ## Usage Examples
 
-### Schema Validation
+### Basic Product Search
 
 ```typescript
-import { chatRequestSchema } from "./schema/apiSchema";
-
-const body = await request.json();
-const validationResult = chatRequestSchema.safeParse(body);
-```
-
-### Processing a Chat Message
-
-```typescript
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const validationResult = chatRequestSchema.safeParse(body);
-    const validation = validateChatRequest(validationResult);
-
-    if (!validation.success) {
-      return validation.response;
-    }
-
-    const { message, messages = [] } = validation.data;
-    const currentMessage = getCurrentMessage(message, messages);
-
-    if (isProductQuery(currentMessage)) {
-      return await handleProductQuery(currentMessage, messages);
-    } else {
-      return await handleGeneralChat(currentMessage, messages);
-    }
-  } catch (error) {
-    return createErrorResponse(
-      "Internal server error",
-      "Failed to process chat request"
-    );
-  }
-}
-```
-
-### Using Utility Functions
-
-```typescript
-// Detecting product queries
-import { isProductQuery } from "./utils/queryUtils";
-
-const message = "I'm looking for protein powder under $50";
-const isProduct = isProductQuery(message); // true
-
-// Parsing product queries
-import { parseChatbotQuery } from "./utils/queryUtils";
-
-const criteria = await parseChatbotQuery(message);
-// Returns: { query: "protein powder", maxPrice: 50, ... }
-
-// Validating requests
-import { validateChatRequest } from "./utils/apiHelpers";
-
-const validation = validateChatRequest(validationResult);
-if (!validation.success) {
-  return validation.response; // Error response
-}
-```
-
-## Best Practices
-
-1. **Schema-First Validation**: Use Zod schemas in `schema/` folder for all validation
-2. **Utility-Based Architecture**: Organize related functionality into focused utility files
-3. **Shared Services**: Leverage existing shared services (`@repo/shared`) for consistency
-4. **Type Safety**: Use Zod schemas and TypeScript types throughout
-5. **Streaming Responses**: Utilize AI SDK's streaming for better UX
-6. **Error Handling**: Implement proper validation and error responses
-7. **Separation of Concerns**: Keep utilities focused on single responsibilities
-
-## Architecture Benefits
-
-### Clean Separation
-
-- **schema/**: Validation schemas and API types
-- **config/**: Configuration and setup
-- **types/**: Business logic types
-- **utils/**: Focused utility functions
-- **route.ts**: Single entry point with integrated logic
-
-### Schema-Driven Development
-
-- **Type Safety**: Zod schemas ensure runtime validation
-- **Consistent APIs**: Centralized schema definitions
-- **Better DX**: IntelliSense and type checking
-
-### Utility-Based Design
-
-- **Reusable Functions**: Utilities can be easily tested and reused
-- **Single Responsibility**: Each utility handles one concern
-- **Clear Dependencies**: Easy to understand what each file does
-
-## Extending the API
-
-When extending the chat API:
-
-1. **Add Schemas**: Update schema files in `schema/` folder
-2. **Add Types**: Update type files in `types/` folder
-3. **Add Utilities**: Create new utility functions in appropriate `utils/` files
-4. **Update Route**: Modify `route.ts` to integrate new functionality
-5. **Maintain Structure**: Keep utilities focused and single-purpose
-
-### Adding New Features
-
-```typescript
-// Example: Adding new request schema
-// File: schema/apiSchema.ts
-export const newFeatureSchema = z.object({
-  // New schema definition
+const response = await fetch("/api/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    messages: [{ role: "user", content: "Show me protein powders under $50" }],
+  }),
 });
-
-// Example: Adding sentiment analysis utility
-// File: utils/sentimentUtils.ts
-export async function analyzeSentiment(message: string) {
-  // Implementation here
-}
-
-// Then use in route.ts
-import { newFeatureSchema } from "./schema/apiSchema";
-import { analyzeSentiment } from "./utils/sentimentUtils";
 ```
 
-## Dependencies
+### Streaming Response Handling
 
-### Core Dependencies
+```typescript
+const reader = response.body?.getReader();
+const decoder = new TextDecoder();
 
-- **@ai-sdk/deepseek**: DeepSeek AI integration
-- **ai**: AI SDK for streaming responses
-- **zod**: Schema validation
-- **@repo/shared**: Shared product and category services
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+
+  const chunk = decoder.decode(value);
+  // Process streaming data
+}
+```
+
+## Development
+
+### Building Dependencies
+
+After making changes to shared packages, build them:
+
+```bash
+npm run build --workspace=packages/shared
+npm run build --workspace=packages/database
+```
 
 ### Environment Variables
 
-- `DEEPSEEK_API`: DeepSeek API key (required)
+Required environment variables:
 
-## File Structure Benefits
+- `DEEPSEEK_API`: DeepSeek API key
+- `DATABASE_URL`: PostgreSQL connection string
 
-- **schema/**: Centralized validation schemas
-- **config/**: Configuration and setup
-- **types/**: Business logic type definitions
-- **utils/**: Focused utility functions
-- **route.ts**: Single entry point with integrated logic
-- **README.md**: Complete documentation
+### Testing
 
-This structure provides clear separation between validation schemas, business types, configuration, and utilities while maintaining simplicity and ease of maintenance.
+The API can be tested using the existing chat widget in the shop application or with direct HTTP requests.
+
+## Performance Considerations
+
+- **Database Queries**: Optimized with proper indexing and query limits
+- **Streaming**: Products stream individually to reduce perceived latency
+- **Context Management**: Limited to last 5 messages to control token usage
+- **Caching**: Category data is cached for 5 minutes to reduce database load
+
+## Error Handling
+
+The API includes comprehensive error handling:
+
+- **Validation Errors**: Zod schema validation with detailed error messages
+- **Database Errors**: Graceful fallbacks and error logging
+- **Streaming Errors**: Proper cleanup and error propagation
+- **AI Errors**: Fallback responses when AI service is unavailable
+
+## Future Enhancements
+
+- **Conversation Persistence**: Currently conversations are not persisted
+- **User Context**: Personalized recommendations based on user history
+- **Advanced Analytics**: Track search patterns and popular queries
+- **Multi-language Support**: Extend category matching for multiple languages

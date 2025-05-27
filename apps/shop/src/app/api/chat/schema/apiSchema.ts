@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /**
- * Chat message schema
+ * Chat message schema for API validation
  */
 export const chatMessageSchema = z.object({
   id: z.string().optional(),
@@ -10,34 +10,32 @@ export const chatMessageSchema = z.object({
 });
 
 /**
- * Chat request schema - supports both single message and messages array
+ * Chat request schema for API validation
  */
-export const chatRequestSchema = z
-  .object({
-    conversationId: z.string().optional(),
-    message: z.string().optional(), // Single message for new conversations
-    messages: z.array(chatMessageSchema).optional(), // Message history
-  })
-  .refine(
-    (data) => data.message || (data.messages && data.messages.length > 0),
-    {
-      message: "Either message or messages must be provided",
-    }
-  );
-
-export type ChatRequestType = z.infer<typeof chatRequestSchema>;
-export type ChatMessageType = z.infer<typeof chatMessageSchema>;
+export const chatRequestSchema = z.object({
+  conversationId: z.string().optional(),
+  messages: z.array(chatMessageSchema),
+});
 
 /**
- * API Response types
+ * Chat response schema
  */
-export type ErrorResponse = {
-  error: string;
-  message?: string;
-  details?: any;
-};
+export const chatResponseSchema = z.object({
+  success: z.boolean(),
+  message: z.string().optional(),
+  data: z.any().optional(),
+});
 
-export type SuccessResponse = {
-  message: string;
-  data?: any;
-};
+/**
+ * Error response schema
+ */
+export const errorResponseSchema = z.object({
+  success: z.literal(false),
+  message: z.string(),
+  error: z.string().optional(),
+});
+
+// Type exports
+export type ChatRequestType = z.infer<typeof chatRequestSchema>;
+export type ChatResponseType = z.infer<typeof chatResponseSchema>;
+export type ErrorResponse = z.infer<typeof errorResponseSchema>;
