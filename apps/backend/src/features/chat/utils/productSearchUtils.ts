@@ -1,10 +1,10 @@
 import { getPrisma } from "@repo/database";
-import { ChatbotSearchCriteria } from "../types/chatTypes";
+import { ChatbotSearchCriteria } from "../types/chatTypes.js";
 import {
   extractCategoryFromMessage,
   findCategoryBySearchTerm,
   expandSearchQuery,
-} from "./categoryMatcher";
+} from "./categoryMatcher.js";
 
 /**
  * Constructs a Prisma query filter for product searches

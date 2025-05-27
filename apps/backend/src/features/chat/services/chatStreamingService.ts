@@ -2,11 +2,11 @@ import { DataStreamWriter } from "ai";
 import {
   ChatbotSearchCriteria,
   StreamProductResponse,
-} from "../types/chatTypes";
-import * as chatRepository from "../repository/chatRepository";
-import * as productService from "./chatProductService";
-import * as streamUtils from "../utils/streamUtils";
-import { createSimpleResponseMessage } from "../utils/messageUtils";
+} from "../types/chatTypes.js";
+import * as chatRepository from "../repository/chatRepository.js";
+import * as productService from "./chatProductService.js";
+import * as streamUtils from "../utils/streamUtils.js";
+import { createSimpleResponseMessage } from "../utils/messageUtils.js";
 
 /**
  * Stream products based on search criteria
