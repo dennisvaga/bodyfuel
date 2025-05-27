@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { createDeepSeek } from "@ai-sdk/deepseek";
-import { streamText } from "ai";
+import { streamText, createDataStreamResponse } from "ai";
 import { chatRequestSchema, ChatMessage } from "./chat.types";
 import * as chatService from "./chat.service";
 
@@ -85,44 +85,105 @@ async function handleProductQuery(message: string, messages: ChatMessage[]) {
     // Parse the query to extract search criteria
     const searchCriteria = await chatService.parseChatbotQuery(message);
 
-    // Search for products
-    const products = await chatService.searchProductsForChat(searchCriteria);
+    // Use createDataStreamResponse for proper streaming like the old Express version
+    return createDataStreamResponse({
+      execute: async (dataStream) => {
+        // Search for products
+        const products =
+          await chatService.searchProductsForChat(searchCriteria);
 
-    // Format products for AI context
-    const productInfo = chatService.formatProductsForAI(products);
-    const productHtml = chatService.createProductHtml(products);
+        // If products found, stream them
+        if (products && products.length > 0) {
+          // Send product data through the stream
+          dataStream.writeData({
+            type: "product",
+            products: products.map((product) => ({
+              id: product.id,
+              name: product.name,
+              slug: product.slug,
+              image: product.images?.[0]?.imageUrl || "/media/blankImage.jpg",
+              price: product.variants?.[0]?.price || 0,
+              description: product.description || "",
+              category: "Product", // Use default since category relation might not be loaded
+            })),
+          });
 
-    // Create system message with product context
-    const systemMessage = chatService.createSystemMessage(
-      productInfo,
-      productHtml
-    );
+          // Send status update
+          dataStream.writeData({
+            type: "status",
+            status: "complete",
+            message: `Found ${products.length} products`,
+          });
 
-    // Format messages for AI
-    const messagesForAI = chatService.formatMessagesForAI(messages);
+          // Format products for AI context
+          const productInfo = chatService.formatProductsForAI(products);
+          const productHtml = chatService.createProductHtml(products);
 
-    // Add current message
-    messagesForAI.push({
-      id: Date.now().toString(),
-      role: "user",
-      content: message,
-    });
+          // Create system message with product context
+          const systemMessage = chatService.createSystemMessage(
+            productInfo,
+            "" // Don't include HTML in system message
+          );
 
-    // Stream the AI response
-    const result = await streamText({
-      model: deepseek("deepseek-chat"),
-      system: systemMessage,
-      messages: messagesForAI,
-      temperature: 0.7,
-      maxTokens: 500,
-    });
+          // Format messages for AI
+          const messagesForAI = chatService.formatMessagesForAI(messages);
 
-    // Return the streaming response
-    return result.toDataStreamResponse({
+          // Add current message
+          messagesForAI.push({
+            id: Date.now().toString(),
+            role: "user",
+            content: message,
+          });
+
+          // Generate AI response and merge into stream
+          const result = streamText({
+            model: deepseek("deepseek-chat"),
+            system: systemMessage,
+            messages: messagesForAI,
+            temperature: 0.7,
+            maxTokens: 500,
+          });
+
+          // Merge AI response into the data stream
+          result.mergeIntoDataStream(dataStream);
+        } else {
+          // No products found - send status and generate AI response
+          dataStream.writeData({
+            type: "status",
+            status: "no_products",
+            message: "No products found matching your criteria",
+          });
+
+          const systemMessage = chatService.createSystemMessage(
+            "No products were found for this search.",
+            ""
+          );
+
+          const messagesForAI = chatService.formatMessagesForAI(messages);
+          messagesForAI.push({
+            id: Date.now().toString(),
+            role: "user",
+            content: message,
+          });
+
+          const result = streamText({
+            model: deepseek("deepseek-chat"),
+            system: systemMessage,
+            messages: messagesForAI,
+            temperature: 0.7,
+            maxTokens: 300,
+          });
+
+          result.mergeIntoDataStream(dataStream);
+        }
+      },
+      onError: (error) => {
+        console.error("Data stream error:", error);
+        return error instanceof Error ? error.message : String(error);
+      },
       headers: {
+        "X-Streaming-Products": "true",
         "X-Product-Query": "true",
-        "X-Product-Count": products.length.toString(),
-        "X-Product-HTML": productHtml,
       },
     });
   } catch (error) {
@@ -158,7 +219,7 @@ async function handleGeneralChat(message: string, messages: ChatMessage[]) {
       content: message,
     });
 
-    // Stream the AI response
+    // For general chat, we can use the simpler toDataStreamResponse
     const result = await streamText({
       model: deepseek("deepseek-chat"),
       system: systemMessage,
@@ -167,9 +228,10 @@ async function handleGeneralChat(message: string, messages: ChatMessage[]) {
       maxTokens: 300,
     });
 
-    // Return the streaming response
+    // Return the streaming response with proper headers
     return result.toDataStreamResponse({
       headers: {
+        "X-Streaming-Products": "false",
         "X-Product-Query": "false",
       },
     });
