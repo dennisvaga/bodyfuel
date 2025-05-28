@@ -1,60 +1,80 @@
-# Next.js Chat API
+# BodyFuel Chat API
 
-This directory contains the Next.js API implementation for the BodyFuel chat feature, migrated from the Express.js implementation. It provides AI-powered product search and recommendations through a conversational interface with real-time streaming.
+This directory contains the Express.js backend implementation for the BodyFuel chat feature. It provides AI-powered product search and recommendations through a conversational interface with real-time streaming using AI SDK.
 
 ## Directory Structure
 
 ```
-apps/shop/src/app/api/chat/
+apps/backend/src/features/chat/
 ├── config/
-│   └── aiConfig.ts              # DeepSeek AI configuration
-├── schema/
-│   └── apiSchema.ts             # Zod validation schemas
-├── types/
-│   └── chatTypes.ts             # TypeScript type definitions
+│   └── ai-config.ts             # DeepSeek AI configuration
 ├── utils/
-│   ├── apiHelpers.ts            # Request validation & error handling
-│   ├── messageUtils.ts          # Message formatting for AI
-│   ├── queryUtils.ts            # Query parsing & product detection
-│   ├── categoryMatcher.ts       # Category matching logic
-│   ├── productSearchUtils.ts    # Database streaming logic
-│   └── streamUtils.ts           # Next.js streaming utilities
+│   ├── message-utils.ts         # Message formatting for AI
+│   ├── query-utils.ts           # Query parsing & product detection
+│   ├── product-search-utils.ts  # Database product search logic
+│   ├── category-matcher.ts      # Category matching logic
+│   ├── stream-utils.ts          # Legacy streaming utilities (deprecated)
+│   └── error-handler.ts         # Error handling utilities
 ├── services/
-│   ├── chatProductService.ts    # Product search & formatting
-│   ├── chatStreamingService.ts  # Streaming orchestration
-│   ├── chatRepository.ts        # Database access layer
-├── route.ts                     # Main Next.js API route handler
+│   ├── chat-product.service.ts  # Product search & formatting
+│   ├── conversation.service.ts  # Conversation management
+│   └── s3Service.ts             # S3 image handling
+├── chat.controller.ts           # Express controller with AI SDK streaming
+├── chat.repository.ts           # Database access layer
 └── README.md                    # This documentation
+
+packages/shared/src/features/chat/
+├── schemas/
+│   └── chatSchema.ts            # Zod validation schemas & inferred types
+├── types/
+│   └── chatTypes.ts             # Additional TypeScript type definitions
+└── index.ts                     # Feature exports
+
+apps/shop/src/features/chat/
+├── components/
+│   └── ChatWidget.tsx           # Main chat UI component
+├── hooks/
+│   └── useProductChat.ts        # Custom hook using AI SDK useChat
 ```
 
 ## Architecture Overview
 
-The chat feature follows a clean layered architecture:
+The chat feature follows a clean layered architecture with shared types:
 
 ```mermaid
 flowchart TD
-    Client[Client] --> Route[route.ts]
-    Route --> QueryUtils[utils/queryUtils.ts]
-    Route --> MessageUtils[utils/messageUtils.ts]
-    Route --> StreamingService[services/chatStreamingService.ts]
+    Client[Frontend Client] --> ChatService[packages/shared/features/chat/services]
+    ChatService --> BackendAPI[apps/backend/chat/controller]
 
-    StreamingService --> ProductService[services/chatProductService.ts]
-    StreamingService --> Repository[services/chatRepository.ts]
-    StreamingService --> StreamUtils[utils/streamUtils.ts]
+    BackendAPI --> QueryUtils[utils/query-utils.ts]
+    BackendAPI --> MessageUtils[utils/message-utils.ts]
+    BackendAPI --> ConversationService[services/conversation.service.ts]
 
-    QueryUtils --> CategoryMatcher[utils/categoryMatcher.ts]
-    Repository --> ProductSearchUtils[utils/productSearchUtils.ts]
+    BackendAPI --> ProductService[services/chat-product.service.ts]
+    BackendAPI --> Repository[chat.repository.ts]
+
+    QueryUtils --> CategoryMatcher[utils/category-matcher.ts]
+    Repository --> ProductSearchUtils[utils/product-search-utils.ts]
     ProductSearchUtils --> Database[(Database)]
     CategoryMatcher --> Database
+
+    SharedTypes[packages/shared/features/chat] -.-> BackendAPI
+    SharedTypes -.-> Client
 ```
 
 ## Key Features
 
+### AI SDK Integration
+
+- **Proper AI SDK Usage**: Uses `streamText()` and `pipeDataStreamToResponse()` from AI SDK
+- **Data Streaming**: Products streamed via AI SDK's data stream protocol
+- **No Manual SSE**: Eliminated custom Server-Sent Events implementation
+
 ### Real-time Product Streaming
 
 - Products are streamed one-by-one with 500ms delays
-- Uses AI SDK's `createDataStreamResponse` for Next.js compatibility
-- Maintains the exact same user experience as the Express implementation
+- Uses AI SDK's `pipeDataStreamToResponse` for Express.js compatibility
+- Simplified streaming approach using only AI SDK data streams
 
 ### Advanced Search Capabilities
 
@@ -68,6 +88,12 @@ flowchart TD
 - **DeepSeek Integration**: Streaming AI responses with product context
 - **Context Management**: Maintains conversation history for better responses
 - **Product Context**: Injects product information into AI prompts
+
+### Shared Type System
+
+- **Single Source of Truth**: All types defined in `packages/shared/features/chat`
+- **Type Safety**: Consistent types across frontend and backend
+- **Zod Validation**: Request validation using shared schemas
 
 ## API Endpoints
 
@@ -93,53 +119,75 @@ Processes chat messages and returns streaming responses.
 - Streaming response using AI SDK's data stream format
 - Headers include `X-Conversation-ID` and `X-Streaming-Products`
 
-## Migration from Express
+## Code Consolidation & Improvements
 
-This implementation maintains 100% functional compatibility with the original Express implementation while adapting to Next.js patterns:
+This implementation has been significantly improved and consolidated:
 
-### Key Changes
+### ✅ Completed Improvements
 
-1. **Route Handler**: Express controller → Next.js route handler (`route.ts`)
-2. **Streaming**: Express SSE → AI SDK `createDataStreamResponse`
-3. **Database Access**: Direct `@repo/database` imports (no API calls)
-4. **Error Handling**: Next.js Response objects instead of Express responses
-5. **Import Paths**: Removed `.js` extensions for TypeScript compatibility
-
-### Preserved Functionality
-
-- ✅ Real-time product streaming with 500ms delays
-- ✅ Advanced search with category matching and price filtering
-- ✅ DeepSeek AI integration with product context
-- ✅ Database direct access using Prisma
-- ✅ All original query parsing and category matching logic
+1. **Shared Type System**: All types moved to `packages/shared/features/chat`
+2. **Removed Obsolete Code**: Eliminated legacy streaming utilities and duplicate schemas
+3. **AI SDK Integration**: Proper use of AI SDK streaming instead of manual implementations
+4. **Consolidated Services**: Single chat service in shared package
+5. **Simplified Product Extraction**: Removed complex regex parsing for embedded product tags
+6. **Clean Architecture**: Clear separation between shared types, backend logic, and frontend UI
 
 ## Usage Examples
 
 ### Basic Product Search
 
 ```typescript
-const response = await fetch("/api/chat", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    messages: [{ role: "user", content: "Show me protein powders under $50" }],
-  }),
+// Using shared chat service
+import { chatService } from "@repo/shared";
+
+const response = await chatService.sendMessage({
+  messages: [{ role: "user", content: "Show me protein powders under $50" }],
 });
 ```
 
-### Streaming Response Handling
+### AI SDK Streaming Integration
 
 ```typescript
-const reader = response.body?.getReader();
-const decoder = new TextDecoder();
+// Backend streaming implementation
+pipeDataStreamToResponse(res, {
+  execute: async (dataStream) => {
+    // Stream products via data stream
+    await dataStream.writeData({
+      type: "product",
+      products: [product],
+      count: i + 1,
+    });
 
-while (true) {
-  const { done, value } = await reader.read();
-  if (done) break;
+    // Stream AI response
+    const result = streamText({
+      model: getDeepSeek()("deepseek-chat"),
+      system: systemMessage,
+      messages: messagesForAI,
+    });
 
-  const chunk = decoder.decode(value);
-  // Process streaming data
-}
+    result.mergeIntoDataStream(dataStream);
+  },
+});
+```
+
+### Frontend AI SDK Hook Usage
+
+```typescript
+// Frontend using AI SDK useChat hook
+const { messages, data, isLoading } = useChat({
+  api: "/api/chat",
+  streamProtocol: "data",
+});
+
+// Process streaming product data
+useEffect(() => {
+  if (data?.length > 0) {
+    const latestData = data[data.length - 1];
+    if (latestData.type === "product") {
+      setStreamedProducts((prev) => [...prev, ...latestData.products]);
+    }
+  }
+}, [data]);
 ```
 
 ## Development
@@ -153,6 +201,13 @@ npm run build --workspace=packages/shared
 npm run build --workspace=packages/database
 ```
 
+### Working with Shared Types
+
+1. **Adding New Types**: Add to `packages/shared/src/features/chat/types/chatTypes.ts`
+2. **Schema Changes**: Modify `packages/shared/src/features/chat/schemas/chatSchema.ts`
+3. **Service Updates**: Update `packages/shared/src/features/chat/services/chatService.ts`
+4. **Rebuild**: Always rebuild shared package after changes
+
 ### Environment Variables
 
 Required environment variables:
@@ -162,27 +217,58 @@ Required environment variables:
 
 ### Testing
 
-The API can be tested using the existing chat widget in the shop application or with direct HTTP requests.
+The API can be tested using:
+
+- Chat widget in the shop application
+- Direct HTTP requests to `/api/chat`
+- Postman/Thunder Client for API testing
 
 ## Performance Considerations
 
 - **Database Queries**: Optimized with proper indexing and query limits
-- **Streaming**: Products stream individually to reduce perceived latency
+- **AI SDK Streaming**: Products stream individually to reduce perceived latency
 - **Context Management**: Limited to last 5 messages to control token usage
 - **Caching**: Category data is cached for 5 minutes to reduce database load
+- **Type Safety**: Shared types eliminate runtime type errors
 
 ## Error Handling
 
 The API includes comprehensive error handling:
 
-- **Validation Errors**: Zod schema validation with detailed error messages
+- **Validation Errors**: Zod schema validation with detailed error messages from shared schemas
 - **Database Errors**: Graceful fallbacks and error logging
-- **Streaming Errors**: Proper cleanup and error propagation
+- **Streaming Errors**: Proper cleanup and error propagation via AI SDK
 - **AI Errors**: Fallback responses when AI service is unavailable
+- **Type Errors**: Compile-time type checking with shared types
+
+## Architecture Benefits
+
+### ✅ Achieved Goals
+
+1. **DRY Principle**: Single source of truth for types and schemas
+2. **Type Safety**: Consistent types across frontend/backend
+3. **Maintainability**: Clear separation of concerns
+4. **Performance**: Proper AI SDK usage instead of manual streaming
+5. **Code Quality**: Removed obsolete and duplicate code
+
+### 🔄 Simplified Streaming Flow
+
+**Previous**: Complex dual streaming (data stream + embedded tags)
+
+```
+Manual SSE → Custom parsing → Complex regex extraction
+```
+
+**Current**: Clean AI SDK integration
+
+```
+AI SDK streamText() → pipeDataStreamToResponse() → useChat() hook
+```
 
 ## Future Enhancements
 
-- **Conversation Persistence**: Currently conversations are not persisted
+- **Conversation Persistence**: Database storage for conversation history
 - **User Context**: Personalized recommendations based on user history
 - **Advanced Analytics**: Track search patterns and popular queries
 - **Multi-language Support**: Extend category matching for multiple languages
+- **Enhanced Error Boundaries**: More granular error handling and recovery
