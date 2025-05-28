@@ -74,7 +74,8 @@ export const getPlatformAwareUrl = (defaultUrl: string): string => {
       url.hostname = "10.0.2.2";
     }
 
-    return url.toString();
+    // Remove trailing slash from final URL
+    return url.toString().replace(/\/$/, "");
   } catch (error) {
     // If there's an error parsing the URL, return the original
     console.error("Error parsing URL:", error);

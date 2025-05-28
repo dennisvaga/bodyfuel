@@ -50,7 +50,7 @@ export const fetchData = async ({
   // Get platform-aware URL that handles Android emulator
   const baseUrl = getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API);
 
-  const response = await fetch(`${baseUrl}api/${slug}`, {
+  const response = await fetch(`${baseUrl}/api/${slug}`, {
     method: method,
     body: body,
     credentials: "include", // Allow cookies
