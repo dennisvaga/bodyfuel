@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import authService from "./auth.service.js";
-import { handleError } from "@/src/utils/handle-errors.js";
+import { handleError } from "#utils/handle-errors.js";
 import { sendResponse } from "@utils/api-response.js";
 
 /**

@@ -11,7 +11,7 @@ import * as messageService from "./utils/message-utils.js";
 import * as chatRepository from "./chat.repository.js";
 import * as productService from "./services/chat-product.service.js";
 import * as conversationService from "./services/conversation.service.js";
-import { handleError } from "@/src/utils/handle-errors.js";
+import { handleError } from "#utils/handle-errors.js";
 import { sendResponse } from "@utils/api-response.js";
 
 /**

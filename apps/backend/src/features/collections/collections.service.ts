@@ -1,7 +1,7 @@
 import { ProductWithImageUrl } from "@repo/database/types/product";
 import { PaginationMetadata } from "@repo/shared";
 import { assignImageUrlToProducts } from "@services/s3Service.js";
-import { getPaginationMetaData } from "@/src/utils/pagination-utils.js";
+import { getPaginationMetaData } from "#utils/pagination-utils.js";
 import collectionsRepository from "./collections.repository.js";
 
 /**
