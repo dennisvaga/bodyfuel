@@ -9,6 +9,8 @@ export class AuthService {
    * Sign up a new user
    */
   async signup(name: string, email: string, password: string) {
+    email = email.toLowerCase(); // Normalize email to lowercase
+
     // Check if all fields are provided
     if (!name || !email || !password) {
       throw new Error("All fields are required.");
@@ -37,6 +39,8 @@ export class AuthService {
    * Sign in a user
    */
   async signin(email: string, password: string) {
+    email = email.toLowerCase(); // Normalize
+
     const user = await authRepository.findUserByEmail(email);
 
     if (!user || !user.password) {
