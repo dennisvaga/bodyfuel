@@ -1,5 +1,6 @@
 /**
  * Platform utilities for handling different environments
+ * This is only for debugging purposes
  */
 // Platform types
 export type PlatformType = "browser" | "android" | "ios";
@@ -53,11 +54,13 @@ export const getApiBaseUrl = (port: number = 5001): string => {
  *
  * IMPORTANT: baseUrl ends with a slash
  * @param defaultUrl The default URL from environment variables
- * @returns The URL with the correct host for the current platform
+ * @returns The URL with the correct host for_ the current platform
  */
 export const getPlatformAwareUrl = (defaultUrl: string): string => {
-  // If we don't have a default URL, return it
-  if (!defaultUrl) {
+  const isprod = process.env.NODE_ENV === "production";
+
+  // If we're in production or the default URL is not set, return the default URL
+  if (isprod || !defaultUrl) {
     return defaultUrl;
   }
 
