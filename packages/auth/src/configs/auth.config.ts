@@ -28,6 +28,8 @@ const providers: Provider[] = [
       const email = credentials?.email?.toString();
       const password = credentials?.password?.toString();
 
+      console.log("🔐 Attempting login for:", email);
+
       if (!email || !password) {
         throw new Error("Missing email or password.");
       }
@@ -35,6 +37,8 @@ const providers: Provider[] = [
       try {
         // Send credentials to API route
         const response = await authService.signIn({ email, password });
+
+        console.log("✅ Auth service response:", response);
 
         // Check if authentication was successful
         if (!response || !response.success) {
