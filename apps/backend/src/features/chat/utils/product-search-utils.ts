@@ -39,11 +39,13 @@ export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
   // Strategy: If we have a category match, prioritize category over text search
   // This fixes the issue where "vitamins under $30" would only find products
   // that are both in the vitamins category AND contain "vitamins" in name/description
-  
+
   if (criteria.categoryId !== undefined) {
     // Category-based search: prioritize category matching
     whereClause.categoryId = criteria.categoryId;
-    console.log(`Using category-based search for category ID: ${criteria.categoryId}`);
+    console.log(
+      `Using category-based search for category ID: ${criteria.categoryId}`
+    );
   } else if (criteria.searchQuery) {
     // Text-based search: only when no category is identified
     const searchTerms = criteria.searchQuery
@@ -69,7 +71,7 @@ export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
           }
         );
       });
-      
+
       if (orConditions.length > 0) {
         whereClause.OR = orConditions;
       }
@@ -164,17 +166,19 @@ export async function* streamProducts(
   // Strategy: If we have a category match, prioritize category over text search
   // This fixes the issue where "vitamins under $30" would only find products
   // that are both in the vitamins category AND contain "vitamins" in name/description
-  
+
   if (categoryIds.length > 0) {
     // Category-based search: prioritize category matching
     whereClause.categoryId = {
       in: categoryIds,
     };
-    console.log(`Using category-based search for category IDs: ${categoryIds.join(", ")}`);
+    console.log(
+      `Using category-based search for category IDs: ${categoryIds.join(", ")}`
+    );
   } else if (normalizedQuery) {
     // Text-based search: only when no category is identified
     const orConditions: any[] = [];
-    
+
     expandedQueries.forEach((query) => {
       console.log("Adding name search for:", query);
       orConditions.push({
@@ -183,7 +187,7 @@ export async function* streamProducts(
           mode: "insensitive" as const,
         },
       });
-      
+
       console.log("Adding description search for:", query);
       orConditions.push({
         description: {
@@ -192,11 +196,13 @@ export async function* streamProducts(
         },
       });
     });
-    
+
     if (orConditions.length > 0) {
       whereClause.OR = orConditions;
     }
-    console.log(`Using text-based search for terms: ${expandedQueries.join(", ")}`);
+    console.log(
+      `Using text-based search for terms: ${expandedQueries.join(", ")}`
+    );
   } else {
     console.log(
       "WARNING: normalizedQuery is empty, no search conditions added"
