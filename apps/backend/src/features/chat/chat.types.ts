@@ -1,7 +1,4 @@
-import {
-  chatMessageSchema,
-  chatRequestSchema,
-} from "./schema/api-schema.js";
+import { chatMessageSchema, chatRequestSchema } from "./schema/api-schema.js";
 import { z } from "zod";
 
 // Type exports from schemas

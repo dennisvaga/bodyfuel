@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { streamText } from "ai";
+import { streamText, pipeDataStreamToResponse } from "ai";
 import { getDeepSeek, AI_CONFIG } from "./config/ai-config.js";
 import { chatRequestSchema } from "./schema/api-schema.js";
 import { ChatMessage, ChatbotSearchCriteria } from "./chat.types.js";
@@ -67,67 +67,208 @@ export class ChatController {
         conversation.messages
       );
 
-      let systemMessage: string;
-      
       if (isProductQuery) {
-        // Get product info synchronously instead of streaming
-        const searchCriteria = await queryService.parseChatbotQuery(userMessage.content);
-        const productInfo = await this.getProductInfoForSystemMessage(searchCriteria);
-        systemMessage = messageService.createSystemMessage(productInfo, "");
+        // Handle product queries with data streaming
+        await this.handleProductQuery(
+          req,
+          res,
+          conversation.id,
+          userMessage.content,
+          messagesForAI
+        );
       } else {
-        systemMessage = messageService.createSystemMessage();
+        // Handle normal queries with simple text streaming
+        await this.handleNormalQuery(req, res, conversation.id, messagesForAI);
       }
-
-      // Use AI SDK's built-in streaming for all responses
-      const result = streamText({
-        model: getDeepSeek()("deepseek-chat"),
-        system: systemMessage,
-        messages: messagesForAI.slice(-5).map((msg) => ({ 
-          role: msg.role, 
-          content: msg.content 
-        })),
-        temperature: AI_CONFIG.temperature,
-        maxTokens: isProductQuery ? AI_CONFIG.maxTokensProduct : AI_CONFIG.maxTokensGeneral,
-      });
-
-      // Set conversation ID header
-      res.setHeader("X-Conversation-Id", conversation.id);
-      res.setHeader("X-Streaming-Products", isProductQuery.toString());
-
-      // Let AI SDK handle all the streaming automatically
-      result.pipeDataStreamToResponse(res);
-
-      // Save the AI response to conversation once complete
-      result.text.then((aiResponse) => {
-        const assistantMessage: ChatMessage = {
-          role: "assistant",
-          content: aiResponse,
-        };
-        conversationService.addMessage(conversation.id, assistantMessage);
-      }).catch((err) => {
-        console.error("Error saving AI response:", err);
-      });
-      
     } catch (error) {
       handleError(error, res);
     }
   }
 
   /**
+   * Handle product queries with AI SDK data streaming
+   */
+  private async handleProductQuery(
+    req: Request,
+    res: Response,
+    conversationId: string,
+    userMessage: string,
+    messagesForAI: any[]
+  ): Promise<void> {
+    const searchCriteria = await queryService.parseChatbotQuery(userMessage);
+
+    // Set headers
+    res.setHeader("X-Conversation-Id", conversationId);
+    res.setHeader("X-Streaming-Products", "true");
+
+    // Use pipeDataStreamToResponse to stream both products and AI response
+    pipeDataStreamToResponse(res, {
+      execute: async (dataStream) => {
+        console.log("Starting data stream execution");
+
+        // Stream products first
+        const products = await chatRepository.findProducts(searchCriteria, 5);
+
+        console.log(`Found ${products.length} products for streaming`);
+
+        if (products.length > 0) {
+          // Stream each product individually to maintain the 1-by-1 effect
+          for (let i = 0; i < products.length; i++) {
+            const product = products[i];
+
+            console.log(`Streaming product ${i + 1}: ${product.name}`, product);
+
+            // Stream this product (the findProducts already returns properly formatted products)
+            await dataStream.writeData({
+              type: "product",
+              products: [product], // Send one product at a time
+              count: i + 1,
+            });
+
+            // Add delay to maintain 1-by-1 streaming effect
+            if (i < products.length - 1) {
+              await new Promise((resolve) => setTimeout(resolve, 500));
+            }
+          }
+
+          console.log("Finished streaming products, starting AI response");
+
+          // Create system message with product context
+          const productInfo = products
+            .map((p) => `${p.name} - $${p.price}\n${p.description}`)
+            .join("\n\n");
+          const systemMessage = messageService.createSystemMessage(
+            productInfo,
+            ""
+          );
+
+          // Stream AI response
+          const result = streamText({
+            model: getDeepSeek()("deepseek-chat"),
+            system: systemMessage,
+            messages: messagesForAI.slice(-5).map((msg) => ({
+              role: msg.role,
+              content: msg.content,
+            })),
+            temperature: AI_CONFIG.temperature,
+            maxTokens: AI_CONFIG.maxTokensProduct,
+          });
+
+          // Merge AI response into the data stream
+          result.mergeIntoDataStream(dataStream);
+
+          // Save AI response to conversation
+          result.text
+            .then((aiResponse) => {
+              const assistantMessage: ChatMessage = {
+                role: "assistant",
+                content: aiResponse,
+              };
+              conversationService.addMessage(conversationId, assistantMessage);
+            })
+            .catch(console.error);
+        } else {
+          // No products found - stream AI response only
+          const noProductsMessage = messageService.createNoProductsMessage();
+          const systemMessage = messageService.createSystemMessage(
+            noProductsMessage,
+            ""
+          );
+
+          const result = streamText({
+            model: getDeepSeek()("deepseek-chat"),
+            system: systemMessage,
+            messages: messagesForAI.slice(-5).map((msg) => ({
+              role: msg.role,
+              content: msg.content,
+            })),
+            temperature: AI_CONFIG.temperature,
+            maxTokens: AI_CONFIG.maxTokensProduct,
+          });
+
+          result.mergeIntoDataStream(dataStream);
+
+          // Save response
+          result.text
+            .then((aiResponse) => {
+              const assistantMessage: ChatMessage = {
+                role: "assistant",
+                content: noProductsMessage,
+              };
+              conversationService.addMessage(conversationId, assistantMessage);
+            })
+            .catch(console.error);
+        }
+      },
+      onError: (error) => {
+        console.error("Data stream error:", error);
+        return error instanceof Error ? error.message : String(error);
+      },
+    });
+  }
+
+  /**
+   * Handle normal queries with simple AI text streaming
+   */
+  private async handleNormalQuery(
+    req: Request,
+    res: Response,
+    conversationId: string,
+    messagesForAI: any[]
+  ): Promise<void> {
+    const systemMessage = messageService.createSystemMessage();
+
+    const result = streamText({
+      model: getDeepSeek()("deepseek-chat"),
+      system: systemMessage,
+      messages: messagesForAI.slice(-5).map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      })),
+      temperature: AI_CONFIG.temperature,
+      maxTokens: AI_CONFIG.maxTokensGeneral,
+    });
+
+    // Set headers
+    res.setHeader("X-Conversation-Id", conversationId);
+    res.setHeader("X-Streaming-Products", "false");
+
+    // Let AI SDK handle the streaming
+    result.pipeDataStreamToResponse(res);
+
+    // Save AI response to conversation
+    result.text
+      .then((aiResponse) => {
+        const assistantMessage: ChatMessage = {
+          role: "assistant",
+          content: aiResponse,
+        };
+        conversationService.addMessage(conversationId, assistantMessage);
+      })
+      .catch(console.error);
+  }
+
+  /**
    * Get product information synchronously for system message
    */
-  private async getProductInfoForSystemMessage(searchCriteria: ChatbotSearchCriteria): Promise<string> {
+  private async getProductInfoForSystemMessage(
+    searchCriteria: ChatbotSearchCriteria
+  ): Promise<string> {
     try {
       const products = await chatRepository.findProducts(searchCriteria);
-      
+
       if (products.length === 0) {
         return "No products found matching the search criteria.";
       }
 
       // Format products for system message
-      const productList = products.slice(0, 5).map(product => 
-        `${product.name} - $${product.price}\n${product.description}`
-      ).join('\n\n');
+      const productList = products
+        .slice(0, 5)
+        .map(
+          (product) =>
+            `${product.name} - $${product.price}\n${product.description}`
+        )
+        .join("\n\n");
 
       return `Here are the available products:\n\n${productList}`;
     } catch (error) {

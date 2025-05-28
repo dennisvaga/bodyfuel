@@ -171,9 +171,12 @@ export function useProductChat() {
     if (latestMessage?.role === "assistant" && latestMessage.content) {
       // Extract products from the AI response text
       const extractedData = extractProductData(latestMessage.content);
-      
+
       if (extractedData.hasProductData && extractedData.productData) {
-        console.log("Extracted product data from AI response:", extractedData.productData);
+        console.log(
+          "Extracted product data from AI response:",
+          extractedData.productData
+        );
 
         // Filter out products we've already seen
         const newProducts = extractedData.productData.filter((product) => {
@@ -191,6 +194,52 @@ export function useProductChat() {
       }
     }
   }, [messages, extractProductData]);
+
+  /**
+   * Process streaming data from AI SDK data stream
+   *
+   * Handles real-time product streaming from the backend data stream
+   * in addition to embedded products in AI text responses.
+   */
+  useEffect(() => {
+    if (!data || data.length === 0) {
+      return;
+    }
+
+    // Process each data item in the stream
+    const latestData = data[data.length - 1];
+
+    if (latestData && typeof latestData === "object" && "type" in latestData) {
+      if (
+        latestData.type === "product" &&
+        "products" in latestData &&
+        Array.isArray(latestData.products)
+      ) {
+        console.log("Processing streaming product data:", latestData.products);
+
+        // Type-safe filtering for products
+        const typedProducts = latestData.products as Array<
+          Omit<ChatProductCardProps, "className">
+        >;
+
+        // Filter out products we've already seen
+        const newProducts = typedProducts.filter((product) => {
+          if (!product.slug || productSlugsRef.current.has(product.slug)) {
+            return false;
+          }
+          productSlugsRef.current.add(product.slug);
+          return true;
+        });
+
+        if (newProducts.length > 0) {
+          setStreamedProducts((prev) => [...prev, ...newProducts]);
+          setProductStatus(
+            `Found ${newProducts.length} product${newProducts.length > 1 ? "s" : ""}`
+          );
+        }
+      }
+    }
+  }, [data]);
 
   // Set processing state when new messages are being received
   useEffect(() => {
