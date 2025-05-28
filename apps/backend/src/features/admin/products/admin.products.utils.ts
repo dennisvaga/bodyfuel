@@ -1,5 +1,5 @@
 import { ProductInput, ProductInputField } from "@repo/shared";
-import { uploadImages } from "@services/s3Service.js";
+import { uploadImages } from "#services/s3Service.js";
 
 /**
  * Upload product images

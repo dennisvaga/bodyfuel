@@ -1,7 +1,7 @@
 import { ZodError } from "zod";
 import { Response } from "express";
 import type { ApiResult } from "@repo/shared";
-import { sendResponse } from "@utils/api-response.js";
+import { sendResponse } from "#utils/api-response.js";
 import { Prisma } from "@prisma/client";
 
 export const handleError = (

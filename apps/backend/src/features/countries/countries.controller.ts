@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import countriesService from "./countries.service.js";
 import { handleError } from "#utils/handle-errors.js";
-import { sendResponse } from "@utils/api-response.js";
+import { sendResponse } from "#utils/api-response.js";
 
 /**
  * Countries controller responsible for handling HTTP requests related to countries

@@ -1,12 +1,12 @@
 import { ProductInput } from "@repo/shared";
-import { slugifyNative } from "@utils/utils.js";
+import { slugifyNative } from "#utils/utils.js";
 import adminProductsRepository from "./admin.products.repository.js";
 import {
   uploadProductImages,
   prepareProductCreateData,
   prepareProductUpdateData,
 } from "./admin.products.utils.js";
-import productsRepository from "@features/products/products.repository.js";
+import productsRepository from "#features/products/products.repository.js";
 
 /**
  * Admin products service responsible for product management business logic

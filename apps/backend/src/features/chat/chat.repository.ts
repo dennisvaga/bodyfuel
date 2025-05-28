@@ -4,7 +4,7 @@ import {
   buildWhereClause,
   streamProducts,
 } from "./utils/product-search-utils.js";
-import { assignImageUrlToProducts } from "@services/s3Service.js";
+import { assignImageUrlToProducts } from "#services/s3Service.js";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
 
 // Re-export streamProducts for backward compatibility

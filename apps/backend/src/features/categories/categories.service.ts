@@ -1,5 +1,5 @@
 import { ProductWithImageUrl } from "@repo/database/types/product";
-import { assignImageUrlToProducts } from "@services/s3Service.js";
+import { assignImageUrlToProducts } from "#services/s3Service.js";
 import categoriesRepository from "./categories.repository.js";
 
 /**

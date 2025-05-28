@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import contactService from "./contact.service.js";
 import { handleError } from "#utils/handle-errors.js";
-import { sendResponse } from "@utils/api-response.js";
+import { sendResponse } from "#utils/api-response.js";
 
 /**
  * Contact controller responsible for handling HTTP requests related to contact form

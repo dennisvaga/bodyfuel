@@ -1,5 +1,5 @@
 import type { ProductWithImageUrl } from "@repo/database/types/product";
-import { assignImageUrlToProducts } from "@services/s3Service.js";
+import { assignImageUrlToProducts } from "#services/s3Service.js";
 import productRepository from "./products.repository.js";
 import { PaginationMetadata } from "@repo/shared";
 
