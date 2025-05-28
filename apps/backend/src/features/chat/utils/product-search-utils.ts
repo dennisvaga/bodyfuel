@@ -18,9 +18,6 @@ import type { ProductWithImageUrl } from "@repo/database/types/product";
  * @returns Prisma-compatible where clause object for product queries
  */
 export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
-  console.log("\n=== BUILDING WHERE CLAUSE ===");
-  console.log("Input criteria:", JSON.stringify(criteria, null, 2));
-
   const whereClause: any = {};
 
   // Add price range conditions
@@ -43,9 +40,6 @@ export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
   if (criteria.categoryId !== undefined) {
     // Category-based search: prioritize category matching
     whereClause.categoryId = criteria.categoryId;
-    console.log(
-      `Using category-based search for category ID: ${criteria.categoryId}`
-    );
   } else if (criteria.searchQuery) {
     // Text-based search: only when no category is identified
     const searchTerms = criteria.searchQuery
@@ -76,11 +70,7 @@ export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
         whereClause.OR = orConditions;
       }
     }
-    console.log(`Using text-based search for terms: ${searchTerms.join(", ")}`);
   }
-
-  console.log("Final WHERE clause:", JSON.stringify(whereClause, null, 2));
-  console.log("=== END WHERE CLAUSE ===\n");
 
   return whereClause;
 }
@@ -117,22 +107,11 @@ export async function* streamProducts(
     searchMaxPrice = criteria.maxPrice;
   }
 
-  console.log(
-    `Streaming products with query: "${searchQuery}", minPrice: ${searchMinPrice}, maxPrice: ${searchMaxPrice}`
-  );
-
   // Normalize the search query
   const normalizedQuery = searchQuery.toLowerCase().trim();
-  console.log("Normalized query:", JSON.stringify(normalizedQuery));
-  console.log("Normalized query length:", normalizedQuery.length);
-  console.log("Normalized query is empty:", !normalizedQuery);
 
   // Use the utility function to expand the search query with common variations
   const expandedQueries = expandSearchQuery(normalizedQuery);
-
-  console.log(
-    `Expanded search queries for streaming: ${expandedQueries.join(", ")}`
-  );
 
   // Find matching category using the category matcher utility
   const matchedCategory = await findCategoryBySearchTerm(normalizedQuery);
@@ -146,19 +125,11 @@ export async function* streamProducts(
   const categoryIds: number[] = [];
   if (matchedCategory) {
     categoryIds.push(matchedCategory.id);
-    console.log(
-      `Found matching category for streaming: ${matchedCategory.name} (ID: ${matchedCategory.id})`
-    );
   }
 
   if (extractedCategory && !categoryIds.includes(extractedCategory.id)) {
     categoryIds.push(extractedCategory.id);
-    console.log(
-      `Extracted category from message for streaming: ${extractedCategory.name} (ID: ${extractedCategory.id})`
-    );
   }
-
-  console.log(`Found ${categoryIds.length} matching categories for streaming`);
 
   // Build the where clause with expanded queries
   const whereClause: any = {};
@@ -172,15 +143,11 @@ export async function* streamProducts(
     whereClause.categoryId = {
       in: categoryIds,
     };
-    console.log(
-      `Using category-based search for category IDs: ${categoryIds.join(", ")}`
-    );
   } else if (normalizedQuery) {
     // Text-based search: only when no category is identified
     const orConditions: any[] = [];
 
     expandedQueries.forEach((query) => {
-      console.log("Adding name search for:", query);
       orConditions.push({
         name: {
           contains: query,
@@ -188,7 +155,6 @@ export async function* streamProducts(
         },
       });
 
-      console.log("Adding description search for:", query);
       orConditions.push({
         description: {
           contains: query,
@@ -200,13 +166,6 @@ export async function* streamProducts(
     if (orConditions.length > 0) {
       whereClause.OR = orConditions;
     }
-    console.log(
-      `Using text-based search for terms: ${expandedQueries.join(", ")}`
-    );
-  } else {
-    console.log(
-      "WARNING: normalizedQuery is empty, no search conditions added"
-    );
   }
 
   // Apply price filter if specified
@@ -216,24 +175,12 @@ export async function* streamProducts(
 
     if (searchMinPrice !== undefined) {
       whereClause.price.gte = searchMinPrice;
-      console.log(
-        `Applying minimum price filter for streaming: price >= ${searchMinPrice}`
-      );
     }
 
     if (searchMaxPrice !== undefined) {
       whereClause.price.lte = searchMaxPrice;
-      console.log(
-        `Applying maximum price filter for streaming: price <= ${searchMaxPrice}`
-      );
     }
   }
-
-  // Log the complete where clause for debugging
-  console.log(
-    "Final WHERE clause for product streaming:",
-    JSON.stringify(whereClause, null, 2)
-  );
 
   const prisma = await getPrisma();
 
@@ -254,8 +201,6 @@ export async function* streamProducts(
     },
     take: 5,
   });
-
-  console.log(`Found ${products.length} matching products for streaming`);
 
   let productsToStream = products;
 
