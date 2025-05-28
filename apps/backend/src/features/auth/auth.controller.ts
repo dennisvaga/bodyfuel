@@ -60,7 +60,7 @@ export class AuthController {
         error instanceof Error &&
         error.message === "No user found or password not set."
       ) {
-        sendResponse(res, 404, {
+        sendResponse(res, 401, {
           success: false,
           message: error.message,
         });
