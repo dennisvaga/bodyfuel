@@ -1,4 +1,4 @@
-import { ChatMessage } from "../chat.types.js";
+import { ChatMessage } from "@repo/shared";
 
 // In-memory storage for conversations (persists until server restart)
 const conversations = new Map<

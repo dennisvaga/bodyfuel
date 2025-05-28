@@ -28,6 +28,7 @@ export * from "./features/contact/schema/contactSchema.js";
 
 // ------ Chat -------------------------------------------------------------------
 export * from "./features/chat/schemas/chatSchema.js";
+export * from "./features/chat/types/chatTypes.js";
 export * from "./features/chat/services/chatService.js";
 
 // ------ Shared Utilities & Hooks -----------------------------------------------

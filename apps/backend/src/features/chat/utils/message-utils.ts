@@ -1,5 +1,4 @@
-import { AIMessageFormat, ChatMessage } from "../chat.types.js";
-
+import { AIMessageFormat, ChatMessage } from "@repo/shared";
 /**
  * Format conversation messages for AI
  *

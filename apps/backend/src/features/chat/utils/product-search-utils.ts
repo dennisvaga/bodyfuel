@@ -1,5 +1,5 @@
 import { getPrisma } from "@repo/database";
-import { ChatbotSearchCriteria } from "../chat.types.js";
+import { ChatbotSearchCriteria } from "@repo/shared";
 import {
   extractCategoryFromMessage,
   findCategoryBySearchTerm,

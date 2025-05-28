@@ -1,10 +1,10 @@
 import { getPrisma } from "@repo/database";
-import { ProductData, ChatbotSearchCriteria } from "./chat.types.js";
+import { ProductData, ChatbotSearchCriteria } from "@repo/shared";
 import {
   buildWhereClause,
   streamProducts,
 } from "./utils/product-search-utils.js";
-import { assignImageUrlToProducts } from "../../services/s3Service.js";
+import { assignImageUrlToProducts } from "@services/s3Service.js";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
 
 // Re-export streamProducts for backward compatibility

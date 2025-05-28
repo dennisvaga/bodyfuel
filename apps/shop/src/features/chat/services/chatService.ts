@@ -5,27 +5,15 @@ import {
   fetchStreamingData,
   FetchMethod,
 } from "@repo/shared";
-
-export interface ChatMessage {
-  id?: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-}
-
-export interface ChatRequest {
-  conversationId?: string;
-  messages: ChatMessage[];
-}
-
-export interface ChatResponse {
-  conversationId: string;
-  message?: ChatMessage;
-  messages?: ChatMessage[];
-}
+import type {
+  ChatMessage,
+  ChatRequest,
+  ChatResponse,
+} from "../types/chat.types";
 
 /**
- * Service for handling chat functionality
- * Provides methods to send messages to the chat API
+ * Consolidated chat service for handling chat functionality
+ * Provides methods to send messages to the chat API with both JSON and streaming responses
  */
 export const chatService = {
   /**

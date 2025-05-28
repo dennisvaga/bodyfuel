@@ -1,4 +1,4 @@
-import { ChatbotSearchCriteria, ProductData } from "../chat.types.js";
+import { ChatbotSearchCriteria, ProductData } from "@repo/shared";
 import * as chatRepository from "../chat.repository.js";
 
 /**

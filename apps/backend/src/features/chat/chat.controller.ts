@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
 import { streamText, pipeDataStreamToResponse } from "ai";
 import { getDeepSeek, AI_CONFIG } from "./config/ai-config.js";
-import { chatRequestSchema } from "./schema/api-schema.js";
-import { ChatMessage, ChatbotSearchCriteria } from "./chat.types.js";
+import {
+  chatRequestSchema,
+  ChatMessage,
+  ChatbotSearchCriteria,
+} from "@repo/shared";
 import * as queryService from "./utils/query-utils.js";
 import * as messageService from "./utils/message-utils.js";
 import * as chatRepository from "./chat.repository.js";

@@ -1,4 +1,4 @@
-import { ChatbotSearchCriteria } from "../chat.types.js";
+import { ChatbotSearchCriteria } from "@repo/shared";
 import { extractCategoryFromMessage } from "./category-matcher.js";
 import {
   PRICE_PATTERNS,
