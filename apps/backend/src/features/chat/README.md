@@ -33,8 +33,8 @@ packages/shared/src/features/chat/
 apps/shop/src/features/chat/
 ├── components/
 │   └── ChatWidget.tsx           # Main chat UI component
-├── hooks/
-│   └── useProductChat.ts        # Custom hook using AI SDK useChat
+└── hooks/
+    └── useProductChat.ts        # Custom hook using AI SDK useChat
 ```
 
 ## Architecture Overview
@@ -43,8 +43,7 @@ The chat feature follows a clean layered architecture with shared types:
 
 ```mermaid
 flowchart TD
-    Client[Frontend Client] --> ChatService[packages/shared/features/chat/services]
-    ChatService --> BackendAPI[apps/backend/chat/controller]
+    Client[Frontend Client] --> BackendAPI[apps/backend/chat/controller]
 
     BackendAPI --> QueryUtils[utils/query-utils.ts]
     BackendAPI --> MessageUtils[utils/message-utils.ts]
@@ -128,7 +127,7 @@ This implementation has been significantly improved and consolidated:
 1. **Shared Type System**: All types moved to `packages/shared/features/chat`
 2. **Removed Obsolete Code**: Eliminated legacy streaming utilities and duplicate schemas
 3. **AI SDK Integration**: Proper use of AI SDK streaming instead of manual implementations
-4. **Consolidated Services**: Single chat service in shared package
+4. **Simplified Architecture**: Direct frontend to backend communication using shared types
 5. **Simplified Product Extraction**: Removed complex regex parsing for embedded product tags
 6. **Clean Architecture**: Clear separation between shared types, backend logic, and frontend UI
 
@@ -137,12 +136,23 @@ This implementation has been significantly improved and consolidated:
 ### Basic Product Search
 
 ```typescript
-// Using shared chat service
-import { chatService } from "@repo/shared";
+// Frontend using AI SDK useChat hook with shared types
+import { ChatRequest, ChatMessage } from "@repo/shared";
 
-const response = await chatService.sendMessage({
-  messages: [{ role: "user", content: "Show me protein powders under $50" }],
+const { messages, data, isLoading } = useChat({
+  api: "/api/chat",
+  streamProtocol: "data",
 });
+
+// Process streaming product data
+useEffect(() => {
+  if (data?.length > 0) {
+    const latestData = data[data.length - 1];
+    if (latestData.type === "product") {
+      setStreamedProducts((prev) => [...prev, ...latestData.products]);
+    }
+  }
+}, [data]);
 ```
 
 ### AI SDK Streaming Integration
@@ -205,8 +215,7 @@ npm run build --workspace=packages/database
 
 1. **Adding New Types**: Add to `packages/shared/src/features/chat/types/chatTypes.ts`
 2. **Schema Changes**: Modify `packages/shared/src/features/chat/schemas/chatSchema.ts`
-3. **Service Updates**: Update `packages/shared/src/features/chat/services/chatService.ts`
-4. **Rebuild**: Always rebuild shared package after changes
+3. **Rebuild**: Always rebuild shared package after changes
 
 ### Environment Variables
 
