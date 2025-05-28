@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { sendResponse } from "../utils/apiResponse.js";
-import { decryptToken } from "../utils/authUtils.js";
+import { sendResponse } from "@utils/api-response.js";
+import { decryptToken } from "../utils/auth-utils.js";
 
 // Add a custom interface to extend Express Request
 interface AuthenticatedRequest extends Request {
