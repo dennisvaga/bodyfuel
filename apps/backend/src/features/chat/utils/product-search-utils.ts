@@ -18,19 +18,41 @@ import type { ProductWithImageUrl } from "@repo/database/types/product";
  * @returns Prisma-compatible where clause object for product queries
  */
 export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
-  const whereClause: any = {};
-  const orConditions: any[] = [];
+  console.log("\n=== BUILDING WHERE CLAUSE ===");
+  console.log("Input criteria:", JSON.stringify(criteria, null, 2));
 
-  // Add search query conditions
-  if (criteria.searchQuery) {
-    // Create an array of search terms by splitting the query
+  const whereClause: any = {};
+
+  // Add price range conditions
+  if (criteria.minPrice !== undefined || criteria.maxPrice !== undefined) {
+    whereClause.price = {};
+
+    if (criteria.minPrice !== undefined) {
+      whereClause.price.gte = criteria.minPrice;
+    }
+
+    if (criteria.maxPrice !== undefined) {
+      whereClause.price.lte = criteria.maxPrice;
+    }
+  }
+
+  // Strategy: If we have a category match, prioritize category over text search
+  // This fixes the issue where "vitamins under $30" would only find products
+  // that are both in the vitamins category AND contain "vitamins" in name/description
+  
+  if (criteria.categoryId !== undefined) {
+    // Category-based search: prioritize category matching
+    whereClause.categoryId = criteria.categoryId;
+    console.log(`Using category-based search for category ID: ${criteria.categoryId}`);
+  } else if (criteria.searchQuery) {
+    // Text-based search: only when no category is identified
     const searchTerms = criteria.searchQuery
       .split(" ")
       .filter((term) => term.length > 2)
       .map((term) => term.trim());
 
-    // If we have valid search terms, add them to the OR conditions
     if (searchTerms.length > 0) {
+      const orConditions: any[] = [];
       searchTerms.forEach((term) => {
         orConditions.push(
           {
@@ -47,31 +69,16 @@ export function buildWhereClause(criteria: ChatbotSearchCriteria): any {
           }
         );
       });
+      
+      if (orConditions.length > 0) {
+        whereClause.OR = orConditions;
+      }
     }
+    console.log(`Using text-based search for terms: ${searchTerms.join(", ")}`);
   }
 
-  // Add price range conditions
-  if (criteria.minPrice !== undefined || criteria.maxPrice !== undefined) {
-    whereClause.price = {};
-
-    if (criteria.minPrice !== undefined) {
-      whereClause.price.gte = criteria.minPrice;
-    }
-
-    if (criteria.maxPrice !== undefined) {
-      whereClause.price.lte = criteria.maxPrice;
-    }
-  }
-
-  // Add category condition
-  if (criteria.categoryId !== undefined) {
-    whereClause.categoryId = criteria.categoryId;
-  }
-
-  // If we have OR conditions, add them to the where clause
-  if (orConditions.length > 0) {
-    whereClause.OR = orConditions;
-  }
+  console.log("Final WHERE clause:", JSON.stringify(whereClause, null, 2));
+  console.log("=== END WHERE CLAUSE ===\n");
 
   return whereClause;
 }
@@ -114,6 +121,9 @@ export async function* streamProducts(
 
   // Normalize the search query
   const normalizedQuery = searchQuery.toLowerCase().trim();
+  console.log("Normalized query:", JSON.stringify(normalizedQuery));
+  console.log("Normalized query length:", normalizedQuery.length);
+  console.log("Normalized query is empty:", !normalizedQuery);
 
   // Use the utility function to expand the search query with common variations
   const expandedQueries = expandSearchQuery(normalizedQuery);
@@ -151,44 +161,46 @@ export async function* streamProducts(
   // Build the where clause with expanded queries
   const whereClause: any = {};
 
-  // Initialize the OR array
-  whereClause.OR = [];
-
-  // Only add search conditions if we have a non-empty search query
-  if (normalizedQuery) {
-    // Add name matches
+  // Strategy: If we have a category match, prioritize category over text search
+  // This fixes the issue where "vitamins under $30" would only find products
+  // that are both in the vitamins category AND contain "vitamins" in name/description
+  
+  if (categoryIds.length > 0) {
+    // Category-based search: prioritize category matching
+    whereClause.categoryId = {
+      in: categoryIds,
+    };
+    console.log(`Using category-based search for category IDs: ${categoryIds.join(", ")}`);
+  } else if (normalizedQuery) {
+    // Text-based search: only when no category is identified
+    const orConditions: any[] = [];
+    
     expandedQueries.forEach((query) => {
-      whereClause.OR.push({
+      console.log("Adding name search for:", query);
+      orConditions.push({
         name: {
           contains: query,
           mode: "insensitive" as const,
         },
       });
-    });
-
-    // Add description matches
-    expandedQueries.forEach((query) => {
-      whereClause.OR.push({
+      
+      console.log("Adding description search for:", query);
+      orConditions.push({
         description: {
           contains: query,
           mode: "insensitive" as const,
         },
       });
     });
-  }
-
-  // Add category filter if we found matching categories
-  if (categoryIds.length > 0) {
-    whereClause.OR.push({
-      categoryId: {
-        in: categoryIds,
-      },
-    });
-  }
-
-  // If we have no search conditions, remove the empty OR array
-  if (whereClause.OR.length === 0) {
-    delete whereClause.OR;
+    
+    if (orConditions.length > 0) {
+      whereClause.OR = orConditions;
+    }
+    console.log(`Using text-based search for terms: ${expandedQueries.join(", ")}`);
+  } else {
+    console.log(
+      "WARNING: normalizedQuery is empty, no search conditions added"
+    );
   }
 
   // Apply price filter if specified

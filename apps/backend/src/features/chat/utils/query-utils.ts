@@ -29,6 +29,11 @@ export async function extractSearchQuery(userMessage: string): Promise<string> {
   let searchQuery = "";
 
   if (priceRangeMatch || underPriceMatch || overPriceMatch) {
+    console.log("Price match detected!");
+    console.log("priceRangeMatch:", priceRangeMatch);
+    console.log("underPriceMatch:", underPriceMatch);
+    console.log("overPriceMatch:", overPriceMatch);
+
     // For price range queries, extract product type if mentioned
     // Look for category terms in the message
     const categoryTerms = userMessage
@@ -36,12 +41,21 @@ export async function extractSearchQuery(userMessage: string): Promise<string> {
       .replace(/[^\w\s-]/g, " ")
       .split(/\s+/);
 
+    console.log("Category terms extracted from message:", categoryTerms);
+    console.log("Available CATEGORY_TERMS:", CATEGORY_TERMS);
+
     // Check if any of the words match common category terms
     const categoryMatch = categoryTerms.find((term) =>
-      CATEGORY_TERMS.some((categoryTerm) =>
-        term.toLowerCase().includes(categoryTerm.toLowerCase())
-      )
+      CATEGORY_TERMS.some((categoryTerm) => {
+        const matches = term.toLowerCase().includes(categoryTerm.toLowerCase());
+        console.log(
+          `  Checking "${term}" includes "${categoryTerm}": ${matches}`
+        );
+        return matches;
+      })
     );
+
+    console.log("Category match found:", categoryMatch);
 
     // Special handling for pre-workout and post-workout
     const preWorkoutMatch = userMessage
@@ -175,21 +189,35 @@ export function isProductQuery(message: string): boolean {
 export async function parseChatbotQuery(
   userMessage: string
 ): Promise<ChatbotSearchCriteria> {
+  console.log("\n=== PARSING CHATBOT QUERY ===");
+  console.log("User message:", userMessage);
+
   const searchQuery = await extractSearchQuery(userMessage);
+  console.log("Extracted search query:", searchQuery);
+
   const { minPrice, maxPrice, targetPrice } = extractPriceRange(userMessage);
+  console.log("Extracted price range:", { minPrice, maxPrice, targetPrice });
 
   // Extract category if possible
   let categoryId: number | undefined = undefined;
   const category = await extractCategoryFromMessage(userMessage);
   if (category) {
     categoryId = category.id;
+    console.log("Extracted category:", category.name, "ID:", categoryId);
+  } else {
+    console.log("No category extracted");
   }
 
-  return {
+  const result = {
     searchQuery,
     minPrice,
     maxPrice,
     targetPrice,
     categoryId,
   };
+
+  console.log("Final search criteria:", JSON.stringify(result, null, 2));
+  console.log("=== END PARSING ===\n");
+
+  return result;
 }
