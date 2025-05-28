@@ -48,10 +48,7 @@ export const fetchData = async ({
   }
 
   // Get platform-aware URL that handles Android emulator
-  const baseUrl =
-    process.env.NODE_ENV === "development"
-      ? getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API)
-      : process.env.NEXT_PUBLIC_BACKEND_API;
+  const baseUrl = getPlatformAwareUrl(process.env.NEXT_PUBLIC_BACKEND_API);
 
   const response = await fetch(`${baseUrl}api/${slug}`, {
     method: method,
