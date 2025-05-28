@@ -1,4 +1,8 @@
-import type { ChatMessage } from "../schemas/chatSchema.js";
+import z from "zod";
+import type {
+  chatMessageSchema,
+  chatRequestSchema,
+} from "../schemas/chatSchema.js";
 
 /**
  * AI message format for internal processing
@@ -63,5 +67,6 @@ export type ChatResponse = {
   messages?: ChatMessage[];
 };
 
-// Re-export from schemas for convenience
-export type { ChatMessage, ChatRequest } from "../schemas/chatSchema.js";
+// Inferred types from schemas only
+export type ChatMessage = z.infer<typeof chatMessageSchema>;
+export type ChatRequest = z.infer<typeof chatRequestSchema>;

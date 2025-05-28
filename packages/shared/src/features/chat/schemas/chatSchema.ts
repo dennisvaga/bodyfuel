@@ -18,7 +18,3 @@ export const chatRequestSchema = z.object({
     .array(chatMessageSchema)
     .min(1, "At least one message is required"),
 });
-
-// Inferred types from schemas only
-export type ChatMessage = z.infer<typeof chatMessageSchema>;
-export type ChatRequest = z.infer<typeof chatRequestSchema>;
