@@ -11,7 +11,7 @@ export class AuthRepository {
     const prisma = await getPrisma();
 
     return prisma.user.findUnique({
-      where: { email },
+      where: { email: email.toLowerCase() },
     });
   }
 
@@ -24,7 +24,7 @@ export class AuthRepository {
     return prisma.user.create({
       data: {
         name,
-        email,
+        email: email.toLowerCase(),
         password: hashedPassword,
         role: "USER", // Default role
       },

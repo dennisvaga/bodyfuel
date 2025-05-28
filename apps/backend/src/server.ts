@@ -15,7 +15,6 @@ import authRoutes from "./features/auth/auth.routes.js";
 import contactRoutes from "./features/contact/contact.routes.js"; // Contact route import
 import chatRoutes from "./features/chat/chat.routes.js";
 import adminRoutes from "./features/admin/admin.routes.js";
-import testRoutes from "./features/test/test.routes.js";
 
 const app = express();
 // Get allowed origins from environment variable or use defaults
@@ -58,9 +57,6 @@ app.use("/api/chat", chatRoutes);
 
 // Admin routes - secured by authenticatedAdmin middleware
 app.use("/api/admin", adminRoutes);
-
-// Test routes - for debugging (remove in production)
-app.use("/api/test", testRoutes);
 
 const PORT = 5001;
 app.listen(PORT, () => {
