@@ -1,16 +1,12 @@
 import {
   chatMessageSchema,
   chatRequestSchema,
-  chatResponseSchema,
-  errorResponseSchema,
 } from "./schema/api-schema.js";
 import { z } from "zod";
 
 // Type exports from schemas
 export type ChatMessage = z.infer<typeof chatMessageSchema>;
 export type ChatRequestType = z.infer<typeof chatRequestSchema>;
-export type ChatResponseType = z.infer<typeof chatResponseSchema>;
-export type ErrorResponse = z.infer<typeof errorResponseSchema>;
 
 /**
  * AI message format
@@ -49,13 +45,4 @@ export type ChatbotSearchCriteria = {
   maxPrice?: number;
   targetPrice?: number;
   categoryId?: number;
-};
-
-/**
- * Stream product response
- */
-export type StreamProductResponse = {
-  productInfo: string;
-  productHtml: string;
-  isStreaming: boolean;
 };

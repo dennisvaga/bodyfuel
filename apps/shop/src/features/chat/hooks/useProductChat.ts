@@ -59,65 +59,6 @@ export function useProductChat() {
   const productSlugsRef = useRef<Set<string>>(new Set());
 
   /**
-   * Processes streamed data from the server
-   *
-   * Handles product data and status updates in the streaming response,
-   * filters duplicate products by slug, and updates UI state.
-   */
-  useEffect(() => {
-    if (!data || data.length === 0) {
-      // Reset products on new conversation
-      setStreamedProducts([]);
-      setProductStatus("");
-      productSlugsRef.current.clear();
-      return;
-    }
-
-    // Process each data item
-    for (const item of data) {
-      if (typeof item === "object" && item !== null) {
-        // Handle product data
-        if ("type" in item && item.type === "product" && "products" in item) {
-          console.log("Received product data:", item.products);
-
-          // Filter out products we've already seen
-          const newProducts = (item.products as any[]).filter((product) => {
-            if (!product.slug || productSlugsRef.current.has(product.slug)) {
-              return false;
-            }
-            productSlugsRef.current.add(product.slug);
-            return true;
-          });
-
-          if (newProducts.length > 0) {
-            setStreamedProducts((prev) => [...prev, ...newProducts]);
-          }
-        }
-
-        // Handle status updates
-        if ("type" in item && item.type === "status" && "message" in item) {
-          console.log("Status update:", item.message);
-          setProductStatus(item.message as string);
-
-          // If we get a "complete" status, we know all products have been sent
-          if ("status" in item && item.status === "complete") {
-            console.log("Product streaming complete");
-          }
-        }
-      }
-    }
-  }, [data]);
-
-  // Set processing state when new messages are being received
-  useEffect(() => {
-    if (isLoading) {
-      setProcessingMessages(true);
-    } else {
-      setProcessingMessages(false);
-    }
-  }, [isLoading]);
-
-  /**
    * Extracts and parses product data from message content
    *
    * Searches for product information embedded in special tags within message content,
@@ -209,6 +150,56 @@ export function useProductChat() {
 
     return { hasProductData: false };
   }, []);
+
+  /**
+   * Processes messages and extracts product data from AI responses
+   *
+   * With AI SDK streaming, products are now embedded in the AI text response
+   * rather than streamed as separate data objects.
+   */
+  useEffect(() => {
+    if (!messages || messages.length === 0) {
+      // Reset products on new conversation
+      setStreamedProducts([]);
+      setProductStatus("");
+      productSlugsRef.current.clear();
+      return;
+    }
+
+    // Get the latest assistant message
+    const latestMessage = messages[messages.length - 1];
+    if (latestMessage?.role === "assistant" && latestMessage.content) {
+      // Extract products from the AI response text
+      const extractedData = extractProductData(latestMessage.content);
+      
+      if (extractedData.hasProductData && extractedData.productData) {
+        console.log("Extracted product data from AI response:", extractedData.productData);
+
+        // Filter out products we've already seen
+        const newProducts = extractedData.productData.filter((product) => {
+          if (!product.slug || productSlugsRef.current.has(product.slug)) {
+            return false;
+          }
+          productSlugsRef.current.add(product.slug);
+          return true;
+        });
+
+        if (newProducts.length > 0) {
+          setStreamedProducts((prev) => [...prev, ...newProducts]);
+          setProductStatus(`Found ${newProducts.length} products`);
+        }
+      }
+    }
+  }, [messages, extractProductData]);
+
+  // Set processing state when new messages are being received
+  useEffect(() => {
+    if (isLoading) {
+      setProcessingMessages(true);
+    } else {
+      setProcessingMessages(false);
+    }
+  }, [isLoading]);
 
   /**
    * Clears all streamed products and related state
