@@ -29,10 +29,9 @@ export default async function middleware(req: NextRequest) {
   }
 }
 
-// Fix matcher pattern to properly exclude auth pages
 export const config = {
   matcher: [
-    // Use individual path matchers instead of a complex regex
-    "/((?!api|_next|.*\\..*|signin|login|signout).*)",
+    // Exclude NextAuth API routes, static files, and auth pages
+    "/((?!api/auth|_next/static|_next/image|favicon.ico|signin|login|signout).*)",
   ],
 };
