@@ -1,43 +1,38 @@
 import { NextRequest, NextResponse } from "next/server";
-// Import from @repo/auth instead of next-auth/jwt
-import { auth } from "@repo/auth/server";
+import { getToken } from "next-auth/jwt";
 
 export default async function middleware(req: NextRequest) {
   try {
-    // Use the Auth.js v5 method with the request
-    const session = await auth({ req });
+    // Get token that contains user role.
+    const token = await getToken({
+      req,
+      secret: process.env.AUTH_SECRET,
+    });
 
-    // Debug logs
-    console.log("🔍 Session found:", !!session);
-    if (session?.user) {
-      console.log("👤 User:", session.user);
-    }
-
-    if (!session?.user) {
-      console.log("❌ No session - redirecting to signin");
+    if (!token) {
+      // Redirect to signin page without error for better UX
       return NextResponse.redirect(new URL("/signin", req.url));
     }
 
-    if (session.user.role !== "ADMIN") {
-      console.log("🚫 User is not ADMIN - access denied");
+    if (token.role !== "ADMIN") {
       return NextResponse.redirect(
         new URL(`/signin?error=access_denied`, req.url)
       );
     }
 
-    console.log("✅ Admin access granted");
     return NextResponse.next();
   } catch (error) {
-    console.error("💥 Middleware error:", error);
-    if (error instanceof Error) {
-      console.error("Error details:", error.message);
-    }
+    console.error("Middleware error:", error);
     return NextResponse.redirect(
       new URL(`/signin?error=server_error`, req.url)
     );
   }
 }
 
+// Fix matcher pattern to properly exclude auth pages
 export const config = {
-  matcher: ["/((?!api|_next|.*\\..*|signin|login|signout).*)"],
+  matcher: [
+    // Use individual path matchers instead of a complex regex
+    "/((?!api|_next|.*\\..*|signin|login|signout).*)",
+  ],
 };
