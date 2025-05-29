@@ -1,33 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+// Import from @repo/auth instead of next-auth/jwt
+import { auth } from "@repo/auth/server";
 
 export default async function middleware(req: NextRequest) {
-  const pathname = req.nextUrl.pathname;
-
-  // Log all requests hitting middleware
-  console.log("🔍 Middleware intercepted:", pathname);
-  console.log("🌍 Environment:", process.env.NODE_ENV);
-  console.log("🔑 AUTH_SECRET exists:", !!process.env.AUTH_SECRET);
-
   try {
-    // Get token that contains user role.
-    const token = await getToken({
-      req,
-      secret: process.env.AUTH_SECRET,
-    });
+    // Use the Auth.js v5 method with the request
+    const session = await auth({ req });
 
-    console.log("🎫 Token found:", !!token);
-    if (token) {
-      console.log("👤 User role:", token.role);
-      console.log("📧 User email:", token.email);
+    // Debug logs
+    console.log("🔍 Session found:", !!session);
+    if (session?.user) {
+      console.log("👤 User:", session.user);
     }
 
-    if (!token) {
-      console.log("❌ No token - redirecting to signin");
+    if (!session?.user) {
+      console.log("❌ No session - redirecting to signin");
       return NextResponse.redirect(new URL("/signin", req.url));
     }
 
-    if (token.role !== "ADMIN") {
+    if (session.user.role !== "ADMIN") {
       console.log("🚫 User is not ADMIN - access denied");
       return NextResponse.redirect(
         new URL(`/signin?error=access_denied`, req.url)
@@ -38,28 +29,15 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error("💥 Middleware error:", error);
-
-    // Type-safe error logging
     if (error instanceof Error) {
-      console.error("🔍 Error details:", {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
-      });
-    } else {
-      console.error("🔍 Unknown error:", error);
+      console.error("Error details:", error.message);
     }
-
     return NextResponse.redirect(
       new URL(`/signin?error=server_error`, req.url)
     );
   }
 }
 
-// Fix matcher pattern to properly exclude auth pages
 export const config = {
-  matcher: [
-    // Use individual path matchers instead of a complex regex
-    "/((?!api|_next|.*\\..*|signin|login|signout).*)",
-  ],
+  matcher: ["/((?!api|_next|.*\\..*|signin|login|signout).*)"],
 };
