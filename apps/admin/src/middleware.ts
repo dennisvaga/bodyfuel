@@ -38,11 +38,18 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.next();
   } catch (error) {
     console.error("💥 Middleware error:", error);
-    console.error("🔍 Error details:", {
-      message: error?.message,
-      name: error?.name,
-      stack: error?.stack,
-    });
+
+    // Type-safe error logging
+    if (error instanceof Error) {
+      console.error("🔍 Error details:", {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+      });
+    } else {
+      console.error("🔍 Unknown error:", error);
+    }
+
     return NextResponse.redirect(
       new URL(`/signin?error=server_error`, req.url)
     );
