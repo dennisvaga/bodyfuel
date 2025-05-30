@@ -62,13 +62,13 @@ importers:
         version: link:../../packages/database
       '@repo/nextjs-config':
         specifier: workspace:*
-        version: link:../../packages/nextjs-config
+        version: link:../../packages/config/nextjs-config
       '@repo/shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@repo/tailwind-config':
         specifier: workspace:*
-        version: link:../../packages/tailwind-config
+        version: link:../../packages/config/tailwind-config
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -126,7 +126,7 @@ importers:
         version: 15.3.2
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../../packages/typescript-config
+        version: link:../../packages/config/typescript-config
       '@tailwindcss/postcss':
         specifier: ^4.0.17
         version: 4.1.7
@@ -223,7 +223,7 @@ importers:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../../packages/typescript-config
+        version: link:../../packages/config/typescript-config
       '@types/body-parser':
         specifier: ^1.19.5
         version: 1.19.5
@@ -298,7 +298,7 @@ importers:
         version: link:../../packages/database
       '@repo/nextjs-config':
         specifier: workspace:*
-        version: link:../../packages/nextjs-config
+        version: link:../../packages/config/nextjs-config
       '@repo/platform-utils':
         specifier: workspace:*
         version: link:../../packages/platform-utils
@@ -307,7 +307,7 @@ importers:
         version: link:../../packages/shared
       '@repo/tailwind-config':
         specifier: workspace:*
-        version: link:../../packages/tailwind-config
+        version: link:../../packages/config/tailwind-config
       '@repo/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -371,7 +371,7 @@ importers:
         version: 15.3.2
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../../packages/typescript-config
+        version: link:../../packages/config/typescript-config
       '@tailwindcss/postcss':
         specifier: ^4.0.17
         version: 4.1.7
@@ -420,13 +420,33 @@ importers:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config/typescript-config
       '@types/node':
         specifier: ^22.13.13
         version: 22.13.13
       typescript:
         specifier: ^5.0.0
         version: 5.8.3
+
+  packages/config/nextjs-config:
+    dependencies:
+      next:
+        specifier: ^15.2.4
+        version: 15.3.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+
+  packages/config/tailwind-config:
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      tailwindcss:
+        specifier: ^4.0.15
+        version: 4.1.7
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@4.1.7)
+
+  packages/config/typescript-config: {}
 
   packages/database:
     dependencies:
@@ -445,7 +465,7 @@ importers:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config/typescript-config
       '@types/pg':
         specifier: ^8.15.2
         version: 8.15.2
@@ -465,17 +485,11 @@ importers:
         specifier: ^5.8.2
         version: 5.8.3
 
-  packages/nextjs-config:
-    dependencies:
-      next:
-        specifier: ^15.2.4
-        version: 15.3.2(@opentelemetry/api@1.9.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-
   packages/platform-utils:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config/typescript-config
       typescript:
         specifier: ^5.0.0
         version: 5.8.3
@@ -506,27 +520,13 @@ importers:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config/typescript-config
       '@types/react':
         specifier: 19.0.12
         version: 19.0.12
       prisma:
         specifier: ^6.5.0
         version: 6.8.2(typescript@5.8.3)
-
-  packages/tailwind-config:
-    devDependencies:
-      '@repo/typescript-config':
-        specifier: workspace:*
-        version: link:../typescript-config
-      tailwindcss:
-        specifier: ^4.0.15
-        version: 4.1.7
-      tailwindcss-animate:
-        specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@4.1.7)
-
-  packages/typescript-config: {}
 
   packages/ui:
     dependencies:
@@ -589,7 +589,7 @@ importers:
         version: link:../shared
       '@repo/tailwind-config':
         specifier: workspace:*
-        version: link:../tailwind-config
+        version: link:../config/tailwind-config
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -641,7 +641,7 @@ importers:
     devDependencies:
       '@repo/typescript-config':
         specifier: workspace:*
-        version: link:../typescript-config
+        version: link:../config/typescript-config
       '@tailwindcss/postcss':
         specifier: ^4.0.17
         version: 4.1.7
