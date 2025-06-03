@@ -97,7 +97,7 @@ const MobileNavDrawer = ({
                       </span>
                     )}
 
-                    <CollapsibleTrigger className="p-2 hover:bg-gray-100 rounded-ful absolute right-0 left-0">
+                    <CollapsibleTrigger className="p-2 rounded-ful absolute right-0 left-0">
                       <ChevronDown className="h-4 w-4 transition-transform ui-open:rotate-180 absolute right-0" />
                     </CollapsibleTrigger>
                   </div>

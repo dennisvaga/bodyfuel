@@ -37,9 +37,9 @@ export const AuthLink = ({
           ? `/signin?callbackUrl=${encodeURIComponent(pathname)}`
           : "/dashboard"
       }
-      onClick={onClick} // Add onClick handler
+      onClick={onClick}
     >
-      {displayText && text}
+      {displayText && <span className="min-w-[55px] truncate">{text}</span>}
       <User />
     </Link>
   );
