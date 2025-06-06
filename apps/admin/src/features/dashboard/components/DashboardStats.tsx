@@ -34,21 +34,18 @@ export const DashboardStats = () => {
 
   const stats = [
     {
-      href: "/orders",
       icon: ShoppingBag,
       title: "Total Orders",
       value: orderCount,
       color: "blue" as const,
     },
     {
-      href: "/products",
       icon: Package2,
       title: "Products",
       value: productCount,
       color: "emerald" as const,
     },
     {
-      href: "/collections",
       icon: Grid3x3,
       title: "Collections",
       value: collectionCount,

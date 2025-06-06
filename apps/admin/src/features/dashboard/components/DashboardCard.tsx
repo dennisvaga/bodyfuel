@@ -19,63 +19,79 @@ export const DashboardCard = ({
   description,
   color = "primary",
 }: DashboardCardProps) => {
-  // Get gradient classes based on color prop
+  // Get modern color classes based on color prop
   const getColorClasses = (colorName: string) => {
     switch (colorName) {
       case "emerald":
-        return "bg-gradient-to-br from-emerald-500 to-emerald-600";
+        return {
+          icon: "bg-gradient-to-br from-emerald-600/80 to-emerald-700/80 dark:from-emerald-600/70 dark:to-emerald-700/70",
+          hover:
+            "group-hover:bg-emerald-50/5 dark:group-hover:bg-emerald-900/10",
+          accent: "border-l-emerald-500/40 dark:border-l-emerald-400/30",
+        };
       case "blue":
-        return "bg-gradient-to-br from-blue-500 to-blue-600";
+        return {
+          icon: "bg-gradient-to-br from-blue-600/80 to-blue-700/80 dark:from-blue-600/70 dark:to-blue-700/70",
+          hover: "group-hover:bg-blue-50/5 dark:group-hover:bg-blue-900/10",
+          accent: "border-l-blue-500/40 dark:border-l-blue-400/30",
+        };
       case "purple":
-        return "bg-gradient-to-br from-purple-500 to-purple-600";
+        return {
+          icon: "bg-gradient-to-br from-purple-600/80 to-purple-700/80 dark:from-purple-600/70 dark:to-purple-700/70",
+          hover: "group-hover:bg-purple-50/5 dark:group-hover:bg-purple-900/10",
+          accent: "border-l-purple-500/40 dark:border-l-purple-400/30",
+        };
       case "primary":
       default:
-        return "bg-gradient-to-br from-primary to-primary/80";
+        return {
+          icon: "bg-gradient-to-br from-primary/90 to-primary dark:from-primary/80 dark:to-primary/90",
+          hover: "group-hover:bg-primary/5 dark:group-hover:bg-primary/10",
+          accent: "border-l-primary/40 dark:border-l-primary/30",
+        };
     }
   };
 
-  const gradientClass = getColorClasses(color);
-  const iconBgClass = gradientClass;
+  const colorClasses = getColorClasses(color);
   const CardContent = (
     <Card
-      className={`group relative overflow-hidden border-0 bg-gradient-to-br from-white/80 to-gray-50/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm hover:shadow-lg hover:shadow-gray-200/20 dark:hover:shadow-black/30 transition-all duration-300 hover:-translate-y-1 ${href ? "cursor-pointer" : ""} ${value !== undefined ? "p-6" : "p-6"}`}
+      className={`group relative overflow-hidden ${value !== undefined ? "" : `border-l-4 ${colorClasses.accent}`} bg-card/50 dark:bg-card/30 backdrop-blur-sm ${href ? "hover:shadow-lg hover:shadow-gray-200/20 dark:hover:shadow-black/30 transition-all duration-300 hover:-translate-y-1 cursor-pointer" : "transition-colors duration-300"} ${value !== undefined ? "p-4" : "p-6"}`}
     >
-      {/* Background gradient overlay */}
-      <div
-        className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300 ${gradientClass}`}
-      />
+      {/* Background hover overlay - only for clickable cards */}
+      {href && (
+        <div
+          className={`absolute inset-0 opacity-0 transition-opacity duration-300 ${colorClasses.hover}`}
+        />
+      )}
 
       <div className="relative">
         {value !== undefined ? (
-          // Stats layout
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div
-                  className={`p-2.5 rounded-xl ${iconBgClass} group-hover:scale-110 transition-transform duration-300`}
-                >
-                  <Icon className="h-5 w-5 text-white" />
-                </div>
-                {href && (
-                  <ArrowUpRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                )}
+          // Stats layout - compact horizontal design
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div
+                className={`p-2 rounded-lg ${colorClasses.icon} ${href ? "group-hover:scale-110 transition-transform duration-300" : ""}`}
+              >
+                <Icon className="h-4 w-4 text-white" />
               </div>
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">
+              <div>
+                <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-0.5">
                   {title}
                 </p>
-                <h3 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                <h3 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
                   {value}
                 </h3>
               </div>
             </div>
+            {href && (
+              <ArrowUpRight className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            )}
           </div>
         ) : (
           // Actions layout
           <>
             <div className="flex items-start justify-between mb-4">
               <div
-                className={`p-3 rounded-xl ${iconBgClass} group-hover:scale-110 transition-transform duration-300`}
+                className={`p-3 rounded-xl ${colorClasses.icon} group-hover:scale-110 transition-transform duration-300`}
               >
                 <Icon className="h-5 w-5 text-white" />
               </div>
