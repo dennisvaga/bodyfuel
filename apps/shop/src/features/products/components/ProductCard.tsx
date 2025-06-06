@@ -54,7 +54,7 @@ const ProductCard = ({
 
   return (
     <Card
-      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${
+      className={`rounded-xl shadow-sm bg-card group overflow-hidden flex flex-col justify-between ${
         isSlider ? "min-w-[200px] lg:flex-1 lg:min-w-0" : "w-full"
       }`}
     >
