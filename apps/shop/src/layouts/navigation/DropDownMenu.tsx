@@ -36,12 +36,12 @@ export const DropdownMenu = ({ item }: DropdownMenuProps) => {
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 bg-[hsl(var(--background-darker-solid))] w-48 py-2 z-50">
+        <div className="absolute top-full left-0 bg-card text-card-foreground w-48 py-2 z-50 shadow-md border">
           {item.dropdown?.map((dropdownItem: any) => (
             <Link
               key={dropdownItem.name}
               href={dropdownItem.href}
-              className="block px-4 py-2 hover:text-gray-300 transition-colors"
+              className="block px-4 py-2 transition-colors hover:bg-accent hover:text-accent-foreground "
               onClick={() => setIsOpen(false)}
             >
               {dropdownItem.name}

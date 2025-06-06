@@ -98,6 +98,7 @@
     /*Custom*/
     --background-darker: 0, 0%, 5%, 0.5;
     --background-darker-solid: 0, 0%, 8%;
+    --text-dark: 0, 0%, 100%;
   }
 
   * {
