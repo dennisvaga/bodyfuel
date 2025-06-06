@@ -87,7 +87,7 @@ Product.Name = ({
 }) => (
   <Label
     className={cn(
-      `text-base font-semibold text-[hsl(var(--product-name))] ${onClick ? "hover:cursor-pointer hover:text-primary transition-colors" : ""}`,
+      `text-md font-semibold text-[hsl(var(--product-name))] ${onClick ? "hover:cursor-pointer hover:text-primary transition-colors" : ""}`,
       className
     )}
     onClick={onClick}

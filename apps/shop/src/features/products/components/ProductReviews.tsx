@@ -51,7 +51,7 @@ const ProductReviews = ({ productId, className }: ProductReviewsProps) => {
     // Full stars - using a more subtle orange-gold color
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <Star key={i} className="h-3 w-3 fill-orange-400 text-orange-400" />
+        <Star key={i} className="h-3 w-3 fill-amber-300/60 text-amber-300/60" />
       );
     }
 
@@ -61,7 +61,7 @@ const ProductReviews = ({ productId, className }: ProductReviewsProps) => {
         <div key="half" className="relative">
           <Star className="h-3 w-3 text-muted-foreground/30" />
           <div className="absolute inset-0 overflow-hidden w-1/2">
-            <Star className="h-3 w-3 fill-orange-400 text-orange-400" />
+            <Star className="h-3 w-3 fill-amber-300/60 text-amber-300/60" />
           </div>
         </div>
       );
