@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Metadata } from "next";
 import aboutBodyfuel from "@media/about-bodyfuel.png";
+import { SectionContainer } from "@/src/layouts/SectionContainer";
 
 export const metadata: Metadata = {
   title: "About Us | BodyFuel",
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main className="flex-1">
-      <div className="layout mx-auto py-12 px-4 md:px-6">
+      <SectionContainer className="py-12 px-4 md:px-6">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold text-center mb-4">Our Mission</h1>
           <p className="text-lg text-center max-w-2xl mx-auto mb-8 text-muted-foreground">
@@ -57,7 +58,7 @@ export default function AboutPage() {
             </div>
           </section>
         </div>
-      </div>
+      </SectionContainer>
     </main>
   );
 }

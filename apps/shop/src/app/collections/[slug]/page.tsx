@@ -5,6 +5,7 @@ import { collectionService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
 import { notFound, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
+import { SectionContainer } from "@/src/layouts/SectionContainer";
 
 const Page = () => {
   const pathname = usePathname();
@@ -17,16 +18,16 @@ const Page = () => {
 
   if (isLoading)
     return (
-      <div className="layout flex justify-center">
+      <SectionContainer className="flex justify-center">
         <Loader2 className="h-5 w-5 animate-spin text-primary" />
-      </div>
+      </SectionContainer>
     );
   if (!collection) notFound();
 
   return (
-    <section className="layout">
+    <SectionContainer>
       <ProductGrid productGroup={collection} isLoading={isLoading} />
-    </section>
+    </SectionContainer>
   );
 };
 

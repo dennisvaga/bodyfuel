@@ -19,10 +19,10 @@ const ProductSliderSkeleton = ({
   withBrigterBg = false,
   showViewAll = true,
 }: ProductSliderSkeletonProps) => {
-  const bgClass = withBrigterBg ? "bg-gray-200" : "";
+  const bgClass = withBrigterBg ? "bg-muted/50 dark:bg-muted/30" : "";
 
   return (
-    <div className="flex flex-col xl:items-center">
+    <div className="flex flex-col xl:items-center bg-background">
       <div className="flex flex-col gap-6">
         {/* Group heading skeleton */}
         <div className="flex flex-row items-center">

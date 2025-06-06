@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 
 import DashboardTabs from "@/src/features/dashboard/components/DashboardTabs";
 import { useUserOrders } from "@/src/features/dashboard/hooks/useUserOrders";
+import { SectionContainer } from "@/src/layouts/SectionContainer";
 
 const DashboardPage = () => {
   const { data: session, status } = useSession();
@@ -21,13 +22,13 @@ const DashboardPage = () => {
   }
 
   return (
-    <section className="layout flex flex-col gap-8">
+    <SectionContainer className="flex flex-col gap-8">
       <h1 className="text-4xl font-bold">Your Account</h1>
 
       <DashboardTabs session={session} orders={orders} />
 
       <div className="mt-8"></div>
-    </section>
+    </SectionContainer>
   );
 };
 

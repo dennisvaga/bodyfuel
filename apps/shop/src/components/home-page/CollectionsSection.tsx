@@ -10,6 +10,7 @@ import ProductSlider from "../../features/products/components/ProductSlider";
 import { ProductGroupType } from "@/src/features/products/types/productGroup";
 import femaleExercising from "@media/collections/femaleExercising.png";
 import manLiftingBarbell from "@media/collections/manLiftingBarbell.png";
+import { SectionContainer } from "@/src/layouts/SectionContainer";
 
 const CollectionsSection = () => {
   const { data: newArrivals, isLoading: isNewArrivalsLoading } = useFetchQuery({
@@ -31,7 +32,7 @@ const CollectionsSection = () => {
   });
 
   return (
-    <div className="layout flex flex-col gap-12 md:gap-20">
+    <SectionContainer className="flex flex-col gap-12 md:gap-20 bg-background">
       <ProductSlider
         groupType={ProductGroupType.Collections}
         productGroup={newArrivals}
@@ -47,7 +48,7 @@ const CollectionsSection = () => {
         isLoading={isBestSellersLoading}
         productCount={4}
       />
-    </div>
+    </SectionContainer>
   );
 };
 

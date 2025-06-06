@@ -47,7 +47,7 @@ const ProductCard = ({
 
   return (
     <Card
-      className={`rounded-none shadow-none bg-[hsl(var(--background))] group overflow-hidden ${isSlider ? "lg:w-[260px] w-[220px]" : "w-full"}`}
+      className={`rounded-none shadow-none bg-card group overflow-hidden ${isSlider ? "lg:w-[260px] w-[220px]" : "w-full"}`}
     >
       <CardHeader className={`p-4 overflow-hidden`}>
         <Product.Image

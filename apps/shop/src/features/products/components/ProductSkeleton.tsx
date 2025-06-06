@@ -23,7 +23,7 @@ const ProductSkeleton = ({
   count = 6,
   withBrigterBg = false,
 }: ProductSkeletonProps) => {
-  const bgClass = withBrigterBg ? "bg-gray-200" : "";
+  const bgClass = withBrigterBg ? "bg-muted/50 dark:bg-muted/30" : "";
 
   // Skeleton variants specific to each variant
   // - This object structure is more efficient than switch, because we can pull only the specific record that we need.

@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Button } from "@repo/ui/components/ui/button";
 import Link from "next/link";
+import { SectionContainer } from "@/src/layouts/SectionContainer";
 
 const OrderPage = () => {
   const { orderNumber } = useParams<{ orderNumber: string }>();
@@ -52,15 +53,15 @@ const OrderPage = () => {
 
   if (isLoading || status === "loading") {
     return (
-      <div className="layout flex items-center justify-center min-h-[400px]">
+      <SectionContainer className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
+      </SectionContainer>
     );
   }
 
   if (error) {
     return (
-      <div className="layout flex flex-col items-center justify-center min-h-[400px] text-center">
+      <SectionContainer className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <h1 className="text-2xl font-bold mb-4">{error}</h1>
         <p className="mb-6 text-muted-foreground">
           {error === "Please sign in to view your order"
@@ -82,13 +83,13 @@ const OrderPage = () => {
               : "Back to Dashboard"}
           </Link>
         </Button>
-      </div>
+      </SectionContainer>
     );
   }
 
   if (!order) {
     return (
-      <div className="layout flex flex-col items-center justify-center min-h-[400px] text-center">
+      <SectionContainer className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <h1 className="text-2xl font-bold mb-4">Order Not Found</h1>
         <p className="mb-6 text-muted-foreground">
           We couldn't find the order you're looking for
@@ -96,14 +97,14 @@ const OrderPage = () => {
         <Button asChild>
           <Link href="/dashboard">Back to Dashboard</Link>
         </Button>
-      </div>
+      </SectionContainer>
     );
   }
 
   return (
-    <div className="layout">
+    <SectionContainer>
       <CustomerOrderDetail order={order} />
-    </div>
+    </SectionContainer>
   );
 };
 

@@ -10,6 +10,21 @@
     text-wrap: balance;
   }
 
+  /* Home page section utilities */
+  .section-card {
+    background-color: hsl(var(--section-card));
+  }
+  
+  .section-card:hover {
+    background-color: hsl(var(--section-card-hover));
+  }
+  
+  .glass-bg {
+    background-color: hsl(var(--glass-background));
+    backdrop-filter: blur(8px);
+    border: 1px solid hsl(var(--glass-border));
+  }
+
   /* Custom scroll styles */
   ::-webkit-scrollbar {
     width: 8px;
@@ -67,6 +82,13 @@
     /*Custom*/
     --background-darker: 0, 0%, 0%, 0.9;
     --background-darker-solid: 0, 0%, 8%;
+    
+    /* Home page section variables */
+    --section-card: 0 0% 100%;
+    --section-card-hover: 0 0% 98%;
+    --section-gradient-overlay: 0 0% 100% / 0.05;
+    --glass-background: 0 0% 100% / 0.1;
+    --glass-border: 0 0% 0% / 0.1;
   }
 
   .dark {
@@ -99,6 +121,13 @@
     --background-darker: 0, 0%, 5%, 0.5;
     --background-darker-solid: 0, 0%, 8%;
     --text-dark: 0, 0%, 100%;
+    
+    /* Home page section variables for dark mode */
+    --section-card: 12 6.5% 15.1%;
+    --section-card-hover: 12 6.5% 18%;
+    --section-gradient-overlay: 0 0% 0% / 0.1;
+    --glass-background: 0 0% 0% / 0.2;
+    --glass-border: 0 0% 100% / 0.1;
   }
 
   * {
@@ -172,51 +201,5 @@
   .custom-link:hover {
     text-decoration: underline;
     color: hsl(var(--primary) / 0.9);
-  }
-}
-
-/* Custom container */
-.layout {
-  width: 100%;
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 1.5rem;
-  padding-left: 1.5rem;
-  padding-top: 3rem;
-  padding-bottom: 3rem;
-}
-
-/* Mimic tailwind container class */
-/*sm*/
-@media (min-width: 640px) {
-  .layout {
-    max-width: 640px;
-  }
-}
-/*md*/
-@media (min-width: 768px) {
-  .layout {
-    max-width: 768px;
-  }
-}
-/*lg*/
-@media (min-width: 1024px) {
-  .layout {
-    max-width: 1024px;
-    padding-top: 6rem;
-    padding-bottom: 6rem;
-  }
-}
-/*xl*/
-@media (min-width: 1280px) {
-  .layout {
-    max-width: 1280px;
-
-  }
-}
-/*2xl*/
-@media (min-width: 1536px) {
-  .layout {
-    max-width: 1536px;
   }
 }

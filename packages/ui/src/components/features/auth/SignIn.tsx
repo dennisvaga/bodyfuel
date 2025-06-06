@@ -72,7 +72,7 @@ const SignIn = ({ callbackUrl, isAdmin = false }: signInProps) => {
   }
 
   return (
-    <div className="layout flex justify-center items-center min-h-[80vh]">
+    <div className="max-w-2xl flex justify-center items-center min-h-[80vh]">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>

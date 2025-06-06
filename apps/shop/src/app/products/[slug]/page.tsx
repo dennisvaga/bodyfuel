@@ -1,6 +1,7 @@
 "use client";
 
 import ProductDetail from "@/src/features/products/components/ProductDetail";
+import { SectionContainer } from "@/src/layouts/SectionContainer";
 import { useFetchQuery, QUERY_KEYS, productService } from "@repo/shared";
 import { notFound, usePathname } from "next/navigation";
 import React from "react";
@@ -16,11 +17,11 @@ const page = () => {
 
   if (isLoading) {
     return (
-      <div className="layout">
+      <SectionContainer>
         <div className="flex justify-center items-center min-h-[50vh]">
           <p>Loading product...</p>
         </div>
-      </div>
+      </SectionContainer>
     );
   }
 
@@ -29,9 +30,9 @@ const page = () => {
   }
 
   return (
-    <section className="layout flex flex-row justify-center w-full">
+    <SectionContainer className="flex flex-row justify-center w-full">
       <ProductDetail product={product} isLoading={isLoading}></ProductDetail>
-    </section>
+    </SectionContainer>
   );
 };
 
