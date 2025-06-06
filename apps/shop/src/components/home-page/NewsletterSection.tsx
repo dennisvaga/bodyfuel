@@ -23,19 +23,19 @@ const NewsletterSection = () => {
   return (
     <div className="bg-gradient-to-br from-primary/10 via-background to-primary/5 dark:from-primary/5 dark:via-background dark:to-primary/10">
       <SectionContainer>
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/20 dark:bg-primary/30 text-primary mb-8">
             <Mail size={32} strokeWidth={1.5} />
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
+          <h2 className="text-xl md:text-5xl font-bold mb-4 text-foreground">
             Stay{" "}
             <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               Fueled
             </span>
           </h2>
 
-          <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             Get exclusive access to new products, workout tips, nutrition
             guides, and special offers delivered straight to your inbox.
           </p>

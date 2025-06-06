@@ -17,7 +17,7 @@ const BestSellersSection = () => {
     serviceFn: () =>
       collectionService.getCollectionBySlug(COLLECTIONS_SLUGS.BEST_SELLERS, {
         currentPage: 1,
-        itemsPerPage: 5,
+        itemsPerPage: 4,
       }),
   });
 
@@ -29,7 +29,7 @@ const BestSellersSection = () => {
           productGroup={bestSellers}
           groupImage={femaleExercising}
           isLoading={isBestSellersLoading}
-          productCount={5}
+          productCount={4}
         />
       </SectionContainer>
     </div>

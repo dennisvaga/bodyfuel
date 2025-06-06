@@ -68,7 +68,7 @@ Product.Image = ({
         className={cn(
           "object-contain",
           hoverEffect &&
-            "transition-transform duration-500 transform group-hover:scale-110"
+            "transition-transform duration-500 transform group-hover:scale-105"
         )}
       />
     </div>

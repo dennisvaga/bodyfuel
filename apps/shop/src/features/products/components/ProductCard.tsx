@@ -47,13 +47,13 @@ const ProductCard = ({
 
   return (
     <Card
-      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${isSlider ? "lg:w-[240px] w-[220px]" : "w-full"}`}
+      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${isSlider ? "" : "w-full"}`}
     >
-      <CardHeader className={`p-4 overflow-hidden`}>
+      <CardHeader className={`p-6 overflow-hidden`}>
         <Product.Image
           src={product.images?.[0]?.imageUrl || "/"}
           onClick={handleCardClick}
-          width={230}
+          width={200}
           hoverEffect
         />
       </CardHeader>
@@ -66,7 +66,7 @@ const ProductCard = ({
           onClick={(e: any) => {
             handleAddToCart();
           }}
-          className={`absolute hover:bg-primary bottom-0 left-0 right-0 rounded-xl font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block`}
+          className={`absolute hover:bg-primary bottom-0 left-0 right-0 rounded-md font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block`}
         />
         {/* Mobile cart icon */}
         <Product.AddToCartButton

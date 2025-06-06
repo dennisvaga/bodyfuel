@@ -17,7 +17,7 @@ const SaleItemsSection = () => {
     serviceFn: () =>
       collectionService.getCollectionBySlug(COLLECTIONS_SLUGS.SALE_ITEMS, {
         currentPage: 1,
-        itemsPerPage: 5,
+        itemsPerPage: 4,
       }),
   });
 
@@ -28,7 +28,7 @@ const SaleItemsSection = () => {
         productGroup={saleItems}
         groupImage={manLiftingBarbell}
         isLoading={isSaleItemsLoading}
-        productCount={5}
+        productCount={4}
       />
     </SectionContainer>
   );

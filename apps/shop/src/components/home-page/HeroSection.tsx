@@ -21,6 +21,7 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import { Button } from "@repo/ui/components/ui/button";
+import { AnimatedTextGroup } from "../AnimatedText";
 
 /**
  * Slide content configuration for hero carousel
@@ -54,6 +55,12 @@ const sliderImages = [
 
 const HeroSection = () => {
   const [api, setApi] = useState<CarouselApi>();
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    // Trigger animations on mount
+    setIsLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (!api) {
@@ -120,10 +127,16 @@ const HeroSection = () => {
                         quality={100}
                         width={450}
                         height={0}
-                        className="object-contain pb-0"
+                        className={cn(
+                          `object-contain pb-0 transition-all duration-1200 ease-out`,
+                          isLoaded
+                            ? "transform translate-y-0 opacity-100 scale-100"
+                            : "transform translate-y-12 opacity-0 scale-95"
+                        )}
                         style={{
                           maxWidth: "80%",
                           maxHeight: "90%",
+                          animationDelay: `${index * 100 + 300}ms`,
                         }}
                       />
                     </div>
@@ -138,20 +151,37 @@ const HeroSection = () => {
                         : "order-2 md:order-1 text-left md:text-left"
                     )}
                   >
-                    <h2
-                      className={`text-4xl md:text-start text-center lg:text-6xl font-bold text-[#ff5c35] mb-2 md:mb-3`}
+                    <AnimatedTextGroup
+                      staggerDelay={200} // 200ms between each text element
+                      initialDelay={300} // start after image loads
                     >
-                      {slide.heading}
-                    </h2>
-                    <p className="text-2xl md:text-start text-center lg:text-4xl text-white font-semibold mb-2 md:mb-3">
-                      {slide.subheading}
-                    </p>
-                    <p className="text-base md:text-start text-center text-white mb-4 md:mb-6 max-w-md">
-                      {slide.description}
-                    </p>
-                    <Button className="text-white font-bold py-2 px-8 transition-colors uppercase">
-                      {slide.ctaText}
-                    </Button>
+                      {[
+                        <h2
+                          key="heading"
+                          className="text-4xl md:text-start text-center lg:text-6xl font-bold text-[#ff5c35] mb-2 md:mb-3"
+                        >
+                          {slide.heading}
+                        </h2>,
+                        <p
+                          key="subheading"
+                          className="text-2xl md:text-start text-center lg:text-4xl text-white font-semibold mb-2 md:mb-3"
+                        >
+                          {slide.subheading}
+                        </p>,
+                        <p
+                          key="description"
+                          className="text-base md:text-start text-center text-white mb-4 md:mb-6 max-w-md"
+                        >
+                          {slide.description}
+                        </p>,
+                        <Button
+                          key="cta"
+                          className="text-white font-bold py-2 px-8 uppercase hover:scale-105 hover:shadow-lg"
+                        >
+                          {slide.ctaText}
+                        </Button>,
+                      ]}
+                    </AnimatedTextGroup>
                   </div>
                 </SectionContainer>
               </div>

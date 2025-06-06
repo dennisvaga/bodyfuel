@@ -28,7 +28,7 @@ const stats = [
 
 const StatsSection = () => {
   return (
-    <div className="bg-gradient-to-r from-primary to-primary/80 text-white">
+    <div className="bg-gradient-to-r from-primary dark:to-primary/80 to-primary/100 text-white">
       <SectionContainer>
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
