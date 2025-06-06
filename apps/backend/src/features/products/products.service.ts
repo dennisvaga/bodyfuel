@@ -14,7 +14,7 @@ export class ProductService {
     const products = await productRepository.findAll();
 
     if (products.length === 0) {
-      throw new Error("No products found");
+      return [];
     }
 
     return assignImageUrlToProducts(products as ProductWithImageUrl[]);
@@ -36,13 +36,10 @@ export class ProductService {
       itemsPerPage
     );
 
-    if (products.length === 0) {
-      throw new Error("No products found");
-    }
-
-    const productsWithPresignedUrls = await assignImageUrlToProducts(
-      products as ProductWithImageUrl[]
-    );
+    const productsWithPresignedUrls =
+      products.length > 0
+        ? await assignImageUrlToProducts(products as ProductWithImageUrl[])
+        : [];
 
     const paginationData = this.getPaginationMetaData(
       currentPage,
@@ -80,7 +77,7 @@ export class ProductService {
     const products = await productRepository.search(search);
 
     if (products.length === 0) {
-      throw new Error("No products found");
+      return [];
     }
 
     return assignImageUrlToProducts(products as ProductWithImageUrl[]);

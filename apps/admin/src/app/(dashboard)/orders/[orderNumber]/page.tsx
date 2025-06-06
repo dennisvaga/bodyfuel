@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import LoadAnimation from "@repo/ui/components/LoadAnimation";
 import AdminOrderDetail from "@/src/features/orders/components/AdminOrderDetail";
 import { useAdminOrderDetail } from "@/src/features/orders/hooks/useAdminOrderDetail";
 
@@ -14,7 +14,7 @@ const OrderPage = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <LoadAnimation />
       </div>
     );
   }

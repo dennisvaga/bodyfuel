@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Search, Loader2 } from "lucide-react";
+import { Search } from "lucide-react";
+import LoadAnimation from "@repo/ui/components/LoadAnimation";
 import { Input } from "./input";
 import { ProductWithImageUrl } from "@repo/database/types/product";
 import { AppVariant } from "@repo/shared";
@@ -93,13 +94,7 @@ export const ProductSearchBase = ({
         >
           {isLoading ? (
             <div className="flex items-center justify-center py-6">
-              <Loader2
-                className={`h-4 w-4 animate-spin ${
-                  variant === "admin"
-                    ? "text-foreground/60 dark:text-gray-400"
-                    : "text-gray-400"
-                }`}
-              />
+              <LoadAnimation />
             </div>
           ) : products.length === 0 ? (
             <div

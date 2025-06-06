@@ -16,17 +16,23 @@ interface ProductGridProps<T = any> {
 }
 
 const ProductGrid = ({ productGroup, isLoading }: ProductGridProps) => {
+  // Handle both cases: array of products directly, or object with products property
+  const products = Array.isArray(productGroup)
+    ? productGroup
+    : productGroup?.products;
+  const title = Array.isArray(productGroup)
+    ? "ALL PRODUCTS"
+    : productGroup?.name?.toUpperCase();
+
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-4xl font-extrabold">
-        {productGroup?.name?.toUpperCase()}{" "}
-      </h1>
+      <h1 className="text-4xl font-extrabold">{title} </h1>
       {/* Products grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {isLoading ? (
           <ProductSkeleton></ProductSkeleton>
         ) : (
-          productGroup?.products?.map((product: any) => (
+          products?.map((product: any) => (
             <ProductCard
               key={product.id}
               product={product}

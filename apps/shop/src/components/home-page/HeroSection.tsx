@@ -22,6 +22,7 @@ import { cn } from "@repo/ui/lib/utils";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import { Button } from "@repo/ui/components/ui/button";
 import { AnimatedTextGroup } from "../AnimatedText";
+import Link from "next/link";
 
 /**
  * Slide content configuration for hero carousel
@@ -178,7 +179,12 @@ const HeroSection = () => {
                           key="cta"
                           className="text-white font-bold py-2 px-8 uppercase hover:scale-105 hover:shadow-lg"
                         >
-                          {slide.ctaText}
+                          <Link
+                            href={slide.ctaLink}
+                            className="flex items-center"
+                          >
+                            {slide.ctaText}
+                          </Link>
                         </Button>,
                       ]}
                     </AnimatedTextGroup>

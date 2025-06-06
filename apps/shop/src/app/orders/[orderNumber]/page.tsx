@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { orderService } from "@repo/shared";
 import { OrderWithItems } from "@repo/database/types/order";
 import CustomerOrderDetail from "@/src/features/orders/components/CustomerOrderDetail";
-import { Loader2 } from "lucide-react";
+import LoadAnimation from "@repo/ui/components/LoadAnimation";
 import { useSession } from "next-auth/react";
 import { Button } from "@repo/ui/components/ui/button";
 import Link from "next/link";
@@ -54,7 +54,7 @@ const OrderPage = () => {
   if (isLoading || status === "loading") {
     return (
       <SectionContainer className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <LoadAnimation />
       </SectionContainer>
     );
   }

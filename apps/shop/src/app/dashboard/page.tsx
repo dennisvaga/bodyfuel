@@ -1,9 +1,7 @@
 "use client";
 
-import { Button } from "@repo/ui/components/ui/button";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
+import LoadAnimation from "@repo/ui/components/LoadAnimation";
 
 import DashboardTabs from "@/src/features/dashboard/components/DashboardTabs";
 import { useUserOrders } from "@/src/features/dashboard/hooks/useUserOrders";
@@ -16,7 +14,7 @@ const DashboardPage = () => {
   if (status === "loading" || isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin" />
+        <LoadAnimation />
       </div>
     );
   }
