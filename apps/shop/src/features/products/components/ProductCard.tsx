@@ -47,13 +47,15 @@ const ProductCard = ({
 
   return (
     <Card
-      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${isSlider ? "" : "w-full"}`}
+      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${
+        isSlider ? "min-w-[200px] lg:flex-1 lg:min-w-0" : "w-full"
+      }`}
     >
       <CardHeader className={`p-6 overflow-hidden`}>
         <Product.Image
           src={product.images?.[0]?.imageUrl || "/"}
           onClick={handleCardClick}
-          width={200}
+          width={240}
           hoverEffect
         />
       </CardHeader>

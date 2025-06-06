@@ -35,8 +35,8 @@ const ProductSlider = ({
   }
 
   return (
-    <div className="flex flex-col xl:items-center">
-      <div className="flex flex-col gap-6">
+    <div className="flex flex-col xl:items-center w-full">
+      <div className="flex flex-col gap-6 w-full">
         {/* Group heading */}
         <div className="flex flex-row items-center">
           <h2 className="text-3xl font-extrabold">
@@ -50,10 +50,10 @@ const ProductSlider = ({
         </div>
 
         {/* Group image & link to 'view all' */}
-        <div className="flex flex-row gap-3 overflow-x-auto pb-2">
+        <div className="flex flex-row gap-3 overflow-x-auto lg:overflow-x-visible pb-2 w-full">
           {/* View all card - */}
           <div
-            className="relative bg-cover bg-center min-w-[200px] border rounded-xl"
+            className="relative bg-cover bg-center max-w-[230px] lg:w-1/3 lg:min-w-0 border rounded-xl flex-shrink-0"
             style={{
               backgroundImage: `url(${groupImage?.src})`,
             }}
@@ -73,7 +73,7 @@ const ProductSlider = ({
           </div>
 
           {/* Group items */}
-          <div className="flex flex-row gap-3 -order-1 sm:order-1">
+          <div className="flex flex-row gap-3 -order-1 sm:order-1 lg:flex-1 lg:w-2/3">
             {productGroup &&
               productGroup?.products.map((product: ProductWithImageUrl) => (
                 <ProductCard
