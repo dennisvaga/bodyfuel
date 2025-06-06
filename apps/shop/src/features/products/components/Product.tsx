@@ -8,7 +8,7 @@
 import { ReactNode } from "react";
 import Image from "next/image";
 import { Label } from "@radix-ui/react-label";
-import { PlusIcon, MinusIcon, ShoppingCart } from "lucide-react";
+import { PlusIcon, MinusIcon, ShoppingCart, Star } from "lucide-react";
 import { Input } from "@repo/ui/components/ui/input";
 import { Button } from "@repo/ui/components/ui/button";
 import { cn } from "@/lib/utils";

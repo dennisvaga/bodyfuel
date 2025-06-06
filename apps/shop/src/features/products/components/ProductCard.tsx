@@ -8,6 +8,7 @@ import { Card, CardHeader, CardContent } from "@repo/ui/components/ui/card";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
 import { useCart } from "../../cart/contexts/cartContext";
 import Product from "./Product";
+import ProductReviews from "./ProductReviews";
 import { ProductCardVariants } from "../types/productCard";
 import { useRouter } from "next/navigation";
 import { useToast } from "@repo/ui/hooks/use-toast";
@@ -69,6 +70,7 @@ const ProductCard = ({
       <CardContent className={`flex flex-col relative p-4 gap-1`}>
         <Product.Brand brand={product.brand ?? ""} />
         <Product.Name onClick={handleCardClick} name={product.name ?? ""} />
+        <ProductReviews productId={product.id} className="my-1" />
         <Product.Price price={product.price ?? 0} />
         {/* Desktop "Add to cart" button */}
         <Product.AddToCartButton
