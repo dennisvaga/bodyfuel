@@ -11,6 +11,7 @@ import Product from "./Product";
 import { ProductCardVariants } from "../types/productCard";
 import { useRouter } from "next/navigation";
 import { useToast } from "@repo/ui/hooks/use-toast";
+import { useMediaQuery } from "@repo/ui/hooks/use-media-query";
 
 interface ProductCardProps {
   product: ProductWithImageUrl;
@@ -45,6 +46,12 @@ const ProductCard = ({
   // Adjust sizing based on variant
   const isSlider = variant === ProductCardVariants.slider;
 
+  // Use media query to determine if we're on mobile
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  // Set image width based on screen size
+  const imageWidth = isMobile ? 160 : 240;
+
   return (
     <Card
       className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${
@@ -55,7 +62,7 @@ const ProductCard = ({
         <Product.Image
           src={product.images?.[0]?.imageUrl || "/"}
           onClick={handleCardClick}
-          width={240}
+          width={imageWidth}
           hoverEffect
         />
       </CardHeader>
