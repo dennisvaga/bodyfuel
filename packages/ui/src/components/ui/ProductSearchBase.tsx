@@ -70,8 +70,8 @@ export const ProductSearchBase = ({
           className={cn(
             "w-full pr-10",
             variant === "admin"
-              ? "bg-transparent dark:bg-black border-input text-foreground dark:text-white"
-              : "bg-black border-[hsl(12,6.5%,30%))] text-white"
+              ? "border-border bg-popover"
+              : "border-border bg-popover text-foreground"
           )}
         />
         <Search
@@ -87,8 +87,8 @@ export const ProductSearchBase = ({
         <div
           className={`scroll absolute mt-1 w-full rounded-md border shadow-lg z-10 ${
             variant === "admin"
-              ? "border-border bg-background dark:bg-black dark:border-gray-700"
-              : "border-gray-700 bg-black"
+              ? "border-border bg-popover dark:border-gray-700"
+              : "border-gray-700 bg-popover"
           }`}
         >
           {isLoading ? (

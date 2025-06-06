@@ -13,7 +13,7 @@ const Page = () => {
 
   return (
     <SectionContainer className="flex items-center justify-center min-h-[calc(50vh)]">
-      <div className="flex flex-col gap-8 md:max-w-[80%] mx-auto items-center">
+      <div className="flex flex-col gap-8 items-center w-full md:max-w-[70%]">
         <h1 className="text-4xl">Your Cart</h1>
 
         {isCartEmpty && <p>Your cart is currently empty.</p>}

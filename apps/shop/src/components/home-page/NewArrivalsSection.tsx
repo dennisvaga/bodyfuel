@@ -17,7 +17,7 @@ const NewArrivalsSection = () => {
     serviceFn: () =>
       collectionService.getCollectionBySlug(COLLECTIONS_SLUGS.NEW_ARRIVALS, {
         currentPage: 1,
-        itemsPerPage: 4,
+        itemsPerPage: 5,
       }),
   });
 
@@ -28,7 +28,7 @@ const NewArrivalsSection = () => {
         productGroup={newArrivals}
         groupImage={manLiftingBarbell}
         isLoading={isNewArrivalsLoading}
-        productCount={4}
+        productCount={5}
       />
     </SectionContainer>
   );

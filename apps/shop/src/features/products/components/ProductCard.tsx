@@ -47,7 +47,7 @@ const ProductCard = ({
 
   return (
     <Card
-      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${isSlider ? "lg:w-[260px] w-[220px]" : "w-full"}`}
+      className={`rounded-xl shadow-none bg-card group overflow-hidden flex flex-col justify-between ${isSlider ? "lg:w-[240px] w-[220px]" : "w-full"}`}
     >
       <CardHeader className={`p-4 overflow-hidden`}>
         <Product.Image
@@ -66,13 +66,13 @@ const ProductCard = ({
           onClick={(e: any) => {
             handleAddToCart();
           }}
-          className={`absolute hover:bg-primary bottom-0 left-0 right-0 rounded-md font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block`}
+          className={`absolute hover:bg-primary bottom-0 left-0 right-0 rounded-xl font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block`}
         />
         {/* Mobile cart icon */}
         <Product.AddToCartButton
           onClick={handleAddToCart}
           variant="icon"
-          className={`rounded-none md:hidden mt-2`}
+          className={`rounded-xl md:hidden mt-2`}
         />
       </CardContent>
     </Card>

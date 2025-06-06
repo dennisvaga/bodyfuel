@@ -157,7 +157,7 @@ const CartItemsList = ({
           return (
             <Product
               key={item.productId}
-              className="flex sm:flex-row flex-col gap-4 items-center border p-4"
+              className="flex sm:flex-row flex-col gap-4 items-center border p-8 rounded-xl"
             >
               <div className="flex flex-row">
                 <div className="flex flex-row gap-2">
@@ -210,8 +210,9 @@ const CartItemsList = ({
     }
   };
 
+  // Render the cart items based on the variant
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-4">{renderCartItems()}</div>
 
       {/* Subtotal/Total based on variant */}

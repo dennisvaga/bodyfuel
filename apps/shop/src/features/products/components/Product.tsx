@@ -163,7 +163,7 @@ Product.QuantityControls = ({
   return (
     <div
       className={cn(
-        "flex flex-row items-center border rounded-md w-[120px] h-10",
+        "flex flex-row items-center border rounded-xl w-[120px] h-10",
         className
       )}
       onClick={(e) => e.stopPropagation()}
