@@ -3,6 +3,7 @@
 import React from "react";
 import { Star, Quote } from "lucide-react";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import { Card } from "@repo/ui/components/ui/card";
 
 const testimonials = [
   {
@@ -37,11 +38,7 @@ const TestimonialsSection = () => {
       <SectionContainer>
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            What Our{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Athletes
-            </span>{" "}
-            Say
+            What Our <span className="primary-text-gradient">Athletes</span> Say
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Join thousands of satisfied customers who trust BodyFuel for their
@@ -51,9 +48,9 @@ const TestimonialsSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div
+            <Card
               key={index}
-              className="relative bg-card rounded-2xl p-8 border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/10 group"
+              className="relative p-8 hover:border-primary/30 transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/10 group"
             >
               {/* Quote icon */}
               <div className="absolute -top-4 left-8">
@@ -92,7 +89,7 @@ const TestimonialsSection = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </SectionContainer>

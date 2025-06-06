@@ -87,7 +87,7 @@ Product.Name = ({
 }) => (
   <Label
     className={cn(
-      `text-md font-normal ${onClick ? "hover:cursor-pointer" : ""}`,
+      `text-base font-semibold text-[hsl(var(--product-name))] ${onClick ? "hover:cursor-pointer hover:text-primary transition-colors" : ""}`,
       className
     )}
     onClick={onClick}
@@ -104,7 +104,14 @@ Product.Price = ({
   price: number;
   className?: string;
 }) => (
-  <Label className={cn("text-base font-medium", className)}>${price}</Label>
+  <Label
+    className={cn(
+      "text-lg font-bold text-[hsl(var(--product-price))]",
+      className
+    )}
+  >
+    ${price.toFixed(2)}
+  </Label>
 );
 
 // Product Category
@@ -115,7 +122,14 @@ Product.Category = ({
   category: string;
   className?: string;
 }) => (
-  <Label className={cn("text-base text-gray-500", className)}>{category}</Label>
+  <Label
+    className={cn(
+      "text-xs font-medium text-[hsl(var(--product-category))] uppercase tracking-wider",
+      className
+    )}
+  >
+    {category}
+  </Label>
 );
 
 // Product Brand
@@ -125,7 +139,16 @@ Product.Brand = ({
 }: {
   brand: string;
   className?: string;
-}) => <Label className={cn("text-sm text-gray-500", className)}>{brand}</Label>;
+}) => (
+  <Label
+    className={cn(
+      "text-sm font-medium text-[hsl(var(--product-brand))]",
+      className
+    )}
+  >
+    {brand}
+  </Label>
+);
 
 // Add to Cart Button
 Product.AddToCartButton = ({
@@ -207,7 +230,16 @@ Product.Subtotal = ({
 }: {
   amount: number;
   className?: string;
-}) => <Label className={cn("text-sm", className)}>Subtotal: ${amount}</Label>;
+}) => (
+  <Label
+    className={cn(
+      "text-base font-semibold text-[hsl(var(--product-price))]",
+      className
+    )}
+  >
+    Subtotal: ${amount.toFixed(2)}
+  </Label>
+);
 
 // Description
 Product.Description = ({
@@ -216,6 +248,15 @@ Product.Description = ({
 }: {
   description: string;
   className?: string;
-}) => <div className={cn("text-md", className)}>{description}</div>;
+}) => (
+  <div
+    className={cn(
+      "text-sm leading-relaxed text-[hsl(var(--product-description))]",
+      className
+    )}
+  >
+    {description}
+  </div>
+);
 
 export default Product;

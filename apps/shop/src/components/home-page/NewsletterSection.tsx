@@ -29,10 +29,7 @@ const NewsletterSection = () => {
           </div>
 
           <h2 className="text-xl md:text-5xl font-bold mb-4 text-foreground">
-            Stay{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Fueled
-            </span>
+            Stay <span className="primary-text-gradient">Fueled</span>
           </h2>
 
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">

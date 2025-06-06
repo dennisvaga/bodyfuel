@@ -12,10 +12,7 @@ const CTASection = () => {
       <SectionContainer>
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">
-            Ready to{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Transform
-            </span>{" "}
+            Ready to <span className="primary-text-gradient">Transform</span>{" "}
             Your Fitness?
           </h2>
 

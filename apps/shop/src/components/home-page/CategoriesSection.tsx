@@ -46,10 +46,7 @@ const CategoriesSection = () => {
       <SectionContainer>
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Shop by{" "}
-            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Category
-            </span>
+            Shop by <span className="primary-text-gradient">Category</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Find the perfect supplements for your fitness goals and lifestyle

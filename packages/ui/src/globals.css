@@ -25,6 +25,13 @@
     border: 1px solid hsl(var(--glass-border));
   }
 
+  .primary-text-gradient {
+    background: var(--primary-text-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
   /* Custom scroll styles */
   ::-webkit-scrollbar {
     width: 8px;
@@ -83,12 +90,20 @@
     --background-darker: 0, 0%, 0%, 0.9;
     --background-darker-solid: 0, 0%, 8%;
     
+    /* Product component colors */
+    --product-price: 12 100% 63%; /* Using primary color for price */
+    --product-category: 220 14% 56%; /* Subtle blue-gray */
+    --product-brand: 25 5.3% 44.7%; /* Muted foreground */
+    --product-name: 20 14.3% 4.1%; /* Foreground color */
+    --product-description: 25 5.3% 44.7%; /* Muted foreground */
+    
     /* Home page section variables */
     --section-card: 0 0% 100%;
     --section-card-hover: 0 0% 98%;
     --section-gradient-overlay: 0 0% 100% / 0.05;
     --glass-background: 0 0% 100% / 0.1;
     --glass-border: 0 0% 0% / 0.1;
+    --primary-text-gradient: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.85));
   }
 
   .dark {
@@ -122,12 +137,20 @@
     --background-darker-solid: 0, 0%, 8%;
     --text-dark: 0, 0%, 100%;
     
+    /* Product component colors for dark mode */
+    --product-price: 20.5 90.2% 48.2%; /* Using primary color for price */
+    --product-category: 220 70% 70%; /* Lighter blue in dark mode */
+    --product-brand: 24 5.4% 63.9%; /* Muted foreground */
+    --product-name: 60 9.1% 97.8%; /* Foreground color */
+    --product-description: 24 5.4% 63.9%; /* Muted foreground */
+    
     /* Home page section variables for dark mode */
     --section-card: 12 6.5% 15.1%;
     --section-card-hover: 12 6.5% 18%;
     --section-gradient-overlay: 0 0% 0% / 0.1;
     --glass-background: 0 0% 0% / 0.2;
     --glass-border: 0 0% 100% / 0.1;
+    --primary-text-gradient: linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.9));
   }
 
   * {
