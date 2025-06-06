@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button } from "@repo/ui/components/ui/button";
 import { Input } from "@repo/ui/components/ui/input";
 import { Mail, CheckCircle } from "lucide-react";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState("");
@@ -50,7 +50,6 @@ const NewsletterSection = () => {
                 placeholder="Enter your email address"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="flex-1 h-12 rounded-xl border-border/50 focus:border-primary"
                 required
               />
               <Button

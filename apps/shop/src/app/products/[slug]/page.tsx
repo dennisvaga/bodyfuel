@@ -1,7 +1,7 @@
 "use client";
 
 import ProductDetail from "@/src/features/products/components/ProductDetail";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import { useFetchQuery, QUERY_KEYS, productService } from "@repo/shared";
 import { notFound, usePathname } from "next/navigation";
 import React from "react";

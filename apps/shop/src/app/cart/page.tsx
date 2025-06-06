@@ -4,7 +4,7 @@ import CartItemsList from "@/src/features/cart/components/CartItemsList";
 import { CartVariants } from "@/src/features/cart/types/cartEnums";
 import { useCart } from "@/src/features/cart/contexts/cartContext";
 import React from "react";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const Page = () => {
   const { cart, isLoading } = useCart();

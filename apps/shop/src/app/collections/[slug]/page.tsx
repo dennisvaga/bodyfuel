@@ -5,7 +5,7 @@ import { collectionService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
 import { notFound, usePathname } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const Page = () => {
   const pathname = usePathname();

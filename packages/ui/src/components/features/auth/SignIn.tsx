@@ -27,6 +27,7 @@ import { signIn, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { providerMap, SignInInput, signInSchema } from "@repo/auth";
 import { onErrors } from "@repo/shared";
+import { SectionContainer } from "#components/SectionContainer";
 
 interface signInProps {
   callbackUrl?: string;
@@ -72,7 +73,7 @@ const SignIn = ({ callbackUrl, isAdmin = false }: signInProps) => {
   }
 
   return (
-    <div className="max-w-2xl flex justify-center items-center min-h-[80vh]">
+    <SectionContainer className="flex justify-center items-center min-h-[80vh]">
       <Card className="mx-auto max-w-sm w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -161,7 +162,7 @@ const SignIn = ({ callbackUrl, isAdmin = false }: signInProps) => {
           )}
         </CardContent>
       </Card>
-    </div>
+    </SectionContainer>
   );
 };
 

@@ -169,7 +169,7 @@ Product.QuantityControls = ({
       onClick={(e) => e.stopPropagation()}
     >
       <Button
-        className="flex items-center justify-center h-full w-10 p-0 rounded-none border-0 dark:hover:bg-muted/50"
+        className="flex items-center justify-center h-full w-10 p-0 border-0 dark:hover:bg-muted/50"
         variant="ghost"
         onClick={() => onChangeQuantity(Math.max(1, quantity - 1))}
         type="button"

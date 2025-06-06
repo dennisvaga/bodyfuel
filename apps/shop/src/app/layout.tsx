@@ -28,7 +28,7 @@ export default function RootLayout({
       <body className={`${roboto.className} antialiased`}>
         <AppProviders>
           <NavBar />
-          <main className="min-h-[calc(100vh-200px)] pb-8">{children}</main>
+          <main className="min-h-[calc(100vh-200px)]">{children}</main>
           <Footer />
           <ChatWidget />
         </AppProviders>

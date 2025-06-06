@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Star, Quote } from "lucide-react";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const testimonials = [
   {
@@ -33,68 +33,70 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <SectionContainer>
-      <div className="text-center mb-16">
-        <h2 className="text-4xl md:text-5xl font-bold mb-4">
-          What Our{" "}
-          <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-            Athletes
-          </span>{" "}
-          Say
-        </h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Join thousands of satisfied customers who trust BodyFuel for their
-          fitness nutrition
-        </p>
-      </div>
+    <div className="bg-muted/30 dark:bg-muted/10">
+      <SectionContainer>
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            What Our{" "}
+            <span className="bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              Athletes
+            </span>{" "}
+            Say
+          </h2>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Join thousands of satisfied customers who trust BodyFuel for their
+            fitness nutrition
+          </p>
+        </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {testimonials.map((testimonial, index) => (
-          <div
-            key={index}
-            className="relative bg-card rounded-2xl p-8 border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/10 group"
-          >
-            {/* Quote icon */}
-            <div className="absolute -top-4 left-8">
-              <div className="bg-primary text-white p-3 rounded-full shadow-lg">
-                <Quote size={20} fill="currentColor" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
+            <div
+              key={index}
+              className="relative bg-card rounded-2xl p-8 border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg dark:hover:shadow-primary/10 group"
+            >
+              {/* Quote icon */}
+              <div className="absolute -top-4 left-8">
+                <div className="bg-primary text-white p-3 rounded-full shadow-lg">
+                  <Quote size={20} fill="currentColor" />
+                </div>
+              </div>
+
+              {/* Rating */}
+              <div className="flex items-center gap-1 mb-4 mt-4">
+                {[...Array(testimonial.rating)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    className="fill-yellow-400 text-yellow-400"
+                  />
+                ))}
+              </div>
+
+              {/* Content */}
+              <p className="text-muted-foreground mb-6 leading-relaxed italic">
+                "{testimonial.content}"
+              </p>
+
+              {/* Author */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center font-semibold text-primary">
+                  {testimonial.avatar}
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground">
+                    {testimonial.name}
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {testimonial.role}
+                  </p>
+                </div>
               </div>
             </div>
-
-            {/* Rating */}
-            <div className="flex items-center gap-1 mb-4 mt-4">
-              {[...Array(testimonial.rating)].map((_, i) => (
-                <Star
-                  key={i}
-                  size={16}
-                  className="fill-yellow-400 text-yellow-400"
-                />
-              ))}
-            </div>
-
-            {/* Content */}
-            <p className="text-muted-foreground mb-6 leading-relaxed italic">
-              "{testimonial.content}"
-            </p>
-
-            {/* Author */}
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center font-semibold text-primary">
-                {testimonial.avatar}
-              </div>
-              <div>
-                <h4 className="font-semibold text-foreground">
-                  {testimonial.name}
-                </h4>
-                <p className="text-sm text-muted-foreground">
-                  {testimonial.role}
-                </p>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </SectionContainer>
+          ))}
+        </div>
+      </SectionContainer>
+    </div>
   );
 };
 

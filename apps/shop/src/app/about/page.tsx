@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import { Metadata } from "next";
 import aboutBodyfuel from "@media/about-bodyfuel.png";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 export const metadata: Metadata = {
   title: "About Us | BodyFuel",

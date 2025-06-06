@@ -19,7 +19,8 @@ import {
   type CarouselApi,
 } from "@repo/ui/components/ui/carousel";
 import { cn } from "@repo/ui/lib/utils";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import { Button } from "@repo/ui/components/ui/button";
 
 /**
  * Slide content configuration for hero carousel
@@ -101,7 +102,7 @@ const HeroSection = () => {
                 ></div>
 
                 {/* Content container with layout class for content width control */}
-                <SectionContainer className="!py-[0rem] relative z-10 flex flex-col gap-4 md:gap-8 md:flex-row w-full h-full justify-end">
+                <SectionContainer className="py-4 relative z-10 flex flex-col gap-4 md:gap-8 md:flex-row w-full h-full justify-end">
                   {/* Product image container - order changes based on alignment */}
                   <div
                     className={cn(
@@ -148,9 +149,9 @@ const HeroSection = () => {
                     <p className="text-base md:text-start text-center text-white mb-4 md:mb-6 max-w-md">
                       {slide.description}
                     </p>
-                    <button className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white font-bold py-2 px-8 rounded-md transition-colors uppercase">
+                    <Button className="text-white font-bold py-2 px-8 transition-colors uppercase">
                       {slide.ctaText}
-                    </button>
+                    </Button>
                   </div>
                 </SectionContainer>
               </div>

@@ -9,7 +9,7 @@ import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Button } from "@repo/ui/components/ui/button";
 import Link from "next/link";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const OrderPage = () => {
   const { orderNumber } = useParams<{ orderNumber: string }>();

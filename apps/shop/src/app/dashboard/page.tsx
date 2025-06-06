@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 
 import DashboardTabs from "@/src/features/dashboard/components/DashboardTabs";
 import { useUserOrders } from "@/src/features/dashboard/hooks/useUserOrders";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const DashboardPage = () => {
   const { data: session, status } = useSession();

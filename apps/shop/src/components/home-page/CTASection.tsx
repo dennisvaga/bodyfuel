@@ -4,7 +4,7 @@ import React from "react";
 import { Button } from "@repo/ui/components/ui/button";
 import Link from "next/link";
 import { ArrowRight, MessageCircle, ShoppingBag } from "lucide-react";
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 const CTASection = () => {
   return (

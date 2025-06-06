@@ -1,6 +1,6 @@
 "use client";
 
-import { SectionContainer } from "@/src/layouts/SectionContainer";
+import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import React from "react";
 
 const stats = [

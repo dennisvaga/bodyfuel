@@ -33,7 +33,7 @@ export function ModeToggle({
           variant={isShopVariant ? "theme-toggle" : "outline"}
           size="icon"
           className={cn(
-            "border-[hsl(12,6.5%,15.1%))] m-3",
+            "m-3",
             isDrawer && "bg-white dark:bg-[hsla(0,0%,5%,0.5)]",
             className
           )}
