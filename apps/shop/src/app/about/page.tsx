@@ -1,8 +1,10 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Metadata } from "next";
 import aboutBodyfuel from "@media/about-bodyfuel.png";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import { Button } from "@repo/ui/components/ui/button";
 
 export const metadata: Metadata = {
   title: "About Us | BodyFuel",
@@ -43,18 +45,12 @@ export default function AboutPage() {
               questions.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/products"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md text-center"
-              >
-                Browse Products
-              </a>
-              <a
-                href="/contact-us"
-                className="bg-secondary text-secondary-foreground hover:bg-secondary/90 px-6 py-3 rounded-md text-center"
-              >
-                Contact Us
-              </a>
+              <Button asChild>
+                <Link href="/">Browse Products</Link>
+              </Button>
+              <Button asChild variant="secondary">
+                <Link href="/contact-us">Contact Us</Link>
+              </Button>
             </div>
           </section>
         </div>
