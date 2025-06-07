@@ -11,6 +11,13 @@ import { Label } from "@radix-ui/react-label";
 import { PlusIcon, MinusIcon, ShoppingCart, Star } from "lucide-react";
 import { Input } from "@repo/ui/components/ui/input";
 import { Button } from "@repo/ui/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@repo/ui/components/ui/select";
 import { cn } from "@/lib/utils";
 
 // Core Product compound component
@@ -256,6 +263,49 @@ Product.Description = ({
     )}
   >
     {description}
+  </div>
+);
+
+// Product Variant Selector
+Product.VariantSelector = ({
+  options,
+  selectedOptions,
+  onSelectionChange,
+  className,
+}: {
+  options: Array<{
+    id: number | string;
+    name: string;
+    optionValues: Array<{
+      id: number | string;
+      value: string;
+    }>;
+  }>;
+  selectedOptions: Record<string, string>;
+  onSelectionChange: (optionName: string, value: string) => void;
+  className?: string;
+}) => (
+  <div className={cn("flex flex-col gap-4", className)}>
+    {options.map((option) => (
+      <div key={option.id} className="flex flex-col gap-2">
+        <Label className="font-medium text-sm">{option.name}:</Label>
+        <Select
+          value={selectedOptions[option.name] || ""}
+          onValueChange={(value) => onSelectionChange(option.name, value)}
+        >
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder={`Select ${option.name.toLowerCase()}`} />
+          </SelectTrigger>
+          <SelectContent>
+            {option.optionValues.map((value) => (
+              <SelectItem key={value.id} value={value.value}>
+                {value.value}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+    ))}
   </div>
 );
 

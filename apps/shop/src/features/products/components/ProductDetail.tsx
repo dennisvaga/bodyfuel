@@ -4,9 +4,10 @@
  */
 
 import { ProductWithImageUrl } from "@repo/database/types/product";
-import React, { useState } from "react";
+import React from "react";
 import Product from "./Product";
-import { useCart } from "../../cart/contexts/cartContext";
+import { useProductVariants } from "../hooks/useProductVariants";
+import { useProductCart } from "../hooks/useProductCart";
 
 interface ProductDetailProps {
   product: ProductWithImageUrl;
@@ -14,38 +15,26 @@ interface ProductDetailProps {
 }
 
 const ProductDetail = ({ product }: ProductDetailProps) => {
-  const { addToCart, changeQuantity, cart } = useCart();
-  const [localQuantity, setLocalQuantity] = useState(1);
+  // Use focused hooks for specific business logic
+  const {
+    selectedOptions,
+    selectedVariant,
+    currentPrice,
+    currentStock,
+    handleVariantSelection,
+  } = useProductVariants({ product });
 
-  const productInCart = cart?.cartItems.find(
-    (item) => item.productId === product.id
-  );
+  const {
+    localQuantity,
+    productInCart,
+    handleAddToCart,
+    handleQuantityChange,
+    isOutOfStock,
+    canAddToCart,
+  } = useProductCart({ product, currentStock });
 
-  const handleAddToCart = async () => {
-    if (product) {
-      const result = await addToCart(
-        product,
-        productInCart?.quantity || localQuantity
-      );
-
-      if (!result.success) {
-        console.error("Error adding product to cart:", result.message);
-        return;
-      }
-    }
-  };
-
-  const handleQuantityChange = (newQty: number) => {
-    const validQty = Math.max(1, newQty);
-
-    if (productInCart) {
-      // If product is in cart, update cart quantity
-      changeQuantity(product.id, validQty);
-    } else {
-      // Otherwise just update local state
-      setLocalQuantity(validQty);
-    }
-  };
+  // Derived state
+  const hasVariants = !!(product.options && product.options.length > 0);
 
   return (
     <div className="flex flex-col lg:flex-row justify-around w-full gap-6 px-4 md:px-6 lg:px-8">
@@ -68,12 +57,35 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
           />
           <Product.Price
             className="text-lg md:text-xl font-medium"
-            price={product.price ?? 0}
+            price={currentPrice}
           />
           <Product.Description
             className="text-sm md:text-md"
             description={product.description ?? ""}
           />
+
+          {/* Variant Selector */}
+          {hasVariants && (
+            <Product.VariantSelector
+              options={product.options}
+              selectedOptions={selectedOptions}
+              onSelectionChange={handleVariantSelection}
+              className="mt-4"
+            />
+          )}
+
+          {/* Stock Information */}
+          {currentStock > 0 && (
+            <div className="text-sm text-muted-foreground">
+              {currentStock} in stock
+            </div>
+          )}
+
+          {isOutOfStock && (
+            <div className="text-sm text-destructive font-medium">
+              Out of stock
+            </div>
+          )}
         </div>
         <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 mt-8 md:mt-16 md:items-center">
           <Product.QuantityControls
@@ -86,10 +98,16 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
           />
           <Product.AddToCartButton
             onClick={(e: any) => {
-              handleAddToCart();
-              e.stopPropagation();
+              if (canAddToCart) {
+                handleAddToCart();
+                e.stopPropagation();
+              }
             }}
-            className={`sm:max-w-[200px] w-full hover:cursor-pointer hover:bg-primary rounded-md md:rounded-none font-semibold`}
+            className={`sm:max-w-[200px] w-full font-semibold ${
+              canAddToCart
+                ? "hover:cursor-pointer hover:bg-primary"
+                : "opacity-50 cursor-not-allowed"
+            }`}
           />
         </div>
       </div>

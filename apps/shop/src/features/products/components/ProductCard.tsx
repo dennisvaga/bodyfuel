@@ -77,7 +77,7 @@ const ProductCard = ({
           onClick={(e: any) => {
             handleAddToCart();
           }}
-          className={`absolute hover:bg-primary bottom-0 left-0 right-0 rounded-md font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block`}
+          className={`absolute hover:bg-primary bottom-0 left-0 right-0 font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block`}
         />
         {/* Mobile cart icon */}
         <Product.AddToCartButton
