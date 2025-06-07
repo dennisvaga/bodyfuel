@@ -25,7 +25,15 @@ export type ProductWithImageUrl = Omit<
 // type ProductOptions = Prisma.ProductOptionGetPayload<{ include: { optionValues: true } }>;
 
 export type ProductVariant = Prisma.ProductVariantGetPayload<{
-  include: { variantOptionValues: { include: { optionValue: true } } };
+  include: {
+    variantOptionValues: {
+      include: {
+        optionValue: {
+          include: { option: true };
+        };
+      };
+    };
+  };
 }>;
 
 // export type ProductOption = Prisma.ProductOptionGetPayload<{

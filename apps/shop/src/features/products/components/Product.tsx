@@ -157,6 +157,46 @@ Product.Brand = ({
   </Label>
 );
 
+// Product Variant Options
+Product.VariantOptions = ({
+  variant,
+  className,
+}: {
+  variant?: {
+    variantOptionValues: Array<{
+      optionValue: {
+        value: string;
+        option: {
+          name: string;
+        };
+      };
+    }>;
+  } | null;
+  className?: string;
+}) => {
+  if (!variant?.variantOptionValues?.length) return null;
+
+  // Debug logging to see the data structure
+  console.log("Variant data:", variant);
+
+  return (
+    <div className={cn("text-sm text-[hsl(var(--product-brand))]", className)}>
+      {variant.variantOptionValues.map((vov, index) => {
+        const optionName = vov.optionValue?.option?.name;
+        const optionValue = vov.optionValue?.value;
+
+        if (!optionValue) return null;
+
+        return (
+          <div key={index}>
+            {optionName ? `${optionName}: ${optionValue}` : optionValue}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 // Add to Cart Button
 Product.AddToCartButton = ({
   onClick,

@@ -115,6 +115,8 @@ const CartItemsList = ({
                     onClick={() => handleProductClick(item)}
                   />
                 </div>
+                {/* Variant options */}
+                <Product.VariantOptions variant={item.variant} />
                 {/* Product price - use cart item price (variant price) or fallback to product price */}
                 <Product.Price price={item.price || item.product.price} />
                 <div className="flex flex-row justify-end">
@@ -147,6 +149,7 @@ const CartItemsList = ({
             />
             <div className="flex flex-col justfity-start w-full">
               <Product.Name name={item.product.name} />
+              <Product.VariantOptions variant={item.variant} />
               <Product.Price price={item.price || item.product.price} />
             </div>
           </Product>
@@ -188,6 +191,7 @@ const CartItemsList = ({
                     name={item.product.name}
                     onClick={() => handleProductClick(item)}
                   />
+                  <Product.VariantOptions variant={item.variant} />
                   <div className="flex gap-2 items-center">
                     <Label className="text-gray-600">Price:</Label>
                     <Product.Price price={item.price || item.product.price} />

@@ -52,7 +52,7 @@ export const useProductCart = ({
 
     const result = await addToCart(
       product,
-      productInCart?.quantity || localQuantity,
+      localQuantity,
       selectedVariant?.id || null
     );
 

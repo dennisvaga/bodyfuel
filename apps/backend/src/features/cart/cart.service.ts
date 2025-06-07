@@ -67,11 +67,31 @@ export class CartService {
       throw new Error("Cart not found. Please reload the page.");
     }
 
+    // Determine price and stock based on variant or product
+    let itemPrice = product.price;
+    let itemStock = product.quantity;
+
+    if (variantId) {
+      // Fetch variant details to get correct price and stock
+      const variant = await cartRepository.getVariantById(variantId);
+      if (variant) {
+        itemPrice = variant.price;
+        itemStock = variant.stock;
+      } else {
+        throw new Error("Selected variant not found.");
+      }
+    }
+
+    // Validate stock availability
+    if (quantity > itemStock) {
+      throw new Error(`Only ${itemStock} items available in stock.`);
+    }
+
     // Add Product to Cart or update Quantity
     await cartRepository.addOrUpdateCartItem(
       cart.id,
       product.id,
-      product.price,
+      itemPrice,
       quantity,
       variantId
     );
@@ -90,6 +110,14 @@ export class CartService {
     quantity: number,
     variantId?: number | null
   ) {
+    // If variantId is provided, validate stock against variant
+    if (variantId && quantity > 0) {
+      const variant = await cartRepository.getVariantById(variantId);
+      if (variant && quantity > variant.stock) {
+        throw new Error(`Only ${variant.stock} items available in stock.`);
+      }
+    }
+
     return cartRepository.updateItemQuantity(
       sessionId,
       productId,

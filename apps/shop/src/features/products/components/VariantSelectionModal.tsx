@@ -35,9 +35,15 @@ const VariantSelectionModal = ({
     handleVariantSelection,
     hasVariants,
     allOptionsSelected,
-  } = useProductVariants({ product, autoSelectFirst: false });
+  } = useProductVariants({ product, autoSelectFirst: true });
 
-  const { handleAddToCart, isOutOfStock, canAddToCart } = useProductCart({
+  const {
+    localQuantity,
+    handleAddToCart,
+    handleQuantityChange,
+    isOutOfStock,
+    canAddToCart,
+  } = useProductCart({
     product,
     currentStock,
     selectedVariant,
@@ -86,6 +92,15 @@ const VariantSelectionModal = ({
               onSelectionChange={handleVariantSelection}
             />
           )}
+
+          {/* Quantity Controls */}
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium">Quantity:</span>
+            <Product.QuantityControls
+              quantity={localQuantity}
+              onChangeQuantity={handleQuantityChange}
+            />
+          </div>
 
           {/* Stock Information */}
           {currentStock > 0 && allOptionsSelected && (

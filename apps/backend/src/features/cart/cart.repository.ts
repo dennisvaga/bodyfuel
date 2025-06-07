@@ -17,7 +17,13 @@ export class CartRepository {
             product: { include: { images: true } },
             variant: {
               include: {
-                variantOptionValues: { include: { optionValue: true } },
+                variantOptionValues: {
+                  include: {
+                    optionValue: {
+                      include: { option: true },
+                    },
+                  },
+                },
               },
             },
           },
@@ -41,7 +47,13 @@ export class CartRepository {
             product: { include: { images: true } },
             variant: {
               include: {
-                variantOptionValues: { include: { optionValue: true } },
+                variantOptionValues: {
+                  include: {
+                    optionValue: {
+                      include: { option: true },
+                    },
+                  },
+                },
               },
             },
           },
@@ -57,6 +69,22 @@ export class CartRepository {
   async createCart() {
     const prisma = await getPrisma();
     return prisma.cart.create({ data: {} });
+  }
+
+  /**
+   * Get variant by ID with price and stock
+   */
+  async getVariantById(variantId: number) {
+    const prisma = await getPrisma();
+    return prisma.productVariant.findUnique({
+      where: { id: variantId },
+      select: {
+        id: true,
+        price: true,
+        stock: true,
+        productId: true,
+      },
+    });
   }
 
   /**
@@ -81,10 +109,10 @@ export class CartRepository {
     });
 
     if (existingItem) {
-      // Update existing item
+      // Update existing item with new quantity and price
       return prisma.cartItem.update({
         where: { id: existingItem.id },
-        data: { quantity },
+        data: { quantity, price },
       });
     } else {
       // Create new item
