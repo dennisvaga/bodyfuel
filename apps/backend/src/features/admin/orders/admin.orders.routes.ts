@@ -6,9 +6,6 @@ const router: Router = express.Router();
 // Get all orders
 router.get("/", adminOrdersController.getAllOrders.bind(adminOrdersController));
 
-// Add order
-router.post("/", adminOrdersController.createOrder.bind(adminOrdersController));
-
 // Update order status
 router.patch(
   "/:orderId/status",

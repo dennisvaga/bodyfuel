@@ -20,47 +20,6 @@ export class AdminOrdersService {
   }
 
   /**
-   * Create a new order
-   */
-  async createOrder(orderData: OrderInput) {
-    // Get userId based on email
-    const user = await adminOrdersRepository.findUserByEmail(orderData.email);
-
-    // Fetch all required products
-    const productIds = orderData.orderItems.map((item) => item.productId);
-    const products = await adminOrdersRepository.findProductsByIds(productIds);
-
-    // Create a map for quick lookup
-    const productMap = products.reduce(
-      (map, product) => {
-        map[product.id] = product;
-        return map;
-      },
-      {} as Record<number, any>
-    );
-
-    const { orderItemsData, totalPrice } = prepareOrderItems(
-      orderData,
-      productMap
-    );
-
-    // Create the order
-    await adminOrdersRepository.createOrder({
-      shippingInfo: { create: orderData.shippingInfo },
-      user: user ? { connect: { id: user.id } } : undefined,
-      email: orderData.email,
-      total: totalPrice,
-      orderItems: {
-        createMany: {
-          data: orderItemsData,
-        },
-      },
-    });
-
-    return { success: true, message: "Order created successfully" };
-  }
-
-  /**
    * Update an order's status
    */
   async updateOrderStatus(orderId: string, status: string) {

@@ -3,6 +3,11 @@ import ordersService from "./orders.service.js";
 import { handleError } from "#utils/handle-errors.js";
 import { sendResponse } from "#utils/api-response.js";
 
+// Add a custom interface to extend Express Request
+interface AuthenticatedRequest extends Request {
+  user?: any;
+}
+
 /**
  * Orders controller responsible for handling HTTP requests related to orders
  */
@@ -19,6 +24,31 @@ export class OrdersController {
       );
 
       sendResponse(res, 200, { success: true, data: order });
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
+
+  /**
+   * Create a new order (authenticated users only)
+   */
+  async createOrder(req: AuthenticatedRequest, res: Response) {
+    try {
+      const orderData = req.body;
+      const authenticatedUser = req.user;
+
+      // Validate that the order email matches the authenticated user's email
+      if (orderData.email !== authenticatedUser.email) {
+        sendResponse(res, 403, {
+          success: false,
+          message: "You can only create orders with your own email address",
+        });
+        return;
+      }
+
+      const order = await ordersService.createOrder(orderData);
+
+      sendResponse(res, 201, { success: true, data: order });
     } catch (error) {
       handleError(error, res);
     }

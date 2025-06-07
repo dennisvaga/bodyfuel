@@ -15,7 +15,7 @@ export const orderService = {
 
   addOrder: async (data: OrderInput) => {
     return await fetchData({
-      slug: "admin/orders",
+      slug: "orders",
       method: FetchMethod.POST,
       body: JSON.stringify(data),
       contentType: ContentType.JSON,

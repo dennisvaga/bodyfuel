@@ -21,21 +21,6 @@ export class AdminOrdersController {
   }
 
   /**
-   * Create a new order
-   */
-  async createOrder(req: Request, res: Response) {
-    try {
-      const orderData = req.body;
-
-      const result = await adminOrdersService.createOrder(orderData);
-
-      sendResponse(res, 201, result);
-    } catch (error) {
-      handleError(error, res);
-    }
-  }
-
-  /**
    * Update an order's status
    */
   async updateOrderStatus(req: Request, res: Response) {
