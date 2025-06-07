@@ -64,7 +64,7 @@ export class ProductService {
     }
 
     const productsWithPresignedUrls = await assignImageUrlToProducts(
-      products as ProductWithImageUrl[]
+      products as unknown as ProductWithImageUrl[]
     );
 
     return productsWithPresignedUrls[0];

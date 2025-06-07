@@ -1,4 +1,5 @@
 import { getPrisma } from "@repo/database";
+import { PRODUCT_BASIC_INCLUDE } from "@repo/database/includes/product-includes";
 
 /**
  * Collections repository responsible for all database operations related to collections
@@ -21,15 +22,7 @@ export class CollectionsRepository {
     if (includeProducts) {
       queryOptions.include = {
         products: {
-          include: {
-            images: true,
-            options: { include: { optionValues: true } },
-            variants: {
-              include: {
-                variantOptionValues: { include: { optionValue: true } },
-              },
-            },
-          },
+          include: PRODUCT_BASIC_INCLUDE,
         },
       };
     }
@@ -80,15 +73,7 @@ export class CollectionsRepository {
         where: { slug },
         include: {
           products: {
-            include: {
-              images: true,
-              options: { include: { optionValues: true } },
-              variants: {
-                include: {
-                  variantOptionValues: { include: { optionValue: true } },
-                },
-              },
-            },
+            include: PRODUCT_BASIC_INCLUDE,
             skip,
             take,
             orderBy: { createdAt: "desc" }, // Default sorting

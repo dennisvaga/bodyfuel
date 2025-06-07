@@ -1,7 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { ProductOptionInput, ProductVariantInput } from "@repo/shared";
 import { getPrisma } from "@repo/database";
-import type { ProductWithImageUrl } from "@repo/database/types/product";
+import {
+  PRODUCT_BASIC_INCLUDE,
+  PRODUCT_FULL_INCLUDE,
+} from "@repo/database/includes/product-includes";
 
 type PrismaTransaction = Omit<
   PrismaClient,
@@ -40,13 +43,7 @@ export class ProductRepository {
   async findAll() {
     const prisma = await getPrisma();
     return prisma.product.findMany({
-      include: {
-        images: true,
-        options: { include: { optionValues: true } },
-        variants: {
-          include: { variantOptionValues: { include: { optionValue: true } } },
-        },
-      },
+      include: PRODUCT_BASIC_INCLUDE,
     });
   }
 
@@ -63,15 +60,7 @@ export class ProductRepository {
       prisma.product.findMany({
         skip,
         take,
-        include: {
-          images: true,
-          options: { include: { optionValues: true } },
-          variants: {
-            include: {
-              variantOptionValues: { include: { optionValue: true } },
-            },
-          },
-        },
+        include: PRODUCT_BASIC_INCLUDE,
       }),
     ]);
   }
@@ -83,14 +72,7 @@ export class ProductRepository {
     const prisma = await getPrisma();
     return prisma.product.findMany({
       where: { slug },
-      include: {
-        images: true,
-        options: { include: { optionValues: true } },
-        variants: {
-          include: { variantOptionValues: { include: { optionValue: true } } },
-        },
-        collections: true,
-      },
+      include: PRODUCT_FULL_INCLUDE,
     });
   }
 
@@ -105,13 +87,7 @@ export class ProductRepository {
             name: { contains: searchTerm, mode: "insensitive" },
           }
         : undefined,
-      include: {
-        images: true,
-        options: { include: { optionValues: true } },
-        variants: {
-          include: { variantOptionValues: { include: { optionValue: true } } },
-        },
-      },
+      include: PRODUCT_BASIC_INCLUDE,
       take: limit,
     });
   }

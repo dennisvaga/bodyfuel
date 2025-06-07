@@ -1,4 +1,5 @@
 import { getPrisma } from "@repo/database";
+import { PRODUCT_BASIC_INCLUDE } from "@repo/database/includes/product-includes";
 
 /**
  * Categories repository responsible for all database operations related to categories
@@ -22,15 +23,7 @@ export class CategoriesRepository {
       where: { slug },
       include: {
         products: {
-          include: {
-            images: true,
-            options: { include: { optionValues: true } },
-            variants: {
-              include: {
-                variantOptionValues: { include: { optionValue: true } },
-              },
-            },
-          },
+          include: PRODUCT_BASIC_INCLUDE,
         },
       },
     });

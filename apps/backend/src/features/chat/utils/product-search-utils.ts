@@ -7,6 +7,7 @@ import {
 } from "./category-matcher.js";
 import { assignImageUrlToProducts } from "../../../services/s3Service.js";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
+import { PRODUCT_FULL_INCLUDE } from "@repo/database/includes/product-includes";
 
 /**
  * Constructs a Prisma query filter for product searches
@@ -187,15 +188,7 @@ export async function* streamProducts(
   // Execute the query with full structure needed for S3 service
   const products = await prisma.product.findMany({
     where: whereClause,
-    include: {
-      images: true,
-      category: true,
-      options: { include: { optionValues: true } },
-      variants: {
-        include: { variantOptionValues: { include: { optionValue: true } } },
-      },
-      collections: true,
-    },
+    include: PRODUCT_FULL_INCLUDE,
     orderBy: {
       name: "asc",
     },
@@ -227,15 +220,7 @@ export async function* streamProducts(
       where: {
         price: priceFilter,
       },
-      include: {
-        images: true,
-        category: true,
-        options: { include: { optionValues: true } },
-        variants: {
-          include: { variantOptionValues: { include: { optionValue: true } } },
-        },
-        collections: true,
-      },
+      include: PRODUCT_FULL_INCLUDE,
       orderBy: {
         price:
           searchMinPrice !== undefined && searchMaxPrice === undefined

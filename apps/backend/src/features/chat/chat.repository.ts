@@ -6,6 +6,7 @@ import {
 } from "./utils/product-search-utils.js";
 import { assignImageUrlToProducts } from "#services/s3Service.js";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
+import { PRODUCT_FULL_INCLUDE } from "@repo/database/includes/product-includes";
 
 // Re-export streamProducts for backward compatibility
 export { streamProducts };
@@ -34,15 +35,7 @@ export async function findProducts(
       orderBy: {
         createdAt: "desc",
       },
-      include: {
-        images: true,
-        category: true,
-        options: { include: { optionValues: true } },
-        variants: {
-          include: { variantOptionValues: { include: { optionValue: true } } },
-        },
-        collections: true,
-      },
+      include: PRODUCT_FULL_INCLUDE,
     });
 
     // Use S3 service to assign proper image URLs
