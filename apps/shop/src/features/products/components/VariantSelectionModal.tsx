@@ -58,7 +58,7 @@ const VariantSelectionModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[calc(100vw-2rem)] max-w-md mx-auto">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-sm mx-auto">
         <DialogHeader>
           <DialogTitle>Select Options</DialogTitle>
         </DialogHeader>
@@ -117,9 +117,9 @@ const VariantSelectionModal = ({
 
           {/* Action Buttons */}
           <div className="flex gap-2 pt-4 sm:flex-row flex-col">
-            <Button variant="outline" onClick={onClose} className="flex-1">
+            {/* <Button variant="outline" onClick={onClose} className="flex-1">
               Cancel
-            </Button>
+            </Button> */}
             <Button
               onClick={handleAddToCartClick}
               disabled={!allOptionsSelected || !canAddToCart}
