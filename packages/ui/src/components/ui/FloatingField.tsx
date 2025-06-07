@@ -1,7 +1,14 @@
 import { FormControl, FormItem, FormMessage } from "./form";
 import { Label } from "./label";
 import { cn } from "#lib/cn";
-import { ReactNode, useState, useEffect } from "react";
+import {
+  ReactNode,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from "react";
 import { ControllerRenderProps } from "react-hook-form";
 
 interface FloatingFieldProps {
@@ -13,6 +20,7 @@ interface FloatingFieldProps {
       id: string;
       className: string;
       disabled: boolean;
+      [key: string]: any; // Allow additional props like "aria-label"
     } & ControllerRenderProps<any>
   ) => ReactNode;
 }
@@ -27,19 +35,14 @@ const FloatingField = ({
   disabled = false,
   children,
 }: FloatingFieldProps) => {
-  // Add a mounted state to prevent initial animation
   const [labelReady, setLabelReady] = useState(false);
+  const [hasAutofill, setHasAutofill] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const rafRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    // Small delay to ensure label is positioned correctly
-    const timer = setTimeout(() => {
-      setLabelReady(true);
-    }, 10);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const hasValue = (() => {
+  // Memoize hasValue calculation to prevent unnecessary recalculations
+  const hasValue = useMemo(() => {
     const value = field.value;
 
     // Handle null and undefined
@@ -59,45 +62,63 @@ const FloatingField = ({
 
     // All other values (including 0, false, etc.) are considered valid
     return true;
-  })();
+  }, [field.value]);
 
-  // Check if input has autofill - this should also be treated as "hasValue"
-  const [hasAutofill, setHasAutofill] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
+  // Optimized autofill check with useCallback to prevent recreation
+  const checkAutofill = useCallback(() => {
+    const input = document.getElementById(field.name) as HTMLInputElement;
+    if (!input) return;
 
-  useEffect(() => {
-    const checkAutofill = () => {
-      const input = document.getElementById(field.name) as HTMLInputElement;
-      if (input) {
-        // Check for webkit autofill
-        const isWebkitAutofill = input.matches(":-webkit-autofill");
-        // Also check if the input has a value but we haven't detected it yet
-        const hasUnexpectedValue = input.value && !hasValue && !isFocused;
+    // Check for webkit autofill
+    const isWebkitAutofill = input.matches(":-webkit-autofill");
+    // Also check if the input has a value but we haven't detected it yet
+    const hasUnexpectedValue = input.value && !hasValue && !isFocused;
 
-        if (isWebkitAutofill || hasUnexpectedValue) {
-          setHasAutofill(true);
-        } else if (!input.value) {
-          setHasAutofill(false);
-        }
+    if (isWebkitAutofill || hasUnexpectedValue) {
+      setHasAutofill(true);
+      // Stop polling once autofill is detected to save resources
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
       }
-    };
+    } else if (!input.value) {
+      setHasAutofill(false);
+    }
+  }, [field.name, hasValue, isFocused]);
 
-    // Check immediately and on multiple animation frames for better detection
+  // Label ready effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLabelReady(true);
+    }, 10);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Optimized autofill detection effect
+  useEffect(() => {
+    // Initial check
     checkAutofill();
-    const rafId1 = requestAnimationFrame(checkAutofill);
-    const rafId2 = requestAnimationFrame(() =>
-      requestAnimationFrame(checkAutofill)
-    );
 
-    // Set up interval to check periodically
-    const interval = setInterval(checkAutofill, 100);
+    // Use RAF for immediate detection, but only one
+    rafRef.current = requestAnimationFrame(checkAutofill);
+
+    // Only set up polling if no autofill detected yet and reduce frequency
+    if (!hasAutofill) {
+      intervalRef.current = setInterval(checkAutofill, 500); // Reduced from 100ms to 500ms
+    }
 
     return () => {
-      clearInterval(interval);
-      cancelAnimationFrame(rafId1);
-      cancelAnimationFrame(rafId2);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
     };
-  }, [field.name, hasValue, isFocused]);
+  }, [checkAutofill, hasAutofill]);
 
   // Enhanced shouldFloat logic that considers focus state for smoother transitions
   const shouldFloat = hasValue || hasAutofill || isFocused;
@@ -107,7 +128,7 @@ const FloatingField = ({
       <Label
         htmlFor={field.name}
         className={cn(
-          "absolute left-3 text-gray-500 group-hover:cursor-text",
+          "absolute left-3 text-gray-500 group-hover:cursor-text pointer-events-none",
           // Initially invisible until ready
           !labelReady && "opacity-0",
           // Apply transitions to both opacity and position properties
@@ -115,6 +136,7 @@ const FloatingField = ({
           // Position the label correctly from the start if there's a value or autofill
           shouldFloat ? "top-[8px] text-xs text-gray-500" : "top-5"
         )}
+        aria-hidden={shouldFloat}
       >
         {label}
       </Label>
@@ -130,6 +152,7 @@ const FloatingField = ({
               shouldFloat && "pt-6 pb-1"
             ),
             disabled,
+            "aria-label": shouldFloat ? undefined : label,
             ...field,
           })}
         </div>
