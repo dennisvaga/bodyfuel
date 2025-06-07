@@ -9,11 +9,11 @@ import {
   QUERY_KEYS,
   useFetchQuery,
 } from "@repo/shared";
-import FloatingInput from "@repo/ui/components/ui/FloatingInput";
+import FloatingInput from "@repo/ui/components/FloatingInput";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
-import FloatingSelect from "@repo/ui/components/ui/FloatingSelect";
+import FloatingSelect from "@repo/ui/components/FloatingSelect";
 
 export const CheckoutDetails = () => {
   const { control, setValue } = useFormContext<OrderFormInput>();

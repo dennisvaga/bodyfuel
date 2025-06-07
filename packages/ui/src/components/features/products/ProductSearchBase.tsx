@@ -3,9 +3,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Search } from "lucide-react";
 import LoadAnimation from "@repo/ui/components/LoadAnimation";
-import { Input } from "./input";
 import { ProductWithImageUrl } from "@repo/database/types/product";
-import { cn } from "#lib/utils";
+import { cn } from "#lib/cn";
+import { Input } from "#components/ui/input";
 
 export interface ProductSearchProps {
   onSearch: (query: string) => void;

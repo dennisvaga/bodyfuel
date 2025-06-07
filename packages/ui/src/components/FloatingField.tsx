@@ -1,5 +1,5 @@
-import { FormControl, FormItem, FormMessage } from "./form";
-import { Label } from "./label";
+import { FormControl, FormItem, FormMessage } from "#components/ui/form";
+import { Label } from "#components/ui/label";
 import { cn } from "#lib/cn";
 import {
   ReactNode,

@@ -9,8 +9,8 @@ import {
   FormItem,
   FormMessage,
 } from "@repo/ui/components/ui/form";
-import FloatingInput from "@repo/ui/components/ui/FloatingInput";
-import FloatingTextarea from "@repo/ui/components/ui/FloatingTextarea";
+import FloatingInput from "@repo/ui/components/FloatingInput";
+import FloatingTextarea from "@repo/ui/components/FloatingTextarea";
 import { useContactForm } from "../../features/contact/hooks/useContactForm";
 import { onErrors, FEATURE_FLAGS } from "@repo/shared";
 

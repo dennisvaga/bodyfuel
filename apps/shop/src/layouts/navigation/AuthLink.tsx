@@ -10,7 +10,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { SessionStatus } from "@repo/shared";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui/lib/cn";
 
 interface AuthLinkProps {
   className?: string;

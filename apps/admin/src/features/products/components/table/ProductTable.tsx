@@ -7,11 +7,10 @@ import type { ProductWithImageUrl } from "@repo/database/types/product";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useFetchQuery } from "@repo/shared";
 import { DataTable } from "@/src/components/table/DataTable";
-import Pagination from "@repo/ui/components/ui/Pagination";
+import Pagination from "@repo/ui/components/Pagination";
 import { productColumns } from "./productColumns";
 import { getActionsColumn } from "@/src/components/table/actionsColumn";
 import { selectionColumn } from "@/src/components/table/selectionColumn";
-import { useQuery } from "@tanstack/react-query";
 
 const ProductTable = () => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);

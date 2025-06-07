@@ -16,9 +16,9 @@ import {
   useFetchQuery,
 } from "@repo/shared";
 import { Label } from "@repo/ui/components/ui/label";
-import FloatingInput from "@repo/ui/components/ui/FloatingInput";
-import FloatingSelect from "@repo/ui/components/ui/FloatingSelect";
-import FloatingTextarea from "@repo/ui/components/ui/FloatingTextarea";
+import FloatingInput from "@repo/ui/components/FloatingInput";
+import FloatingSelect from "@repo/ui/components/FloatingSelect";
+import FloatingTextarea from "@repo/ui/components/FloatingTextarea";
 
 interface props {
   fileInputRef: React.RefObject<HTMLInputElement | null>;

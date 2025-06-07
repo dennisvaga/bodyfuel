@@ -5,9 +5,9 @@
 
 import { ProductWithImageUrl } from "@repo/database/types/product";
 import React from "react";
-import Product from "@repo/ui/components/features/products/components/Product";
 import { useProductVariants } from "../hooks/useProductVariants";
 import { useProductCart } from "../hooks/useProductCart";
+import Product from "@repo/ui/components/features/products/Product";
 
 interface ProductDetailProps {
   product: ProductWithImageUrl;

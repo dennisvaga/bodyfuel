@@ -6,7 +6,7 @@ import { Separator } from "@repo/ui/components/ui/separator";
 import { Ghost, PlusCircle, Trash2Icon } from "lucide-react";
 import { FormField } from "@repo/ui/components/ui/form";
 import { Button } from "@repo/ui/components/ui/button";
-import FloatingInput from "@repo/ui/components/ui/FloatingInput";
+import FloatingInput from "@repo/ui/components/FloatingInput";
 import Link from "next/link";
 import useProductOptions from "../hooks/useProductOptions";
 
@@ -54,7 +54,9 @@ const ProductOptions = () => {
               {/* Option Name Field */}
               <FormField
                 name={`options.${optIdx}.name`}
-                render={({ field }) => <FloatingInput field={field} label="Option Name" />}
+                render={({ field }) => (
+                  <FloatingInput field={field} label="Option Name" />
+                )}
               />
 
               {/* Option values */}
@@ -63,7 +65,10 @@ const ProductOptions = () => {
                   <FormField
                     name={`options.${optIdx}.optionValues.${valIdx}.value`}
                     render={({ field }) => (
-                      <FloatingInput field={field} label="Option Value"></FloatingInput>
+                      <FloatingInput
+                        field={field}
+                        label="Option Value"
+                      ></FloatingInput>
                     )}
                   />
                   {opt.optionValues?.length > 1 && (

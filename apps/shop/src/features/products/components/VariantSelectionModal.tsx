@@ -12,7 +12,7 @@ import {
 } from "@repo/ui/components/ui/dialog";
 import { Button } from "@repo/ui/components/ui/button";
 import { ProductWithImageUrl } from "@repo/database/types/product";
-import Product from "@repo/ui/components/features/products/components/Product";
+import Product from "@repo/ui/components/features/products/Product";
 import { useProductVariants } from "../hooks/useProductVariants";
 import { useProductCart } from "../hooks/useProductCart";
 

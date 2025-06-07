@@ -26,13 +26,6 @@
     "incremental": true,
     "esModuleInterop": true
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "../../packages/ui/src/layouts/SectionContainer.tsx",
-, "../../packages/ui/src/components/features/products/Product.tsx"    "../../packages/ui/src/components/features/products/components/Product.tsx"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

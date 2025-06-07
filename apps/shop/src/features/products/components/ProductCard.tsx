@@ -6,7 +6,7 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "@repo/ui/components/ui/card";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
-import Product from "@repo/ui/components/features/products/components/Product";
+import Product from "@repo/ui/components/features/products/Product";
 import ProductReviews from "./ProductReviews";
 import { ProductCardVariants } from "../types/productCard";
 import { useRouter } from "next/navigation";
@@ -30,13 +30,8 @@ const ProductCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Use the consolidated hook for variant management (no auto-selection for ProductCard)
-  const {
-    hasVariants,
-    allOptionsSelected,
-    currentStock,
-    selectedVariant,
-    currentPrice,
-  } = useProductVariants({ product, autoSelectFirst: false });
+  const { hasVariants, currentStock, selectedVariant, currentPrice } =
+    useProductVariants({ product, autoSelectFirst: false });
 
   // Use cart logic with proper variant data
   const { handleAddToCart, isOutOfStock, canAddToCart } = useProductCart({

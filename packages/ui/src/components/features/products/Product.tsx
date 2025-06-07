@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@repo/ui/components/ui/select";
-import { cn } from "@/lib/utils";
+import { cn } from "#lib/cn";
 
 // Core Product compound component
 const Product = ({

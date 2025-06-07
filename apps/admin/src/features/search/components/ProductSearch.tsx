@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { ProductSearchBase } from "@repo/ui/components/ui/ProductSearchBase";
+import { ProductSearchBase } from "@repo/ui/components/features/products/ProductSearchBase";
 import { productService, QUERY_KEYS } from "@repo/shared";
 import { useState } from "react";
 import { useDebounce } from "@repo/ui/hooks/useDebounce";

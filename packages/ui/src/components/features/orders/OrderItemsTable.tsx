@@ -39,7 +39,7 @@ export const OrderItemsTable = ({ order }: OrderItemsTableProps) => {
               <tr key={item.id}>
                 <td className="px-4 py-4 whitespace-nowrap">
                   <div className="flex items-center">
-                    <div className="h-10 w-10 bg-gray-100 rounded-md flex items-center justify-center mr-3">
+                    <div className="h-10 w-10 bg-transparent rounded-md flex items-center justify-center mr-3">
                       {item.product?.images &&
                       item.product.images.length > 0 ? (
                         <Product.Image

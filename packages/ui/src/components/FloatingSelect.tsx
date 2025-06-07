@@ -6,7 +6,7 @@ import {
   SelectItem,
 } from "./ui/select";
 import { ControllerRenderProps } from "react-hook-form";
-import FloatingField from "./ui/FloatingField";
+import FloatingField from "#components/FloatingField";
 import React, { useMemo } from "react";
 import { FixedSizeList as List, ListChildComponentProps } from "react-window";
 

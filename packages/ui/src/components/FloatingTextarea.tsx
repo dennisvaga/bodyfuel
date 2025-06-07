@@ -1,6 +1,6 @@
 import { ControllerRenderProps } from "react-hook-form";
-import FloatingField from "./ui/FloatingField";
-import { Textarea } from "./ui/textarea";
+import FloatingField from "#components/FloatingField";
+import { Textarea } from "#components/ui/textarea";
 import React from "react";
 
 interface FloatingTextareaProps {

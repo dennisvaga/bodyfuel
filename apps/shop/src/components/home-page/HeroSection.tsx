@@ -18,7 +18,7 @@ import {
   CarouselPrevious,
   type CarouselApi,
 } from "@repo/ui/components/ui/carousel";
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@repo/ui/lib/cn";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import { Button } from "@repo/ui/components/ui/button";
 import { AnimatedTextGroup } from "../AnimatedText";

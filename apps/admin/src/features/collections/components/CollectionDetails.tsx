@@ -12,7 +12,7 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { useFormContext } from "react-hook-form";
 import { CollectionInput } from "@repo/shared";
-import FloatingInput from "@repo/ui/components/ui/FloatingInput";
+import FloatingInput from "@repo/ui/components/FloatingInput";
 
 /**
  * react-hook-form fields
@@ -32,7 +32,9 @@ const CollectionDetails = () => {
       <FormField
         control={control}
         name="description"
-        render={({ field }) => <FloatingInput field={field} label="Description" />}
+        render={({ field }) => (
+          <FloatingInput field={field} label="Description" />
+        )}
       />
     </>
   );
