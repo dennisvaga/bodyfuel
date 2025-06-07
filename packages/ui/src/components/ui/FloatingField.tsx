@@ -134,7 +134,7 @@ const FloatingField = ({
           // Apply transitions to both opacity and position properties
           labelReady && "opacity-100 transition-all duration-200 ease-out",
           // Position the label correctly from the start if there's a value or autofill
-          shouldFloat ? "top-[8px] text-xs text-gray-500" : "top-5"
+          shouldFloat ? "top-[8px]" : "top-5"
         )}
         aria-hidden={shouldFloat}
       >
