@@ -214,6 +214,7 @@ Product.AddToCartButton = ({
       onClick(e);
       e.stopPropagation();
     }}
+    variant="product-card"
     className={className}
   >
     {variant === "icon" ? <ShoppingCart /> : children || "Add to Cart"}

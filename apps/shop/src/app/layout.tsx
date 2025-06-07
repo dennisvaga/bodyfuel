@@ -30,7 +30,7 @@ export default function RootLayout({
           <NavBar />
           <main className="min-h-[calc(100vh-200px)]">{children}</main>
           <Footer />
-          <ChatWidget />
+          {/* <ChatWidget /> */}
         </AppProviders>
         <Toaster />
       </body>

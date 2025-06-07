@@ -94,6 +94,7 @@ const MiniCartDrawer = () => {
                     setOpenMiniCart(false);
                     router.push("/cart");
                   }}
+                  variant="outline"
                 >
                   View Cart
                 </Button>
@@ -102,7 +103,6 @@ const MiniCartDrawer = () => {
                     setOpenMiniCart(false);
                     router.push("/checkout");
                   }}
-                  variant="secondary"
                 >
                   Checkout
                 </Button>

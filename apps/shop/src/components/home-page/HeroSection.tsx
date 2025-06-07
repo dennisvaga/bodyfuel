@@ -177,7 +177,7 @@ const HeroSection = () => {
                         </p>,
                         <Button
                           key="cta"
-                          className="text-white font-bold py-2 px-8 uppercase hover:scale-105 hover:shadow-lg"
+                          className="text-white font-bold py-2 px-8 uppercase hover:scale-105 hover:shadow-lg transform-none hover:transform-none active:transform-none"
                         >
                           <Link
                             href={slide.ctaLink}
