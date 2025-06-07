@@ -113,7 +113,7 @@ Product.Price = ({
 }) => (
   <Label
     className={cn(
-      "text-lg font-bold text-[hsl(var(--product-price))]",
+      "text-base font-bold text-[hsl(var(--product-price))]",
       className
     )}
   >

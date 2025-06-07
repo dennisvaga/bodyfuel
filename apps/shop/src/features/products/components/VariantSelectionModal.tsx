@@ -80,10 +80,7 @@ const VariantSelectionModal = ({
                 />
               </div>
 
-              <Product.Price
-                price={currentPrice}
-                className="font-bold text-lg"
-              />
+              <Product.Price price={currentPrice} className="font-bold" />
             </div>
           </div>
 

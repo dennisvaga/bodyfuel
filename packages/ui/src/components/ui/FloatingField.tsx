@@ -39,9 +39,27 @@ const FloatingField = ({
     return () => clearTimeout(timer);
   }, []);
 
-  const hasValue =
-    field.value !== "" &&
-    ((field.value !== null && field.value !== undefined) || field.value === 0);
+  const hasValue = (() => {
+    const value = field.value;
+
+    // Handle null and undefined
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    // Handle empty strings
+    if (value === "") {
+      return false;
+    }
+
+    // Handle arrays (empty arrays should be considered as no value)
+    if (Array.isArray(value)) {
+      return value.length > 0;
+    }
+
+    // All other values (including 0, false, etc.) are considered valid
+    return true;
+  })();
 
   return (
     <FormItem className={cn("relative w-full", !disabled && "group")}>
@@ -62,7 +80,7 @@ const FloatingField = ({
       <FormControl>
         {children({
           id: field.name,
-          className: cn("group-hover:cursor-text", hasValue && "pt-4 pb-0"),
+          className: cn("group-hover:cursor-text", hasValue && "pt-6 pb-1"),
           disabled,
           ...field,
         })}
