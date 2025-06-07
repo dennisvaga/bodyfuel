@@ -91,6 +91,32 @@ export async function assignImageUrlToCart(cart: CartWithItems) {
   };
 }
 
+export async function assignImageUrlToOrder(order: any) {
+  return {
+    ...order,
+    orderItems: await Promise.all(
+      order.orderItems.map(async (orderItem: any) => ({
+        ...orderItem,
+        product: {
+          ...orderItem.product,
+          images: await Promise.all(
+            orderItem.product.images.map(async (image: any) => ({
+              ...image,
+              imageUrl: await getPresignedUrl({
+                bucketName: process.env.AWS_S3_BUCKET_NAME!,
+                objectKey: image.imageKey.replace(
+                  `${process.env.AWS_BUCKET_ENDPOINT_URL!}/`,
+                  ""
+                ),
+              }),
+            }))
+          ),
+        },
+      }))
+    ),
+  };
+}
+
 /**
  * Upload a file to an S3 bucket.
  * @param {{ bucketName: string, key: string, file: File }}

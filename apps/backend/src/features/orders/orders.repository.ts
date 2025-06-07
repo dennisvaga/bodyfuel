@@ -12,7 +12,19 @@ export class OrdersRepository {
 
     return prisma.order.findUnique({
       where: { orderNumber },
-      include: { shippingInfo: true, user: true, orderItems: true },
+      include: {
+        shippingInfo: true,
+        user: true,
+        orderItems: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 }

@@ -61,7 +61,9 @@ const OrderProgressTracker = ({ status }: OrderProgressTrackerProps) => {
           <div className="flex flex-col items-center">
             <div
               className={`z-10 w-10 h-10 rounded-full flex items-center justify-center ${
-                statusStep >= 2 ? "bg-primary text-white" : "bg-gray-400"
+                statusStep >= 2
+                  ? "bg-primary text-white"
+                  : "bg-gray-400 text-white"
               }`}
             >
               <Truck className="h-5 w-5" />
@@ -73,7 +75,9 @@ const OrderProgressTracker = ({ status }: OrderProgressTrackerProps) => {
           <div className="flex flex-col items-center">
             <div
               className={`z-10  w-10 h-10 rounded-full flex items-center justify-center ${
-                statusStep >= 3 ? "bg-primary text-white" : "bg-gray-400"
+                statusStep >= 3
+                  ? "bg-primary text-white"
+                  : "bg-gray-400 text-white"
               }`}
             >
               <CheckCircle className="h-5 w-5" />

@@ -59,7 +59,6 @@ export const ProductSearch = ({
         onSearch={handleSearch}
         isLoading={isLoading}
         placeholder="Search products..."
-        variant="shop"
         autoFocus={autoFocus}
       />
     </div>

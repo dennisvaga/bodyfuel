@@ -16,9 +16,9 @@ const QuickActionsCard = () => {
         <CardTitle>Quick Actions</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-2">
-        <Button asChild variant="outline" size="sm">
+        {/* <Button asChild variant="outline" size="sm">
           <Link href="/">Browse Products</Link>
-        </Button>
+        </Button> */}
         <Button asChild variant="outline" size="sm">
           <Link href="/contact-us">Contact Support</Link>
         </Button>

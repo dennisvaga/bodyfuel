@@ -48,8 +48,8 @@ const sliderImages = [
     subheading: "Stay hydrated. Recover faster. Perform better.",
     description:
       "Formulated for performance. Trusted by runners, lifters, and athletes who never settle.",
-    ctaText: "DISCOVER MORE",
-    ctaLink: "/about",
+    ctaText: "SHOP NOW",
+    ctaLink: "/products",
     alignment: "right",
   },
 ];
@@ -57,6 +57,7 @@ const sliderImages = [
 const HeroSection = () => {
   const [api, setApi] = useState<CarouselApi>();
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
     // Trigger animations on mount
@@ -69,18 +70,18 @@ const HeroSection = () => {
     }
 
     /**
-     * Auto-rotate carousel slides only when tab is visible
+     * Auto-rotate carousel slides only when tab is visible and not hovered
      * Improves performance and prevents unexpected slide changes
-     * when user returns to the tab
+     * when user returns to the tab or is interacting with the carousel
      */
     const autoplayInterval = setInterval(() => {
-      if (document.visibilityState === "visible") {
+      if (document.visibilityState === "visible" && !isHovered) {
         api.scrollNext();
       }
-    }, 7000); // 7 seconds interval
+    }, 5000); // 5 seconds interval
 
     return () => clearInterval(autoplayInterval);
-  }, [api]);
+  }, [api, isHovered]);
 
   return (
     <div className="relative overflow-hidden">
@@ -91,6 +92,8 @@ const HeroSection = () => {
           loop: true,
           align: "center",
         }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         <CarouselContent>
           {sliderImages.map((slide, index) => (
@@ -175,16 +178,8 @@ const HeroSection = () => {
                         >
                           {slide.description}
                         </p>,
-                        <Button
-                          key="cta"
-                          className="text-white font-bold py-2 px-8 uppercase hover:scale-105 hover:shadow-lg transform-none hover:transform-none active:transform-none"
-                        >
-                          <Link
-                            href={slide.ctaLink}
-                            className="flex items-center"
-                          >
-                            {slide.ctaText}
-                          </Link>
+                        <Button key="cta" asChild>
+                          <Link href={slide.ctaLink}>{slide.ctaText}</Link>
                         </Button>,
                       ]}
                     </AnimatedTextGroup>
