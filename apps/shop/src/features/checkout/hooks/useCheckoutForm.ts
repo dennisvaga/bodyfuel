@@ -108,6 +108,7 @@ export function useCheckoutForm() {
       orderItems: cart?.cartItems.map((cartItem) => ({
         productId: cartItem.productId,
         quantity: cartItem.quantity,
+        variantId: cartItem.variantId || undefined, // Include variantId for products with variants
       })),
     };
 

@@ -15,34 +15,6 @@ export class AdminOrdersRepository {
   }
 
   /**
-   * Find a user by email
-   */
-  async findUserByEmail(email: string) {
-    const prisma = await getPrisma();
-    return prisma.user.findUnique({
-      where: { email },
-    });
-  }
-
-  /**
-   * Find products by IDs
-   */
-  async findProductsByIds(productIds: number[]) {
-    const prisma = await getPrisma();
-    return prisma.product.findMany({
-      where: { id: { in: productIds } },
-    });
-  }
-
-  /**
-   * Create an order
-   */
-  async createOrder(orderData: any) {
-    const prisma = await getPrisma();
-    return prisma.order.create({ data: orderData });
-  }
-
-  /**
    * Find an order by ID
    */
   async findById(orderId: string) {

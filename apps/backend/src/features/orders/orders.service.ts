@@ -1,8 +1,6 @@
 import ordersRepository from "./orders.repository.js";
 import { assignImageUrlToOrder } from "#services/s3Service.js";
 import { OrderInput } from "@repo/shared";
-import adminOrdersRepository from "../admin/orders/admin.orders.repository.js";
-import { prepareOrderItems } from "../admin/orders/admin.orders.utils.js";
 
 /**
  * Orders service responsible for order-related business logic
@@ -30,11 +28,11 @@ export class OrdersService {
     this.validateOrderInput(orderData);
 
     // 2. Get userId based on email
-    const user = await adminOrdersRepository.findUserByEmail(orderData.email);
+    const user = await ordersRepository.findUserByEmail(orderData.email);
 
     // 3. Fetch all required products from database
     const productIds = orderData.orderItems.map((item) => item.productId);
-    const products = await adminOrdersRepository.findProductsByIds(productIds);
+    const products = await ordersRepository.findProductsByIds(productIds);
 
     // 4. Validate all products exist
     if (products.length !== productIds.length) {
@@ -52,25 +50,31 @@ export class OrdersService {
       {} as Record<number, any>
     );
 
-    // 6. Recalculate prices from database (don't trust frontend)
+    // 6. Validate stock availability
+    this.validateStockAvailability(orderData, productMap);
+
+    // 7. Recalculate prices from database (don't trust frontend)
     const { orderItemsData, totalPrice } = this.validateAndCalculatePrices(
       orderData,
       productMap
     );
 
-    // 7. Create the order with validated data
-    await adminOrdersRepository.createOrder({
-      shippingInfo: { create: orderData.shippingInfo },
-      user: user ? { connect: { id: user.id } } : undefined,
-      email: orderData.email,
-      total: totalPrice,
-      status: "PENDING", // Force PENDING status for public orders
-      orderItems: {
-        createMany: {
-          data: orderItemsData,
+    // 8. Create the order with validated data and reduce stock
+    await ordersRepository.createOrderWithStockReduction(
+      {
+        shippingInfo: { create: orderData.shippingInfo },
+        user: user ? { connect: { id: user.id } } : undefined,
+        email: orderData.email,
+        total: totalPrice,
+        status: "PENDING", // Force PENDING status for public orders
+        orderItems: {
+          createMany: {
+            data: orderItemsData,
+          },
         },
       },
-    });
+      orderData.orderItems // Pass original order items for stock reduction
+    );
 
     return { success: true, message: "Order created successfully" };
   }
@@ -119,6 +123,50 @@ export class OrdersService {
   }
 
   /**
+   * Validate stock availability for all order items
+   */
+  private validateStockAvailability(
+    orderData: OrderInput,
+    productMap: Record<number, any>
+  ) {
+    orderData.orderItems.forEach((item) => {
+      const product = productMap[item.productId];
+
+      if (!product) {
+        throw new Error(`Product with ID ${item.productId} not found`);
+      }
+
+      // For products with variants, check variant stock
+      if (product.variants && product.variants.length > 0) {
+        // If product has variants but no variantId specified, throw error
+        if (!item.variantId) {
+          throw new Error(`Please select a variant for ${product.name}`);
+        }
+
+        const variant = product.variants.find(
+          (v: any) => v.id === item.variantId
+        );
+        if (!variant) {
+          throw new Error(`Variant not found for ${product.name}`);
+        }
+
+        if (variant.stock < item.quantity) {
+          throw new Error(
+            `Insufficient stock for ${product.name}. Available: ${variant.stock}, Requested: ${item.quantity}`
+          );
+        }
+      } else {
+        // For simple products, check product quantity
+        if (product.quantity < item.quantity) {
+          throw new Error(
+            `Insufficient stock for ${product.name}. Available: ${product.quantity}, Requested: ${item.quantity}`
+          );
+        }
+      }
+    });
+  }
+
+  /**
    * Validate and calculate prices from database
    */
   private validateAndCalculatePrices(
@@ -134,18 +182,25 @@ export class OrdersService {
         throw new Error(`Product with ID ${item.productId} not found`);
       }
 
-      if (!product.isActive) {
-        throw new Error(`Product "${product.name}" is no longer available`);
+      let itemPrice = product.price; // Default to product price
+
+      // If variant is specified, use variant price
+      if (item.variantId && product.variants && product.variants.length > 0) {
+        const variant = product.variants.find(
+          (v: any) => v.id === item.variantId
+        );
+        if (variant) {
+          itemPrice = variant.price;
+        }
       }
 
-      // Use database price, not frontend price
-      const itemTotal = product.price * item.quantity;
+      const itemTotal = itemPrice * item.quantity;
       calculatedTotal += itemTotal;
 
       return {
         productId: item.productId,
         quantity: item.quantity,
-        price: product.price, // Use database price
+        price: itemPrice, // Use calculated price (product or variant)
       };
     });
 

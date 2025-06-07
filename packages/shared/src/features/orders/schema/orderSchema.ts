@@ -8,6 +8,7 @@ const requiredString = (fieldName: string) =>
 const OrderItemSchema = z.object({
   productId: z.number(),
   quantity: z.number().min(1),
+  variantId: z.number().optional(), // Optional variant ID for products with variants
 });
 
 // Shipping Info Schema
