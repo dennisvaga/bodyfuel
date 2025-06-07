@@ -27,7 +27,7 @@ const ProductSlider = ({
   groupType,
   groupImage,
   isLoading = false,
-  productCount = 5,
+  productCount = 4,
 }: ProductSliderProps) => {
   // Show skeleton while loading
   if (isLoading) {

@@ -10,7 +10,6 @@ import Product from "@repo/ui/components/features/products/Product";
 import ProductReviews from "./ProductReviews";
 import { ProductCardVariants } from "../types/productCard";
 import { useRouter } from "next/navigation";
-import { useToast } from "@repo/ui/hooks/use-toast";
 import { useMediaQuery } from "@repo/ui/hooks/use-media-query";
 import { useProductCart } from "../hooks/useProductCart";
 import { useProductVariants } from "../hooks/useProductVariants";
@@ -26,7 +25,6 @@ const ProductCard = ({
   variant = ProductCardVariants.default,
 }: ProductCardProps) => {
   const router = useRouter();
-  const { toast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Use the consolidated hook for variant management (no auto-selection for ProductCard)
@@ -48,7 +46,6 @@ const ProductCard = ({
       // Direct add to cart for products without variants
       if (canAddToCart) {
         await handleAddToCart();
-        // No toast needed since cart opens automatically
       }
     }
   };
