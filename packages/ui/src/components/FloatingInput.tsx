@@ -1,6 +1,6 @@
 import React from "react";
-import { Input } from "./input";
-import FloatingField from "./FloatingField";
+import { Input } from "./ui/input";
+import FloatingField from "./ui/FloatingField";
 import { ControllerRenderProps } from "react-hook-form";
 
 interface FloatingInputProps {

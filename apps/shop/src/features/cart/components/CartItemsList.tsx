@@ -3,7 +3,7 @@ import React from "react";
 import { Label } from "@repo/ui/components/ui/label";
 import { Button } from "@repo/ui/components/ui/button";
 import { useRouter } from "next/navigation";
-import Product from "../../products/components/Product";
+import Product from "@repo/ui/components/features/products/components/Product";
 import { CartItemWithProduct, CartWithItems } from "@repo/database/types/cart";
 import CartItemSkeleton, { TotalSkeleton } from "./CartItemSkeleton";
 import { CartVariants } from "../types/cartEnums";

@@ -3,6 +3,7 @@
 import { Package } from "lucide-react";
 import { formatCurrency } from "@repo/shared";
 import { OrderWithItems } from "@repo/database/types/order";
+import Product from "../../features/products/Product";
 
 interface OrderItemsTableProps {
   order: OrderWithItems;
@@ -41,18 +42,20 @@ export const OrderItemsTable = ({ order }: OrderItemsTableProps) => {
                     <div className="h-10 w-10 bg-gray-100 rounded-md flex items-center justify-center mr-3">
                       {item.product?.images &&
                       item.product.images.length > 0 ? (
-                        <img
+                        <Product.Image
                           src={item.product.images[0].imageUrl}
-                          alt={item.product.name}
-                          className="object-cover h-full w-full rounded-md"
+                          width={40}
+                          height={40}
+                          className="rounded-md"
                         />
                       ) : (
                         <Package className="h-5 w-5 text-gray-400" />
                       )}
                     </div>
-                    <div className="text-sm font-medium">
-                      {item.product?.name}
-                    </div>
+                    <Product.Name
+                      name={item.product?.name || "Unknown Product"}
+                      className="text-sm font-medium"
+                    />
                   </div>
                 </td>
                 <td className="px-4 py-4 whitespace-nowrap text-sm text-center">

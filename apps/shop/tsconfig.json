@@ -31,7 +31,8 @@
     "**/*.tsx",
     "next-env.d.ts",
     ".next/types/**/*.ts",
-    "../../packages/ui/src/layouts/SectionContainer.tsx"
+    "../../packages/ui/src/layouts/SectionContainer.tsx",
+, "../../packages/ui/src/components/features/products/Product.tsx"    "../../packages/ui/src/components/features/products/components/Product.tsx"
   ],
   "exclude": ["node_modules"]
 }

@@ -6,7 +6,7 @@
 import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "@repo/ui/components/ui/card";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
-import Product from "./Product";
+import Product from "@repo/ui/components/features/products/components/Product";
 import ProductReviews from "./ProductReviews";
 import { ProductCardVariants } from "../types/productCard";
 import { useRouter } from "next/navigation";
