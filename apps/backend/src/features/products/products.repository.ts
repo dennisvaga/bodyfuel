@@ -24,8 +24,7 @@ export class ProductRepository {
         | {
             optionValueId: string | number;
             optionValue: {
-              id? // Create VariantOptionValue // Create VariantOptionValue
-              : string | number | undefined;
+              id?: string | number | undefined; // Create VariantOptionValue // Create VariantOptionValue
               value?: string | undefined;
             };
           }[]
@@ -44,7 +43,9 @@ export class ProductRepository {
       include: {
         images: true,
         options: { include: { optionValues: true } },
-        variants: { include: { variantOptionValues: true } },
+        variants: {
+          include: { variantOptionValues: { include: { optionValue: true } } },
+        },
       },
     });
   }
@@ -65,7 +66,11 @@ export class ProductRepository {
         include: {
           images: true,
           options: { include: { optionValues: true } },
-          variants: { include: { variantOptionValues: true } },
+          variants: {
+            include: {
+              variantOptionValues: { include: { optionValue: true } },
+            },
+          },
         },
       }),
     ]);
@@ -103,7 +108,9 @@ export class ProductRepository {
       include: {
         images: true,
         options: { include: { optionValues: true } },
-        variants: { include: { variantOptionValues: true } },
+        variants: {
+          include: { variantOptionValues: { include: { optionValue: true } } },
+        },
       },
       take: limit,
     });

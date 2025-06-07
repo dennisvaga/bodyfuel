@@ -22,7 +22,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     currentPrice,
     currentStock,
     handleVariantSelection,
-  } = useProductVariants({ product });
+  } = useProductVariants({ product, autoSelectFirst: true });
 
   const {
     localQuantity,
@@ -110,7 +110,11 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                 ? "hover:cursor-pointer hover:bg-primary"
                 : "opacity-50 cursor-not-allowed"
             }`}
-          />
+          >
+            {hasVariants && !selectedVariant
+              ? "Please Select Options"
+              : "Add to Cart"}
+          </Product.AddToCartButton>
         </div>
       </div>
     </div>

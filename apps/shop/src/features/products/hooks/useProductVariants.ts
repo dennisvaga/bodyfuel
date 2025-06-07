@@ -1,5 +1,6 @@
 /**
  * Custom hook for managing product variant selection and calculations
+ * Supports both auto-selection (ProductDetail) and manual selection (ProductCard/Modal)
  */
 
 import { useState, useMemo, useEffect } from "react";
@@ -7,6 +8,7 @@ import { ProductWithImageUrl } from "@repo/database/types/product";
 
 interface UseProductVariantsProps {
   product: ProductWithImageUrl;
+  autoSelectFirst?: boolean; // Default: false for ProductCard, true for ProductDetail
 }
 
 interface UseProductVariantsReturn {
@@ -15,63 +17,76 @@ interface UseProductVariantsReturn {
   currentPrice: number;
   currentStock: number;
   handleVariantSelection: (optionName: string, value: string) => void;
+  hasVariants: boolean;
+  allOptionsSelected: boolean;
 }
 
 export const useProductVariants = ({
   product,
+  autoSelectFirst = false,
 }: UseProductVariantsProps): UseProductVariantsReturn => {
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
 
-  // Initialize selected options as empty - require explicit selection
+  // Initialize selected options based on autoSelectFirst parameter
   useEffect(() => {
     if (product.options && product.options.length > 0) {
-      // Start with empty selections to force user choice
-      setSelectedOptions({});
+      if (autoSelectFirst) {
+        // Auto-select first value of each option (ProductDetail behavior)
+        const initialSelections: Record<string, string> = {};
+        product.options.forEach((option) => {
+          if (option.optionValues && option.optionValues.length > 0) {
+            initialSelections[option.name] = option.optionValues[0].value;
+          }
+        });
+        setSelectedOptions(initialSelections);
+      } else {
+        // Start with empty selections (ProductCard behavior)
+        setSelectedOptions({});
+      }
     }
-  }, [product.options]);
+  }, [product.options, autoSelectFirst]);
 
-  // Find the current selected variant based on selected options
-  const selectedVariant = useMemo(() => {
-    if (
-      !product.variants ||
-      product.variants.length === 0 ||
-      !product.options ||
-      product.options.length === 0
-    ) {
-      return null;
-    }
+  const hasVariants = !!(product.options && product.options.length > 0);
 
-    // Check if all required options are selected
-    const allOptionsSelected = product.options.every(
+  // Check if all required options are selected
+  const allOptionsSelected = useMemo(() => {
+    if (!hasVariants) return true;
+
+    return product.options!.every(
       (option) =>
         selectedOptions[option.name] &&
         selectedOptions[option.name].trim() !== ""
     );
+  }, [product.options, selectedOptions, hasVariants]);
 
-    if (!allOptionsSelected) {
+  // Find the current selected variant based on selected options
+  const selectedVariant = useMemo(() => {
+    if (!hasVariants || !allOptionsSelected) {
       return null;
     }
 
-    return product.variants.find((variant) => {
-      if (!variant.variantOptionValues) return false;
+    return (
+      product.variants?.find((variant) => {
+        if (!variant.variantOptionValues) return false;
 
-      // Check if all selected options match this variant
-      return variant.variantOptionValues.every((vov) => {
-        if (!vov.optionValue) return false;
+        // Check if all selected options match this variant
+        return variant.variantOptionValues.every((vov) => {
+          if (!vov.optionValue) return false;
 
-        // Find the option name for this option value
-        const option = product.options?.find((opt) =>
-          opt.optionValues?.some((ov) => ov.id === vov.optionValue.id)
-        );
+          // Find the option name for this option value
+          const option = product.options?.find((opt) =>
+            opt.optionValues?.some((ov) => ov.id === vov.optionValue.id)
+          );
 
-        if (!option) return false;
+          if (!option) return false;
 
-        return selectedOptions[option.name] === vov.optionValue.value;
-      });
-    });
-  }, [product, selectedOptions]);
+          return selectedOptions[option.name] === vov.optionValue.value;
+        });
+      }) || null
+    );
+  }, [product, selectedOptions, hasVariants, allOptionsSelected]);
 
   // Get current price (from variant or base product)
   const currentPrice = selectedVariant?.price ?? product.price ?? 0;
@@ -92,5 +107,7 @@ export const useProductVariants = ({
     currentPrice,
     currentStock,
     handleVariantSelection,
+    hasVariants,
+    allOptionsSelected,
   };
 };

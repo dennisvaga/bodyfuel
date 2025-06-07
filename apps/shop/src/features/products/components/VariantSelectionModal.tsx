@@ -1,0 +1,126 @@
+/**
+ * Modal for selecting product variants in ProductCard
+ */
+
+"use client";
+import React from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@repo/ui/components/ui/dialog";
+import { Button } from "@repo/ui/components/ui/button";
+import { ProductWithImageUrl } from "@repo/database/types/product";
+import Product from "./Product";
+import { useProductVariants } from "../hooks/useProductVariants";
+import { useProductCart } from "../hooks/useProductCart";
+
+interface VariantSelectionModalProps {
+  product: ProductWithImageUrl;
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const VariantSelectionModal = ({
+  product,
+  isOpen,
+  onClose,
+}: VariantSelectionModalProps) => {
+  const {
+    selectedOptions,
+    selectedVariant,
+    currentPrice,
+    currentStock,
+    handleVariantSelection,
+    hasVariants,
+    allOptionsSelected,
+  } = useProductVariants({ product, autoSelectFirst: false });
+
+  const { handleAddToCart, isOutOfStock, canAddToCart } = useProductCart({
+    product,
+    currentStock,
+    selectedVariant,
+  });
+
+  const handleAddToCartClick = async () => {
+    if (canAddToCart && allOptionsSelected) {
+      await handleAddToCart();
+      onClose();
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Select Options</DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {/* Product Info */}
+          <div className="flex gap-4">
+            <Product.Image
+              src={product.images?.[0]?.imageUrl || "/"}
+              width={80}
+              className="rounded-lg"
+            />
+            <div className="flex-1">
+              <Product.Name name={product.name} className="font-semibold" />
+              <Product.Brand
+                brand={product.brand ?? ""}
+                className="text-sm text-muted-foreground"
+              />
+              <Product.Price
+                price={currentPrice}
+                className="font-bold text-lg"
+              />
+            </div>
+          </div>
+
+          {/* Variant Selector */}
+          {hasVariants && (
+            <Product.VariantSelector
+              options={product.options}
+              selectedOptions={selectedOptions}
+              onSelectionChange={handleVariantSelection}
+            />
+          )}
+
+          {/* Stock Information */}
+          {currentStock > 0 && allOptionsSelected && (
+            <div className="text-sm text-muted-foreground">
+              {currentStock} in stock
+            </div>
+          )}
+
+          {isOutOfStock && allOptionsSelected && (
+            <div className="text-sm text-destructive font-medium">
+              Out of stock
+            </div>
+          )}
+
+          {/* Action Buttons */}
+          <div className="flex gap-2 pt-4">
+            <Button variant="outline" onClick={onClose} className="flex-1">
+              Cancel
+            </Button>
+            <Button
+              onClick={handleAddToCartClick}
+              disabled={!allOptionsSelected || !canAddToCart}
+              className="flex-1"
+            >
+              {!allOptionsSelected
+                ? "Select Options"
+                : isOutOfStock
+                  ? "Out of Stock"
+                  : "Add to Cart"}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default VariantSelectionModal;

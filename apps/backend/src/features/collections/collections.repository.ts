@@ -21,7 +21,15 @@ export class CollectionsRepository {
     if (includeProducts) {
       queryOptions.include = {
         products: {
-          include: { images: true },
+          include: {
+            images: true,
+            options: { include: { optionValues: true } },
+            variants: {
+              include: {
+                variantOptionValues: { include: { optionValue: true } },
+              },
+            },
+          },
         },
       };
     }
@@ -72,7 +80,15 @@ export class CollectionsRepository {
         where: { slug },
         include: {
           products: {
-            include: { images: true },
+            include: {
+              images: true,
+              options: { include: { optionValues: true } },
+              variants: {
+                include: {
+                  variantOptionValues: { include: { optionValue: true } },
+                },
+              },
+            },
             skip,
             take,
             orderBy: { createdAt: "desc" }, // Default sorting

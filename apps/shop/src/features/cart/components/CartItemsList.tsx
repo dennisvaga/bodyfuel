@@ -86,12 +86,12 @@ const CartItemsList = ({
     switch (variant) {
       case CartVariants.mini:
         return cart.cartItems.map((item: CartItemWithProduct) => (
-          <div key={item.productId}>
+          <div key={`${item.productId}-${item.variantId || "no-variant"}`}>
             <Product className="px-4 py-6">
               <div className="relative flex flex-row gap-2">
                 {/* Remove button */}
                 <button
-                  onClick={() => removeFromCart(item.productId)}
+                  onClick={() => removeFromCart(item.productId, item.variantId)}
                   className="absolute left-0 top-0 z-10 flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer"
                   aria-label="Remove item"
                 >
@@ -115,14 +115,14 @@ const CartItemsList = ({
                     onClick={() => handleProductClick(item)}
                   />
                 </div>
-                {/* Product price */}
-                <Product.Price price={item.product.price} />
+                {/* Product price - use cart item price (variant price) or fallback to product price */}
+                <Product.Price price={item.price || item.product.price} />
                 <div className="flex flex-row justify-end">
                   {changeQuantity && (
                     <Product.QuantityControls
                       quantity={item.quantity}
                       onChangeQuantity={(newQty: number) => {
-                        changeQuantity(item.productId, newQty);
+                        changeQuantity(item.productId, newQty, item.variantId);
                       }}
                       className="items-end"
                     />
@@ -136,7 +136,10 @@ const CartItemsList = ({
 
       case CartVariants.checkout:
         return cart?.cartItems?.map((item: CartItemWithProduct) => (
-          <Product key={item.productId} className="gap-4">
+          <Product
+            key={`${item.productId}-${item.variantId || "no-variant"}`}
+            className="gap-4"
+          >
             <Product.Image
               width={80}
               className="border p-2"
@@ -144,7 +147,7 @@ const CartItemsList = ({
             />
             <div className="flex flex-col justfity-start w-full">
               <Product.Name name={item.product.name} />
-              <Product.Price price={item.product.price} />
+              <Product.Price price={item.price || item.product.price} />
             </div>
           </Product>
         ));
@@ -156,14 +159,16 @@ const CartItemsList = ({
 
           return (
             <Product
-              key={item.productId}
+              key={`${item.productId}-${item.variantId || "no-variant"}`}
               className="flex sm:flex-row flex-col gap-4 items-center border p-8 rounded-xl"
             >
               <div className="flex flex-row">
                 <div className="flex flex-row gap-2">
                   {/* Remove button */}
                   <button
-                    onClick={() => removeFromCart(item.productId)}
+                    onClick={() =>
+                      removeFromCart(item.productId, item.variantId)
+                    }
                     className="flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer"
                     aria-label="Remove item"
                   >
@@ -185,7 +190,7 @@ const CartItemsList = ({
                   />
                   <div className="flex gap-2 items-center">
                     <Label className="text-gray-600">Price:</Label>
-                    <Product.Price price={item.product.price} />
+                    <Product.Price price={item.price || item.product.price} />
                   </div>
                 </div>
               </div>
@@ -194,7 +199,7 @@ const CartItemsList = ({
                   <Product.QuantityControls
                     quantity={item.quantity}
                     onChangeQuantity={(newQty: number) =>
-                      changeQuantity(item.productId, newQty)
+                      changeQuantity(item.productId, newQty, item.variantId)
                     }
                   />
                 )}

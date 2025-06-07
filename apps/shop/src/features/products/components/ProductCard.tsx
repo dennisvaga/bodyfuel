@@ -3,18 +3,18 @@
  */
 
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader, CardContent } from "@repo/ui/components/ui/card";
 import type { ProductWithImageUrl } from "@repo/database/types/product";
-import { useCart } from "../../cart/contexts/cartContext";
 import Product from "./Product";
 import ProductReviews from "./ProductReviews";
 import { ProductCardVariants } from "../types/productCard";
 import { useRouter } from "next/navigation";
 import { useToast } from "@repo/ui/hooks/use-toast";
 import { useMediaQuery } from "@repo/ui/hooks/use-media-query";
-import { useProductVariants } from "../hooks/useProductVariants";
 import { useProductCart } from "../hooks/useProductCart";
+import { useProductVariants } from "../hooks/useProductVariants";
+import VariantSelectionModal from "./VariantSelectionModal";
 
 interface ProductCardProps {
   product: ProductWithImageUrl;
@@ -25,39 +25,36 @@ const ProductCard = ({
   product,
   variant = ProductCardVariants.default,
 }: ProductCardProps) => {
-  const { addToCart } = useCart();
   const router = useRouter();
   const { toast } = useToast();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Use focused hooks for variant and cart logic
+  // Use the consolidated hook for variant management (no auto-selection for ProductCard)
   const {
-    selectedOptions,
+    hasVariants,
+    allOptionsSelected,
+    currentStock,
     selectedVariant,
     currentPrice,
+  } = useProductVariants({ product, autoSelectFirst: false });
+
+  // Use cart logic with proper variant data
+  const { handleAddToCart, isOutOfStock, canAddToCart } = useProductCart({
+    product,
     currentStock,
-    handleVariantSelection,
-  } = useProductVariants({ product });
-
-  const {
-    localQuantity,
-    productInCart,
-    handleAddToCart,
-    handleQuantityChange,
-    isOutOfStock,
-    canAddToCart,
-  } = useProductCart({ product, currentStock, selectedVariant });
-
-  // Derived state
-  const hasVariants = !!(product.options && product.options.length > 0);
+    selectedVariant,
+  });
 
   const handleAddToCartClick = async () => {
-    if (canAddToCart) {
-      await handleAddToCart();
+    if (hasVariants) {
+      // Open modal for variant selection
+      setIsModalOpen(true);
     } else {
-      toast({
-        variant: "destructive",
-        description: "Please select product options before adding to cart.",
-      });
+      // Direct add to cart for products without variants
+      if (canAddToCart) {
+        await handleAddToCart();
+        // No toast needed since cart opens automatically
+      }
     }
   };
 
@@ -75,99 +72,80 @@ const ProductCard = ({
   const imageWidth = isMobile ? 160 : 240;
 
   return (
-    <Card
-      className={`rounded-xl shadow-sm bg-card group overflow-hidden flex flex-col justify-between ${
-        isSlider ? "min-w-[200px] lg:flex-1 lg:min-w-0" : "w-full"
-      }`}
-    >
-      <CardHeader className={`p-6 overflow-hidden`}>
-        <Product.Image
-          src={product.images?.[0]?.imageUrl || "/"}
-          onClick={handleCardClick}
-          width={imageWidth}
-          hoverEffect
-        />
-      </CardHeader>
-      <CardContent className={`flex flex-col relative p-4 gap-1`}>
-        <Product.Brand brand={product.brand ?? ""} />
-        <Product.Name onClick={handleCardClick} name={product.name ?? ""} />
-        <ProductReviews productId={product.id} className="my-1" />
-        <Product.Price price={currentPrice ?? 0} />
+    <>
+      <Card
+        className={`rounded-xl shadow-sm bg-card group overflow-hidden flex flex-col justify-between ${
+          isSlider ? "min-w-[200px] lg:flex-1 lg:min-w-0" : "w-full"
+        }`}
+      >
+        <CardHeader className={`p-6 overflow-hidden`}>
+          <Product.Image
+            src={product.images?.[0]?.imageUrl || "/"}
+            onClick={handleCardClick}
+            width={imageWidth}
+            hoverEffect
+          />
+        </CardHeader>
+        <CardContent className={`flex flex-col relative p-4 gap-1`}>
+          <Product.Brand brand={product.brand ?? ""} />
+          <Product.Name onClick={handleCardClick} name={product.name ?? ""} />
+          <ProductReviews productId={product.id} className="my-1" />
+          <Product.Price price={currentPrice} />
 
-        {/* Variant Selector - shown when product has variants */}
-        {hasVariants && (
-          <div className="mt-2 mb-3">
-            <Product.VariantSelector
-              options={product.options}
-              selectedOptions={selectedOptions}
-              onSelectionChange={handleVariantSelection}
-            />
-          </div>
-        )}
-
-        {/* Desktop "Add to cart" button - only show when no variants or variant is selected */}
-        {!hasVariants || selectedVariant ? (
+          {/* Desktop button */}
           <Product.AddToCartButton
             onClick={(e: any) => {
               e.stopPropagation();
-              if (!isOutOfStock && canAddToCart) {
+              if (!isOutOfStock) {
                 handleAddToCartClick();
               }
             }}
             className={`absolute hover:bg-primary bottom-0 left-0 right-0 font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block ${
-              isOutOfStock || !canAddToCart
-                ? "opacity-50 cursor-not-allowed"
-                : ""
+              isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
             }`}
-          />
-        ) : (
-          <Product.AddToCartButton
-            onClick={(e: any) => {
-              e.stopPropagation();
-              handleCardClick();
-            }}
-            className="absolute hover:bg-primary bottom-0 left-0 right-0 font-semibold transition-all duration-300 ease-out transform translate-y-full opacity-0 group-hover:translate-y-0 group-hover:opacity-100 hidden md:block"
           >
-            Choose Options
+            {isOutOfStock
+              ? "Out of Stock"
+              : hasVariants
+                ? "Select Options"
+                : "Add to Cart"}
           </Product.AddToCartButton>
-        )}
 
-        {/* Mobile cart icon - only show when no variants or variant is selected */}
-        {!hasVariants || selectedVariant ? (
+          {/* Mobile button */}
           <Product.AddToCartButton
             onClick={(e: any) => {
               e.stopPropagation();
-              if (!isOutOfStock && canAddToCart) {
+              if (!isOutOfStock) {
                 handleAddToCartClick();
               }
             }}
-            variant="icon"
             className={`rounded-xl md:hidden mt-2 ${
-              isOutOfStock || !canAddToCart
-                ? "opacity-50 cursor-not-allowed"
-                : ""
+              isOutOfStock ? "opacity-50 cursor-not-allowed" : ""
             }`}
-          />
-        ) : (
-          <Product.AddToCartButton
-            onClick={(e: any) => {
-              e.stopPropagation();
-              handleCardClick();
-            }}
-            className="rounded-xl md:hidden mt-2"
           >
-            Choose Options
+            {isOutOfStock
+              ? "Out of Stock"
+              : hasVariants
+                ? "Select Options"
+                : "Add to Cart"}
           </Product.AddToCartButton>
-        )}
 
-        {/* Out of stock indicator */}
-        {isOutOfStock && (
-          <div className="text-sm text-destructive font-medium mt-1">
-            Out of stock
-          </div>
-        )}
-      </CardContent>
-    </Card>
+          {/* Out of stock indicator */}
+          {isOutOfStock && (
+            <div className="text-sm text-destructive font-medium mt-1">
+              Out of stock
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Variant Selection Modal */}
+      <VariantSelectionModal
+        product={product}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
+    </>
   );
 };
 

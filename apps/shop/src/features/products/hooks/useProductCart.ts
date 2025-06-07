@@ -38,7 +38,12 @@ export const useProductCart = ({
   );
 
   const isOutOfStock = currentStock === 0;
-  const canAddToCart = currentStock > 0;
+
+  // Check if product has variants and if they are properly selected
+  const hasVariants = !!(product.options && product.options.length > 0);
+  const variantRequiredButNotSelected = hasVariants && !selectedVariant;
+
+  const canAddToCart = currentStock > 0 && !variantRequiredButNotSelected;
 
   const handleAddToCart = async () => {
     if (!product || !canAddToCart) {
