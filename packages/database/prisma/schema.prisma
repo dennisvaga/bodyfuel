@@ -202,6 +202,7 @@ model Order {
   total       Float
   status      OrderStatus @default(PENDING)
   orderItems  OrderItem[]
+  is_demo     Boolean     @default(true)
 
   shippingInfoId String?
   shippingInfo   ShippingInfo? @relation(fields: [shippingInfoId], references: [id])
