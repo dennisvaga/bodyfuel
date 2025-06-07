@@ -37,15 +37,17 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
   const hasVariants = !!(product.options && product.options.length > 0);
 
   return (
-    <div className="flex flex-col lg:flex-row justify-around w-full gap-6 px-4 md:px-6 lg:px-8">
-      <div className="w-full flex justify-center">
+    <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Product Image */}
+      <div className="w-full lg:w-1/2 flex justify-center">
         <Product.Image
-          width={500}
+          width={550}
           src={product.images?.[0].imageUrl || "/"}
           className="max-w-full h-auto object-contain"
         />
       </div>
-      <div className="flex flex-col relative w-full">
+      {/* Product Details */}
+      <div className="flex flex-col relative w-full lg:w-1/2">
         <div className="flex flex-col gap-3">
           <Product.Name
             className="text-2xl md:text-3xl font-bold"
@@ -103,7 +105,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
                 e.stopPropagation();
               }
             }}
-            className={`sm:max-w-[200px] w-full font-semibold ${
+            className={`w-full font-semibold ${
               canAddToCart
                 ? "hover:cursor-pointer hover:bg-primary"
                 : "opacity-50 cursor-not-allowed"
