@@ -13,7 +13,14 @@ export class CartRepository {
       where: { sessionId },
       include: {
         cartItems: {
-          include: { product: { include: { images: true } } },
+          include: {
+            product: { include: { images: true } },
+            variant: {
+              include: {
+                variantOptionValues: { include: { optionValue: true } },
+              },
+            },
+          },
           orderBy: { createdAt: "desc" },
         },
       },
@@ -30,7 +37,14 @@ export class CartRepository {
       where: { id: cartId },
       include: {
         cartItems: {
-          include: { product: { include: { images: true } } },
+          include: {
+            product: { include: { images: true } },
+            variant: {
+              include: {
+                variantOptionValues: { include: { optionValue: true } },
+              },
+            },
+          },
           orderBy: { createdAt: "asc" }, // Ensures stable order in UI
         },
       },
@@ -52,24 +66,38 @@ export class CartRepository {
     cartId: number,
     productId: number,
     price: number,
-    quantity: number
+    quantity: number,
+    variantId?: number | null
   ) {
     const prisma = await getPrisma();
 
-    return prisma.cartItem.upsert({
+    // Check if item already exists
+    const existingItem = await prisma.cartItem.findFirst({
       where: {
-        cartId_productId: { cartId, productId }, // Uses unique constraint
-      },
-      update: {
-        quantity,
-      },
-      create: {
         cartId,
         productId,
-        price, // Store price at time of adding
-        quantity,
+        variantId: variantId || null,
       },
     });
+
+    if (existingItem) {
+      // Update existing item
+      return prisma.cartItem.update({
+        where: { id: existingItem.id },
+        data: { quantity },
+      });
+    } else {
+      // Create new item
+      return prisma.cartItem.create({
+        data: {
+          cartId,
+          productId,
+          variantId: variantId || null,
+          price,
+          quantity,
+        },
+      });
+    }
   }
 
   /**
@@ -78,7 +106,8 @@ export class CartRepository {
   async updateItemQuantity(
     sessionId: string,
     productId: number,
-    quantity: number
+    quantity: number,
+    variantId?: number | null
   ) {
     const prisma = await getPrisma();
 
@@ -90,6 +119,7 @@ export class CartRepository {
             sessionId,
           },
           productId,
+          variantId: variantId || null,
         },
       });
     } else {
@@ -100,6 +130,7 @@ export class CartRepository {
             sessionId,
           },
           productId,
+          variantId: variantId || null,
         },
         data: {
           quantity,
@@ -111,7 +142,11 @@ export class CartRepository {
   /**
    * Remove an item from the cart
    */
-  async removeCartItem(sessionId: string, productId: number) {
+  async removeCartItem(
+    sessionId: string,
+    productId: number,
+    variantId?: number | null
+  ) {
     const prisma = await getPrisma();
 
     // Find the cart by session
@@ -126,6 +161,7 @@ export class CartRepository {
       where: {
         cartId: cart.id,
         productId,
+        variantId: variantId || null,
       },
     });
 

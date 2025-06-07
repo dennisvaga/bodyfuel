@@ -12,13 +12,18 @@ interface CartContextType {
   refetch: Function;
   addToCart: (
     product: ProductWithImageUrl,
-    quantity?: number
+    quantity?: number,
+    variantId?: number | null
   ) => Promise<ApiResult<CartWithItems>>;
   changeQuantity: (
     productId: number,
-    change: number
+    change: number,
+    variantId?: number | null
   ) => Promise<ApiResult<CartWithItems>>;
-  removeFromCart: (productId: number) => Promise<ApiResult<CartWithItems>>;
+  removeFromCart: (
+    productId: number,
+    variantId?: number | null
+  ) => Promise<ApiResult<CartWithItems>>;
   openMiniCart: boolean;
   setOpenMiniCart: (open: boolean) => void;
 }
@@ -53,8 +58,16 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Mutations
   const changeQuantityMutation = useMutation({
-    mutationFn: (variables: { productId: number; change: number }) =>
-      cartService.changeQuantity(variables.productId, variables.change),
+    mutationFn: (variables: {
+      productId: number;
+      change: number;
+      variantId?: number | null;
+    }) =>
+      cartService.changeQuantity(
+        variables.productId,
+        variables.change,
+        variables.variantId
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] });
     },
@@ -64,14 +77,21 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     mutationFn: (variables: {
       product: ProductWithImageUrl;
       quantity: number;
-    }) => cartService.addToCart(variables.product, variables.quantity),
+      variantId?: number | null;
+    }) =>
+      cartService.addToCart(
+        variables.product,
+        variables.quantity,
+        variables.variantId
+      ),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] });
     },
   });
 
   const removeFromCartMutation = useMutation({
-    mutationFn: (productId: number) => cartService.removeFromCart(productId),
+    mutationFn: (variables: { productId: number; variantId?: number | null }) =>
+      cartService.removeFromCart(variables.productId, variables.variantId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.CART] });
     },
@@ -80,24 +100,40 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   // Functions matching the original signatures
   const addToCart = async (
     product: ProductWithImageUrl,
-    quantity: number = 1
+    quantity: number = 1,
+    variantId?: number | null
   ) => {
-    const result = await addToCartMutation.mutateAsync({ product, quantity });
+    const result = await addToCartMutation.mutateAsync({
+      product,
+      quantity,
+      variantId,
+    });
     await refetch();
     setOpenMiniCart(true);
     return result;
   };
 
-  const removeFromCart = async (productId: number) => {
-    const result = await removeFromCartMutation.mutateAsync(productId);
+  const removeFromCart = async (
+    productId: number,
+    variantId?: number | null
+  ) => {
+    const result = await removeFromCartMutation.mutateAsync({
+      productId,
+      variantId,
+    });
     await refetch();
     return result;
   };
 
-  const changeQuantity = async (productId: number, change: number) => {
+  const changeQuantity = async (
+    productId: number,
+    change: number,
+    variantId?: number | null
+  ) => {
     const result = await changeQuantityMutation.mutateAsync({
       productId,
       change,
+      variantId,
     });
     await refetch();
     return result;

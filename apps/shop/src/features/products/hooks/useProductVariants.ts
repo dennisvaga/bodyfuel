@@ -24,16 +24,11 @@ export const useProductVariants = ({
     Record<string, string>
   >({});
 
-  // Initialize selected options with first value of each option
+  // Initialize selected options as empty - require explicit selection
   useEffect(() => {
     if (product.options && product.options.length > 0) {
-      const initialSelections: Record<string, string> = {};
-      product.options.forEach((option) => {
-        if (option.optionValues && option.optionValues.length > 0) {
-          initialSelections[option.name] = option.optionValues[0].value;
-        }
-      });
-      setSelectedOptions(initialSelections);
+      // Start with empty selections to force user choice
+      setSelectedOptions({});
     }
   }, [product.options]);
 
@@ -42,8 +37,20 @@ export const useProductVariants = ({
     if (
       !product.variants ||
       product.variants.length === 0 ||
-      Object.keys(selectedOptions).length === 0
+      !product.options ||
+      product.options.length === 0
     ) {
+      return null;
+    }
+
+    // Check if all required options are selected
+    const allOptionsSelected = product.options.every(
+      (option) =>
+        selectedOptions[option.name] &&
+        selectedOptions[option.name].trim() !== ""
+    );
+
+    if (!allOptionsSelected) {
       return null;
     }
 

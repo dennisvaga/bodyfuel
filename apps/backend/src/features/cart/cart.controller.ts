@@ -39,13 +39,14 @@ export class CartController {
    */
   async addToCart(req: Request, res: Response) {
     try {
-      const { product, quantity } = req.body;
+      const { product, quantity, variantId } = req.body;
       const cartSession = req.cookies.cart_session;
 
       const updatedCart = await cartService.addItemToCart(
         cartSession,
         product,
-        quantity
+        quantity,
+        variantId
       );
 
       sendResponse(res, 201, { success: true, data: updatedCart });
@@ -59,13 +60,14 @@ export class CartController {
    */
   async updateItemQuantity(req: Request, res: Response) {
     try {
-      const { productId, quantity } = req.body;
+      const { productId, quantity, variantId } = req.body;
       const session = req.cookies.cart_session;
 
       const result = await cartService.updateItemQuantity(
         session,
         productId,
-        quantity
+        quantity,
+        variantId
       );
       sendResponse(res, 200, { success: true, data: result });
     } catch (error) {
@@ -79,9 +81,15 @@ export class CartController {
   async removeCartItem(req: Request, res: Response) {
     try {
       const productId = parseInt(req.params.productId);
+      const { variantId } = req.query; // Get variantId from query params
       const session = req.cookies.cart_session;
 
-      const updatedCart = await cartService.removeCartItem(session, productId);
+      const parsedVariantId = variantId ? parseInt(variantId as string) : null;
+      const updatedCart = await cartService.removeCartItem(
+        session,
+        productId,
+        parsedVariantId
+      );
       sendResponse(res, 200, { success: true, data: updatedCart });
     } catch (error) {
       handleError(error, res);

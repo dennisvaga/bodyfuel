@@ -31,7 +31,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     handleQuantityChange,
     isOutOfStock,
     canAddToCart,
-  } = useProductCart({ product, currentStock });
+  } = useProductCart({ product, currentStock, selectedVariant });
 
   // Derived state
   const hasVariants = !!(product.options && product.options.length > 0);

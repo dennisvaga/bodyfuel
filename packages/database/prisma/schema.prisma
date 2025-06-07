@@ -61,6 +61,7 @@ model ProductVariant {
   price               Float
   stock               Int
   variantOptionValues ProductVariantOptionValue[]
+  cartItems           CartItem[] // Cart items using this variant
   createdAt           DateTime                    @default(now())
   updatedAt           DateTime                    @updatedAt
 
@@ -171,20 +172,22 @@ model Cart {
   updatedAt DateTime @updatedAt
 }
 
-// Each cartItem represent a product
+// Each cartItem represent a product with optional variant
 model CartItem {
-  id        Int     @id @default(autoincrement()) // Unique identifier for each cart item
+  id        Int             @id @default(autoincrement()) // Unique identifier for each cart item
   cartId    Int
-  cart      Cart    @relation(fields: [cartId], references: [id])
+  cart      Cart            @relation(fields: [cartId], references: [id])
   productId Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  quantity  Int     @default(1)
+  product   Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variantId Int? // Optional: specific variant of the product
+  variant   ProductVariant? @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  quantity  Int             @default(1)
   price     Float // Price at the time of adding to cart
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([cartId, productId])
+  @@unique([cartId, productId, variantId])
 }
 
 // -------------- Order ----------------------------------

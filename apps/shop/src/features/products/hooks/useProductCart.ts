@@ -9,6 +9,7 @@ import { useCart } from "../../cart/contexts/cartContext";
 interface UseProductCartProps {
   product: ProductWithImageUrl;
   currentStock: number;
+  selectedVariant?: any | null;
 }
 
 interface UseProductCartReturn {
@@ -23,12 +24,17 @@ interface UseProductCartReturn {
 export const useProductCart = ({
   product,
   currentStock,
+  selectedVariant,
 }: UseProductCartProps): UseProductCartReturn => {
   const { addToCart, changeQuantity, cart } = useCart();
   const [localQuantity, setLocalQuantity] = useState(1);
 
   const productInCart = cart?.cartItems.find(
-    (item) => item.productId === product.id
+    (item) =>
+      item.productId === product.id &&
+      (selectedVariant
+        ? item.variantId === selectedVariant.id
+        : !item.variantId)
   );
 
   const isOutOfStock = currentStock === 0;
@@ -41,7 +47,8 @@ export const useProductCart = ({
 
     const result = await addToCart(
       product,
-      productInCart?.quantity || localQuantity
+      productInCart?.quantity || localQuantity,
+      selectedVariant?.id || null
     );
 
     if (!result.success) {
@@ -55,7 +62,7 @@ export const useProductCart = ({
 
     if (productInCart) {
       // If product is in cart, update cart quantity
-      changeQuantity(product.id, validQty);
+      changeQuantity(product.id, validQty, selectedVariant?.id || null);
     } else {
       // Otherwise just update local state
       setLocalQuantity(validQty);

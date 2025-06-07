@@ -45,7 +45,12 @@ export class CartService {
   /**
    * Add item to cart
    */
-  async addItemToCart(cartSession: string, product: any, quantity: number) {
+  async addItemToCart(
+    cartSession: string,
+    product: any,
+    quantity: number,
+    variantId?: number | null
+  ) {
     // Validate cart session
     if (
       !cartSession ||
@@ -67,7 +72,8 @@ export class CartService {
       cart.id,
       product.id,
       product.price,
-      quantity
+      quantity,
+      variantId
     );
 
     // Return Updated Cart with Sorted Items
@@ -81,16 +87,26 @@ export class CartService {
   async updateItemQuantity(
     sessionId: string,
     productId: number,
-    quantity: number
+    quantity: number,
+    variantId?: number | null
   ) {
-    return cartRepository.updateItemQuantity(sessionId, productId, quantity);
+    return cartRepository.updateItemQuantity(
+      sessionId,
+      productId,
+      quantity,
+      variantId
+    );
   }
 
   /**
    * Remove item from cart
    */
-  async removeCartItem(sessionId: string, productId: number) {
-    return cartRepository.removeCartItem(sessionId, productId);
+  async removeCartItem(
+    sessionId: string,
+    productId: number,
+    variantId?: number | null
+  ) {
+    return cartRepository.removeCartItem(sessionId, productId, variantId);
   }
 }
 

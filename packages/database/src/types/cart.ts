@@ -1,18 +1,19 @@
 import type { Prisma } from "@prisma/client";
-import type { ProductWithImageUrl } from "./product.js";
+import type { ProductWithImageUrl, ProductVariant } from "./product.js";
 
-// export const cartIncludes = {
-//   productImages: Prisma.validator<Prisma.CartItemInclude>()({
-//     product: { include: { images: true } },
-//   }),
-// };
-
-// Extend the CartItem type to use the extended Product type
+// Extend the CartItem type to use the extended Product type and include variant
 export type CartItemWithProduct = Omit<
-  Prisma.CartItemGetPayload<{}>,
+  Prisma.CartItemGetPayload<{
+    include: {
+      variant: {
+        include: { variantOptionValues: { include: { optionValue: true } } };
+      };
+    };
+  }>,
   "product"
 > & {
   product: ProductWithImageUrl;
+  variant?: ProductVariant | null;
 };
 
 // Extend the Cart type to use the extended CartItem type

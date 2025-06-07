@@ -15,12 +15,13 @@ export const cartService = {
 
   addToCart: async (
     product: ProductWithImageUrl,
-    quantity: number = 1
+    quantity: number = 1,
+    variantId?: number | null
   ): Promise<ApiResult<CartWithItems>> => {
     return await fetchData({
       slug: "cart",
       method: FetchMethod.POST,
-      body: JSON.stringify({ product, quantity }),
+      body: JSON.stringify({ product, quantity, variantId }),
       contentType: ContentType.JSON,
       cache: "no-store",
     });
@@ -28,22 +29,25 @@ export const cartService = {
 
   changeQuantity: async (
     productId: number,
-    quantity: number
+    quantity: number,
+    variantId?: number | null
   ): Promise<ApiResult<CartWithItems>> => {
     return await fetchData({
       slug: "cart",
       method: FetchMethod.PUT,
-      body: JSON.stringify({ productId, quantity }),
+      body: JSON.stringify({ productId, quantity, variantId }),
       contentType: ContentType.JSON,
       cache: "no-store",
     });
   },
 
   removeFromCart: async (
-    productId: number
+    productId: number,
+    variantId?: number | null
   ): Promise<ApiResult<CartWithItems>> => {
+    const queryParams = variantId ? `?variantId=${variantId}` : "";
     return await fetchData({
-      slug: `cart/items/${productId}`,
+      slug: `cart/items/${productId}${queryParams}`,
       method: FetchMethod.DELETE,
       cache: "no-store",
     });
