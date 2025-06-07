@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -61,6 +61,9 @@ export function useCheckoutForm() {
 
   const formValues = form.watch();
 
+  // Track if form has been loaded from localStorage
+  const [isFormLoaded, setIsFormLoaded] = useState(false);
+
   // Load Form saved data from LocalStorage
   // This is used to prevent hydration errors
   useEffect(() => {
@@ -69,12 +72,20 @@ export function useCheckoutForm() {
     if (savedData) {
       form.reset(savedData); // Hydrate the form
     }
+    setIsFormLoaded(true);
   }, []); // run once after mount
 
-  // Save form saved data to LocalStorage
+  // Save form data to LocalStorage with debouncing
+  // Only save after the form has been loaded to prevent overwriting saved data
   useEffect(() => {
-    saveFormDataToLocalStorage(FORM_DATA_KEY, formValues);
-  }, [formValues]);
+    if (!isFormLoaded) return;
+
+    const timeoutId = setTimeout(() => {
+      saveFormDataToLocalStorage(FORM_DATA_KEY, formValues);
+    }, 500); // Debounce for 500ms
+
+    return () => clearTimeout(timeoutId);
+  }, [formValues, isFormLoaded]);
 
   // Use shared submission logic
   const { handleSubmit } = useEntitySubmit({
