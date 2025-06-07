@@ -61,6 +61,47 @@ const FloatingField = ({
     return true;
   })();
 
+  // Check if input has autofill - this should also be treated as "hasValue"
+  const [hasAutofill, setHasAutofill] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    const checkAutofill = () => {
+      const input = document.getElementById(field.name) as HTMLInputElement;
+      if (input) {
+        // Check for webkit autofill
+        const isWebkitAutofill = input.matches(":-webkit-autofill");
+        // Also check if the input has a value but we haven't detected it yet
+        const hasUnexpectedValue = input.value && !hasValue && !isFocused;
+
+        if (isWebkitAutofill || hasUnexpectedValue) {
+          setHasAutofill(true);
+        } else if (!input.value) {
+          setHasAutofill(false);
+        }
+      }
+    };
+
+    // Check immediately and on multiple animation frames for better detection
+    checkAutofill();
+    const rafId1 = requestAnimationFrame(checkAutofill);
+    const rafId2 = requestAnimationFrame(() =>
+      requestAnimationFrame(checkAutofill)
+    );
+
+    // Set up interval to check periodically
+    const interval = setInterval(checkAutofill, 100);
+
+    return () => {
+      clearInterval(interval);
+      cancelAnimationFrame(rafId1);
+      cancelAnimationFrame(rafId2);
+    };
+  }, [field.name, hasValue, isFocused]);
+
+  // Enhanced shouldFloat logic that considers focus state for smoother transitions
+  const shouldFloat = hasValue || hasAutofill || isFocused;
+
   return (
     <FormItem className={cn("relative w-full", !disabled && "group")}>
       <Label
@@ -71,19 +112,27 @@ const FloatingField = ({
           !labelReady && "opacity-0",
           // Apply transitions to both opacity and position properties
           labelReady && "opacity-100 transition-all duration-200 ease-out",
-          // Position the label correctly from the start if there's a value
-          hasValue ? "top-[8px] text-xs text-gray-500" : "top-5"
+          // Position the label correctly from the start if there's a value or autofill
+          shouldFloat ? "top-[8px] text-xs text-gray-500" : "top-5"
         )}
       >
         {label}
       </Label>
       <FormControl>
-        {children({
-          id: field.name,
-          className: cn("group-hover:cursor-text", hasValue && "pt-6 pb-1"),
-          disabled,
-          ...field,
-        })}
+        <div
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        >
+          {children({
+            id: field.name,
+            className: cn(
+              "group-hover:cursor-text transition-all duration-200 ease-out",
+              shouldFloat && "pt-6 pb-1"
+            ),
+            disabled,
+            ...field,
+          })}
+        </div>
       </FormControl>
       <FormMessage />
     </FormItem>

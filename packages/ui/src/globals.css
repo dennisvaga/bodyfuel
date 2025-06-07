@@ -225,19 +225,4 @@
     text-decoration: underline;
     color: hsl(var(--primary) / 0.9);
   }
-
-  /* Floating label autofill detection - hide label completely during autofill */
-  .group:has(input:-webkit-autofill) label,
-  .group:has(input:-webkit-autofill:hover) label,
-  .group:has(input:-webkit-autofill:focus) label,
-  .group:has(input:-webkit-autofill:active) label {
-    opacity: 0 !important;
-    visibility: hidden !important;
-  }
-
-  input:-webkit-autofill {
-    padding-top: 0.5rem !important;
-    padding-bottom: 0.5rem !important;
-    -webkit-box-shadow: 0 0 0 1000px white inset !important;
-  }
 }
