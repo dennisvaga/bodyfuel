@@ -13,7 +13,7 @@ export function SectionContainer({
   return (
     <section
       className={cn(
-        "max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-[4rem] md:py-[6rem]",
+        "max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 py-[4rem] md:py-[6rem]",
         className
       )}
     >
