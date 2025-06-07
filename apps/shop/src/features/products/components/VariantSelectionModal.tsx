@@ -35,7 +35,7 @@ const VariantSelectionModal = ({
     handleVariantSelection,
     hasVariants,
     allOptionsSelected,
-  } = useProductVariants({ product, autoSelectFirst: true });
+  } = useProductVariants({ product });
 
   const {
     localQuantity,

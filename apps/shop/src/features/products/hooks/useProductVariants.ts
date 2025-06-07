@@ -8,7 +8,6 @@ import { ProductWithImageUrl } from "@repo/database/types/product";
 
 interface UseProductVariantsProps {
   product: ProductWithImageUrl;
-  autoSelectFirst?: boolean; // Default: false for ProductCard, true for ProductDetail
 }
 
 interface UseProductVariantsReturn {
@@ -23,30 +22,24 @@ interface UseProductVariantsReturn {
 
 export const useProductVariants = ({
   product,
-  autoSelectFirst = false,
 }: UseProductVariantsProps): UseProductVariantsReturn => {
   const [selectedOptions, setSelectedOptions] = useState<
     Record<string, string>
   >({});
 
-  // Initialize selected options based on autoSelectFirst parameter
+  // Initialize selected options
   useEffect(() => {
     if (product.options && product.options.length > 0) {
-      if (autoSelectFirst) {
-        // Auto-select first value of each option (ProductDetail behavior)
-        const initialSelections: Record<string, string> = {};
-        product.options.forEach((option) => {
-          if (option.optionValues && option.optionValues.length > 0) {
-            initialSelections[option.name] = option.optionValues[0].value;
-          }
-        });
-        setSelectedOptions(initialSelections);
-      } else {
-        // Start with empty selections (ProductCard behavior)
-        setSelectedOptions({});
-      }
+      // Auto-select first value of each option (ProductDetail behavior)
+      const initialSelections: Record<string, string> = {};
+      product.options.forEach((option) => {
+        if (option.optionValues && option.optionValues.length > 0) {
+          initialSelections[option.name] = option.optionValues[0].value;
+        }
+      });
+      setSelectedOptions(initialSelections);
     }
-  }, [product.options, autoSelectFirst]);
+  }, [product.options]);
 
   const hasVariants = !!(product.options && product.options.length > 0);
 

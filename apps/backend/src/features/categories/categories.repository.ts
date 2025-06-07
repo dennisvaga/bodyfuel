@@ -20,7 +20,19 @@ export class CategoriesRepository {
 
     return prisma.category.findUnique({
       where: { slug },
-      include: { products: { include: { images: true } } },
+      include: {
+        products: {
+          include: {
+            images: true,
+            options: { include: { optionValues: true } },
+            variants: {
+              include: {
+                variantOptionValues: { include: { optionValue: true } },
+              },
+            },
+          },
+        },
+      },
     });
   }
 }

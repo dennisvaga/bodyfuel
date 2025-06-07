@@ -22,7 +22,7 @@ const ProductDetail = ({ product }: ProductDetailProps) => {
     currentPrice,
     currentStock,
     handleVariantSelection,
-  } = useProductVariants({ product, autoSelectFirst: true });
+  } = useProductVariants({ product });
 
   const {
     localQuantity,

@@ -28,8 +28,12 @@ const ProductCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Use the consolidated hook for variant management (no auto-selection for ProductCard)
-  const { hasVariants, currentStock, selectedVariant, currentPrice } =
-    useProductVariants({ product, autoSelectFirst: false });
+  const {
+    hasVariants,
+    currentStock,
+    selectedVariant,
+    currentPrice,
+  } = useProductVariants({ product });
 
   // Use cart logic with proper variant data
   const { handleAddToCart, isOutOfStock, canAddToCart } = useProductCart({
