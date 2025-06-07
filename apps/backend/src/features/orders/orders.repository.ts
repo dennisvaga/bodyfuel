@@ -97,6 +97,31 @@ export class OrdersRepository {
       return order;
     });
   }
+
+  /**
+   * Find orders by user email
+   */
+  async findOrdersByUserEmail(userEmail: string) {
+    const prisma = await getPrisma();
+
+    return prisma.order.findMany({
+      where: { email: userEmail },
+      include: {
+        shippingInfo: true,
+        user: true,
+        orderItems: {
+          include: {
+            product: {
+              include: {
+                images: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }
 }
 
 export default new OrdersRepository();

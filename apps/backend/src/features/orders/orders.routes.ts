@@ -11,6 +11,13 @@ router.post(
   ordersController.createOrder.bind(ordersController)
 );
 
+// Get user's orders (requires authentication)
+router.get(
+  "/user",
+  authenticatedUser,
+  ordersController.getUserOrders.bind(ordersController)
+);
+
 // Get order by id
 router.get(
   "/:orderNumber",

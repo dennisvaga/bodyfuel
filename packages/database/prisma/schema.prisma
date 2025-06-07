@@ -139,7 +139,7 @@ model Collection {
   slug        String    @unique
   description String?
   products    Product[]
-  is_demo     Boolean   @default(true)
+  is_demo     Boolean   @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -202,7 +202,7 @@ model Order {
   total       Float
   status      OrderStatus @default(PENDING)
   orderItems  OrderItem[]
-  is_demo     Boolean     @default(true)
+  is_demo     Boolean     @default(false)
 
   shippingInfoId String?
   shippingInfo   ShippingInfo? @relation(fields: [shippingInfoId], references: [id])

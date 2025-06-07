@@ -53,6 +53,28 @@ export class OrdersController {
       handleError(error, res);
     }
   }
+
+  /**
+   * Get orders for authenticated user
+   */
+  async getUserOrders(req: AuthenticatedRequest, res: Response) {
+    try {
+      const userEmail = req.user?.email;
+
+      if (!userEmail) {
+        sendResponse(res, 401, {
+          success: false,
+          message: "User email not found",
+        });
+        return;
+      }
+
+      const orders = await ordersService.getUserOrders(userEmail);
+      sendResponse(res, 200, { success: true, data: orders });
+    } catch (error) {
+      handleError(error, res);
+    }
+  }
 }
 
 export default new OrdersController();

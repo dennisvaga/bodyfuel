@@ -77,6 +77,20 @@ export class OrdersService {
     );
 
     return { success: true, message: "Order created successfully" };
+  } /**
+   * Get orders for a specific user by email
+   */
+  async getUserOrders(userEmail: string) {
+    const orders = await ordersRepository.findOrdersByUserEmail(userEmail);
+
+    if (!orders || orders.length === 0) {
+      return [];
+    }
+
+    // Add image URLs to orders
+    return await Promise.all(
+      orders.map(async (order: any) => await assignImageUrlToOrder(order))
+    );
   }
 
   /**

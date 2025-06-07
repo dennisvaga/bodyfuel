@@ -23,6 +23,14 @@ export const orderService = {
     });
   },
 
+  getUserOrders: async (): Promise<ApiResult<OrderWithItems[]>> => {
+    return await fetchData({
+      slug: "orders/user",
+      method: FetchMethod.GET,
+      cache: "no-store",
+    });
+  },
+
   getAllOrders: async (): Promise<ApiResult<OrderWithItems[]>> => {
     return await fetchData({
       slug: "admin/orders",

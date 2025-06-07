@@ -12,6 +12,7 @@ export const QUERY_KEYS = {
   COLLECTION: (slug: string) => ["collection", slug],
   ORDERS: ["orders"],
   ORDER: (id: number) => ["order", id],
+  USER_ORDERS: ["orders", "user"],
   CATEGORY: (slug: string) => ["category", slug],
   CATEGORIES: ["categories"],
   CART: ["cart"],
