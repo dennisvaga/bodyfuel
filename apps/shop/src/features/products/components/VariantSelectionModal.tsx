@@ -58,7 +58,7 @@ const VariantSelectionModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="w-[calc(100vw-2rem)] max-w-md mx-auto">
         <DialogHeader>
           <DialogTitle>Select Options</DialogTitle>
         </DialogHeader>
@@ -71,12 +71,15 @@ const VariantSelectionModal = ({
               width={80}
               className="rounded-lg"
             />
-            <div className="flex-1">
-              <Product.Name name={product.name} className="font-semibold" />
-              <Product.Brand
-                brand={product.brand ?? ""}
-                className="text-sm text-muted-foreground"
-              />
+            <div className="flex-1 space-y-2">
+              <div>
+                <Product.Name name={product.name} className="font-semibold" />
+                <Product.Brand
+                  brand={product.brand ?? ""}
+                  className="text-sm text-muted-foreground"
+                />
+              </div>
+
               <Product.Price
                 price={currentPrice}
                 className="font-bold text-lg"
@@ -116,7 +119,7 @@ const VariantSelectionModal = ({
           )}
 
           {/* Action Buttons */}
-          <div className="flex gap-2 pt-4">
+          <div className="flex gap-2 pt-4 sm:flex-row flex-col">
             <Button variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>

@@ -2,7 +2,7 @@
  * Custom hook for managing product cart interactions
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ProductWithImageUrl } from "@repo/database/types/product";
 import { useCart } from "../../cart/contexts/cartContext";
 
@@ -26,16 +26,28 @@ export const useProductCart = ({
   currentStock,
   selectedVariant,
 }: UseProductCartProps): UseProductCartReturn => {
-  const { addToCart, changeQuantity, cart } = useCart();
-  const [localQuantity, setLocalQuantity] = useState(1);
+  const { addToCart, changeQuantity, cart, setOpenMiniCart } = useCart();
 
-  const productInCart = cart?.cartItems.find(
+  const productInCart = cart?.cartItems?.find(
     (item) =>
       item.productId === product.id &&
       (selectedVariant
         ? item.variantId === selectedVariant.id
         : !item.variantId)
   );
+
+  const [localQuantity, setLocalQuantity] = useState(
+    productInCart?.quantity || 1
+  );
+
+  // Sync local quantity with cart quantity when cart changes
+  useEffect(() => {
+    if (productInCart) {
+      setLocalQuantity(productInCart.quantity);
+    } else {
+      setLocalQuantity(1);
+    }
+  }, [productInCart?.quantity]);
 
   const isOutOfStock = currentStock === 0;
 
@@ -50,15 +62,28 @@ export const useProductCart = ({
       return;
     }
 
-    const result = await addToCart(
-      product,
-      localQuantity,
-      selectedVariant?.id || null
-    );
+    if (productInCart) {
+      // If product is already in cart, update the quantity to the new local quantity
+      await changeQuantity(
+        product.id,
+        localQuantity,
+        selectedVariant?.id || null
+      );
+      // Open mini cart after updating quantity
+      setOpenMiniCart(true);
+    } else {
+      // If product is not in cart, add it with the local quantity
+      const result = await addToCart(
+        product,
+        localQuantity,
+        selectedVariant?.id || null
+      );
 
-    if (!result.success) {
-      console.error("Error adding product to cart:", result.message);
-      return;
+      if (!result.success) {
+        console.error("Error adding product to cart:", result.message);
+        return;
+      }
+      // addToCart already opens the mini cart automatically
     }
   };
 
