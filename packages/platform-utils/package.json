@@ -1,0 +1,17 @@
+{
+  "name": "@repo/platform-utils",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf node_modules .turbo dist"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "^5.0.0"
+  }
+}

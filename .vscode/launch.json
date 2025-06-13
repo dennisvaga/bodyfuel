@@ -1,0 +1,63 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Full Stack",
+      "configurations": ["Backend: server", "Admin: server", "Shop: server"],
+      "stopAll": true
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Backend: server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/backend",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx"],
+      "program": "src/server.ts",
+      "args": [],
+      "env": {
+        "PORT": "5001"
+      },
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Admin: server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/admin",
+      "program": "${workspaceFolder}/node_modules/.bin/next",
+      "args": ["dev", "--port", "3001"],
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      },
+      "skipFiles": ["<node_internals>/**"],
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/apps/admin/.next/**/*.js"],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/apps/admin/**",
+        "!**/node_modules/**"
+      ]
+    },
+    {
+      "name": "Shop: server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/apps/shop",
+      "program": "${workspaceFolder}/node_modules/.bin/next",
+      "args": ["dev", "--port", "3000", "--turbopack"],
+      "env": {
+        "NODE_OPTIONS": "--inspect"
+      },
+      "skipFiles": ["<node_internals>/**"],
+      "serverReadyAction": {
+        "action": "debugWithChrome",
+        "killOnServerStop": true,
+        "pattern": "- Local:.+(https?://.+)",
+        "uriFormat": "%s",
+        "webRoot": "${workspaceFolder}/apps/shop"
+      }
+    }
+  ]
+}
