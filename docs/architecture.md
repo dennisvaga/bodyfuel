@@ -51,60 +51,74 @@ Each feature is organized into its own directory containing all related code:
 
 ## Backend Architecture
 
-The backend is currently in a **transitional state**, moving from a layered architecture to a fully feature-based architecture. This transition is ongoing, and both patterns currently exist in the codebase.
+The backend follows a feature-based architecture pattern, organizing all code by business capabilities rather than technical layers.
 
-### Current Hybrid Approach
-
-#### Layered Architecture Pattern (Legacy)
-
-Many parts of the backend still follow a traditional layered architecture:
+### Directory Structure
 
 ```
-Route → Service → Repository
+src/
+├── features/         # Feature-based code organization
+│   ├── auth/         # Authentication feature
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── auth.repository.ts
+│   │   └── auth.routes.ts
+│   ├── products/     # Products feature
+│   │   ├── products.controller.ts
+│   │   ├── products.service.ts
+│   │   ├── products.repository.ts
+│   │   └── products.routes.ts
+│   ├── chat/         # Chat feature (more complex structure)
+│   │   ├── chat.controller.ts
+│   │   ├── chat.repository.ts
+│   │   ├── chat.routes.ts
+│   │   ├── config/
+│   │   ├── services/
+│   │   └── utils/
+│   └── admin/        # Admin-specific features
+│       ├── collections/
+│       ├── orders/
+│       └── products/
+├── middleware/       # Shared middleware
+├── services/         # Shared services (S3, etc.)
+├── types/            # Shared TypeScript types
+└── utils/            # Shared utility functions
 ```
 
-| Layer      | Responsibility                                      |
+### Feature Module Structure
+
+Each feature is organized as a self-contained module with all related code:
+
+| Component  | Responsibility                                      |
 | ---------- | --------------------------------------------------- |
-| Route      | Handle HTTP requests/responses and error handling   |
-| Service    | Implement business logic and orchestrate operations |
-| Repository | Handle database operations and data access          |
+| controller | Handle HTTP requests/responses and error handling   |
+| service    | Implement business logic and orchestrate operations |
+| repository | Handle database operations and data access          |
+| routes     | Define and export the feature's API endpoints       |
+| config/    | Feature-specific configuration (when needed)        |
+| services/  | Feature-specific services (when needed)             |
+| utils/     | Feature-specific utility functions (when needed)    |
 
-#### Feature-Based Architecture Pattern (Target)
+### Complex Features
 
-Complex features like the Chat feature already use a feature-based architecture:
+Some features like Chat have additional subdirectories for better organization:
 
 ```
-features/
-  feature/
-    controllers/  (formerly routes)
-    services/
-    repositories/
-    types/
-    utils/
-    router.ts
+features/chat/
+├── chat.controller.ts
+├── chat.repository.ts
+├── chat.routes.ts
+├── config/
+│   ├── ai-config.ts
+│   └── query-patterns.ts
+├── services/
+│   ├── chat-product.service.ts
+│   └── conversation.service.ts
+└── utils/
+    ├── category-matcher.ts
+    ├── message-utils.ts
+    └── stream-utils.ts
 ```
-
-Each feature module follows this structure:
-
-| Component     | Responsibility                                        |
-| ------------- | ----------------------------------------------------- |
-| controllers/  | Handle HTTP requests/responses (equivalent to routes) |
-| services/     | Implement business logic                              |
-| repositories/ | Handle database operations                            |
-| types/        | Define TypeScript types specific to the feature       |
-| utils/        | Utility functions specific to the feature             |
-| router.ts     | Define and export the feature's routes                |
-
-### Transition Plan
-
-The goal is to migrate all backend code to the feature-based architecture pattern. This transition will:
-
-1. Improve code organization and maintainability
-2. Create consistency across the entire codebase
-3. Make feature development more self-contained
-4. Reduce cross-feature dependencies
-
-New features should be implemented using the feature-based pattern, while existing code will be migrated incrementally.
 
 ## Benefits of Feature-Based Architecture
 
@@ -196,20 +210,19 @@ features/
 ```
 features/
   chat/
-    controllers/
-      chatController.ts      # Handle HTTP requests
+    chat.controller.ts       # Handle HTTP requests
+    chat.repository.ts       # Database operations
+    chat.routes.ts           # Define routes
+    config/
+      ai-config.ts           # AI configuration
+      query-patterns.ts      # Query pattern definitions
     services/
-      queryService.ts        # Extract search queries
-      productService.ts      # Search for products
-      messageService.ts      # Format messages for AI
-    repositories/
-      chatRepository.ts      # Database operations
-    types/
-      chat.types.ts          # Type definitions
+      chat-product.service.ts    # Product search service
+      conversation.service.ts    # Conversation management
     utils/
-      categoryMatcher.ts     # Match categories from text
-      streamUtils.ts         # Streaming response utilities
-    router.ts                # Define routes
+      category-matcher.ts    # Match categories from text
+      message-utils.ts       # Message formatting utilities
+      stream-utils.ts        # Streaming response utilities
 ```
 
 This organization keeps all chat-related code together while maintaining clear separation from other features.

@@ -36,20 +36,20 @@ When making changes to shared packages (like `@repo/shared`, `@repo/database`, e
 
 ```bash
 # Build a specific package
-npm run build --workspace=packages/shared
+pnpm run build --filter=packages/shared
 
 # Build all packages
-npm run build
+pnpm run build
 ```
 
 This is necessary because the packages are compiled and then imported by the apps. Without building, the apps will continue to use the old version of the package.
 
 ### Common Development Tasks
 
-- Start the development server for all apps: `npm run dev`
-- Start a specific app: `npm run dev --workspace=apps/shop`
-- Run tests: `npm run test`
-- Lint code: `npm run lint`
+- Start the development server for all apps: `pnpm run dev`
+- Start a specific app: `pnpm run dev --filter=apps/shop`
+- Run tests: `pnpm run test`
+- Lint code: `pnpm run lint`
 
 ---
 
@@ -82,10 +82,10 @@ The web app is a Turborepo with 3 apps:
 
 ### Backend Architecture
 
-- **Hybrid approach** combining layered and feature-based patterns
-  - Simpler features follow a traditional layered architecture (Route → Service → Repository)
-  - Complex features (like Chat) use a feature-based organization
-  - For detailed information, see [backend-architecture.md](./backend-architecture.md)
+- **Feature-based architecture** organizing code by business capabilities
+  - All features follow a consistent structure with controllers, services, and repositories
+  - Each feature is self-contained with clear boundaries
+  - For detailed information, see [architecture.md](./architecture.md)
 
 ### State Management
 

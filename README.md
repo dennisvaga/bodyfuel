@@ -39,7 +39,7 @@ BodyFuel is a modern e-commerce platform built as a monorepo using Turborepo wit
 ### Prerequisites
 
 - Node.js 18+
-- npm 9+
+- pnpm 8+
 - PostgreSQL
 
 ### Installation
@@ -54,7 +54,7 @@ cd bodyfuel
 2. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 3. Set up environment variables:
@@ -73,13 +73,13 @@ cp apps/shop/.env.example apps/shop/.env
 To start the development servers for all apps:
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 To start a specific app:
 
 ```bash
-npm run dev --workspace=apps/shop
+pnpm run dev --filter=apps/shop
 ```
 
 ### Demo Credentials
@@ -103,10 +103,10 @@ When making changes to shared packages, you need to build them:
 
 ```bash
 # Build a specific package
-npm run build --workspace=packages/shared
+pnpm run build --filter=packages/shared
 
 # Build all packages
-npm run build
+pnpm run build
 ```
 
 ## Project Structure
@@ -117,17 +117,21 @@ apps/
   ├── backend/     # Express API server
   └── shop/        # Customer-facing storefront
 packages/
+  ├── auth/        # Authentication utilities and configurations
+  ├── config/      # Shared configuration packages
+  │   ├── nextjs-config/     # Shared Next.js configuration
+  │   ├── tailwind-config/   # Shared Tailwind CSS configuration
+  │   └── typescript-config/ # Shared TypeScript configuration
   ├── database/    # Shared database logic (Prisma models)
+  ├── platform-utils/ # Platform-specific utilities
   ├── shared/      # Shared utilities and code
-  ├── ui/          # Shared UI components
-  ├── nextjs-config/ # Shared Next.js configuration
-  └── typescript-config/ # Shared TypeScript configuration
+  └── ui/          # Shared UI components
 docs/              # Project documentation
 ```
 
 ## Architecture
 
-The project follows a hybrid architecture combining both layered and feature-based patterns. For more details, see [Architecture Patterns](docs/architecture-patterns.md).
+The project follows a feature-based architecture pattern across both frontend and backend applications. For more details, see [Architecture](docs/architecture.md).
 
 ## API Endpoints
 
