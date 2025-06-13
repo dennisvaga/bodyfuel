@@ -3,9 +3,9 @@
 import React from "react";
 import { categoryService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
-import { notFound, usePathname } from "next/navigation";
-import LoadAnimation from "@repo/ui/components/LoadAnimation";
+import { usePathname } from "next/navigation";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import PageLayout from "@/src/layouts/PageLayout";
 
 const Page = () => {
   const pathname = usePathname();
@@ -18,18 +18,14 @@ const Page = () => {
     },
   });
 
-  if (isLoading)
-    return (
-      <SectionContainer className="flex justify-center">
-        <LoadAnimation />
-      </SectionContainer>
-    );
-  if (!category) notFound();
-
   return (
-    <SectionContainer>
-      <ProductGrid productGroup={category} isLoading={isLoading} />
-    </SectionContainer>
+    <PageLayout isLoading={isLoading} data={category}>
+      {(category) => (
+        <SectionContainer>
+          <ProductGrid productGroup={category} isLoading={false} />
+        </SectionContainer>
+      )}
+    </PageLayout>
   );
 };
 

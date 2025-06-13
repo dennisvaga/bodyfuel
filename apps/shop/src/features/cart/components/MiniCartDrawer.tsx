@@ -10,7 +10,7 @@ import {
   Drawer,
   DrawerClose,
 } from "@repo/ui/components/ui/drawer";
-import { Label } from "@repo/ui/components/ui/label";
+import Product from "@repo/ui/components/features/products/Product";
 import { useRouter } from "next/navigation";
 import { useCart } from "../contexts/cartContext";
 import CartItemsList from "./CartItemsList";
@@ -84,12 +84,10 @@ const MiniCartDrawer = () => {
 
             {/* Fixed footer with safe area padding */}
             <div className="flex-shrink-0 flex flex-col p-4 gap-4 pb-6 sm:pb-4">
-              <div className="flex flex-row justify-between">
-                <Label className="text-base">Total</Label>
-                <Label className="text-base font-bold">
-                  ${total.toFixed(2)}
-                </Label>
-              </div>
+              <Product.Total
+                priceColor="dark:text-gray-150 text-base"
+                amount={total}
+              />
               <div className="flex flex-col gap-2">
                 <Button
                   onClick={() => {

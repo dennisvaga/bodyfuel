@@ -223,7 +223,7 @@ Product.AddToCartButton = ({
     disabled={isLoading || disabled}
   >
     {isLoading ? (
-      <LoadAnimation />
+      <LoadAnimation className="text-white" />
     ) : variant === "icon" ? (
       <ShoppingCart />
     ) : (
@@ -253,15 +253,14 @@ Product.QuantityControls = ({
       onClick={(e) => e.stopPropagation()}
     >
       <Button
-        className="flex items-center justify-center h-full w-10 p-0 border-0 dark:hover:bg-muted/50"
+        className="flex items-center justify-center h-full w-10 p-0 rounded-none border-0 hover:rounded-l-xl"
         variant="ghost"
         onClick={() =>
           !isLoading && onChangeQuantity(Math.max(1, quantity - 1))
         }
-        disabled={isLoading}
         type="button"
       >
-        {isLoading ? <LoadAnimation /> : <MinusIcon className="h-4 w-4" />}
+        <MinusIcon className="h-4 w-4" />
       </Button>
       <div className="flex-1 h-full border-l border-r">
         <Input
@@ -279,35 +278,73 @@ Product.QuantityControls = ({
         />
       </div>
       <Button
-        className="flex items-center justify-center h-full w-10 p-0 rounded-none border-0 dark:hover:bg-muted/50"
+        className="flex items-center justify-center h-full w-10 p-0 rounded-none border-0 hover:rounded-r-xl"
         variant="ghost"
         onClick={() => !isLoading && onChangeQuantity(quantity + 1)}
-        disabled={isLoading}
         type="button"
       >
-        {isLoading ? <LoadAnimation /> : <PlusIcon className="h-4 w-4" />}
+        <PlusIcon className="h-4 w-4" />
       </Button>
     </div>
   );
 };
 
-// Subtotal
-Product.Subtotal = ({
+// Total/Subtotal Component (consolidated)
+Product.Total = ({
   amount,
+  label = "Total",
+  labelSize = "base",
+  priceSize = "base",
   className,
+  isLoading = false,
+  showLabel = true,
+  priceColor = "text-[hsl(var(--product-price))]",
 }: {
   amount: number;
+  label?: string;
+  labelSize?: "base" | "lg" | "xl";
+  priceSize?: "base" | "lg" | "xl";
   className?: string;
-}) => (
-  <Label
-    className={cn(
-      "text-base font-semibold text-[hsl(var(--product-price))]",
-      className
-    )}
-  >
-    Subtotal: ${amount.toFixed(2)}
-  </Label>
-);
+  isLoading?: boolean;
+  showLabel?: boolean;
+  priceColor?: string;
+}) => {
+  const labelSizeClasses = {
+    sm: "text-sm",
+    base: "text-base",
+    lg: "text-lg font-semibold",
+    xl: "text-xl font-bold",
+  };
+
+  const priceSizeClasses = {
+    base: "!text-base !font-bold",
+    lg: "!text-lg !font-semibold",
+    xl: "!text-xl !font-bold",
+  };
+
+  return (
+    <div className={cn("flex flex-row justify-between gap-2", className)}>
+      {showLabel && (
+        <Label className={labelSizeClasses[labelSize]}>{label}:</Label>
+      )}
+      <Label
+        className={cn(
+          priceSizeClasses[priceSize],
+          "flex items-center gap-2",
+          priceColor
+        )}
+      >
+        {isLoading ? (
+          <div className="flex items-center gap-2">
+            <LoadAnimation />
+          </div>
+        ) : (
+          `$${amount.toFixed(2)}`
+        )}
+      </Label>
+    </div>
+  );
+};
 
 // Description
 Product.Description = ({

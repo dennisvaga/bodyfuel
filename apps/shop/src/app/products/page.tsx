@@ -3,9 +3,8 @@
 import React from "react";
 import { productService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
-import { notFound } from "next/navigation";
-import LoadAnimation from "@repo/ui/components/LoadAnimation";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import PageLayout from "@/src/layouts/PageLayout";
 
 const ProductsPage = () => {
   const { data: productsData, isLoading } = useFetchQuery({
@@ -13,18 +12,14 @@ const ProductsPage = () => {
     serviceFn: () => productService.getProducts({ getAllProducts: true }),
   });
 
-  if (isLoading)
-    return (
-      <SectionContainer className="flex justify-center">
-        <LoadAnimation />
-      </SectionContainer>
-    );
-  if (!productsData) notFound();
-
   return (
-    <SectionContainer>
-      <ProductGrid productGroup={productsData} isLoading={isLoading} />
-    </SectionContainer>
+    <PageLayout isLoading={isLoading} data={productsData}>
+      {(products) => (
+        <SectionContainer>
+          <ProductGrid productGroup={products} isLoading={false} />
+        </SectionContainer>
+      )}
+    </PageLayout>
   );
 };
 

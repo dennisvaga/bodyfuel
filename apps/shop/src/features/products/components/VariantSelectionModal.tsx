@@ -10,7 +10,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@repo/ui/components/ui/dialog";
-import { Button } from "@repo/ui/components/ui/button";
 import { ProductWithImageUrl } from "@repo/database/types/product";
 import Product from "@repo/ui/components/features/products/Product";
 import { useProductVariants } from "../hooks/useProductVariants";
@@ -43,11 +42,17 @@ const VariantSelectionModal = ({
     handleQuantityChange,
     isOutOfStock,
     canAddToCart,
+    productInCart,
+    isAddingToCart,
+    isChangingQuantity,
+    isLoading,
   } = useProductCart({
     product,
     currentStock,
     selectedVariant,
   });
+
+  const buttonLoading = productInCart ? isChangingQuantity : isAddingToCart;
 
   const handleAddToCartClick = async () => {
     if (canAddToCart && allOptionsSelected) {
@@ -114,28 +119,25 @@ const VariantSelectionModal = ({
               Out of stock
             </div>
           )}
+        </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2 pt-4 sm:flex-row flex-col">
-            {/* <Button variant="outline" onClick={onClose} className="flex-1">
-              Cancel
-            </Button> */}
-            <Button
-              onClick={handleAddToCartClick}
-              disabled={!allOptionsSelected || !canAddToCart}
-              className="flex-1"
-            >
-              {!allOptionsSelected
-                ? "Select Options"
-                : isOutOfStock
-                  ? "Out of Stock"
-                  : "Add to Cart"}
-            </Button>
-          </div>
+        {/* Action Buttons */}
+        <div className="flex gap-2 pt-4 sm:flex-row flex-col">
+          <Product.AddToCartButton
+            onClick={handleAddToCartClick}
+            disabled={!allOptionsSelected || !canAddToCart}
+            isLoading={buttonLoading}
+            className="flex-1"
+          >
+            {!allOptionsSelected
+              ? "Select Options"
+              : isOutOfStock
+                ? "Out of Stock"
+                : "Add to Cart"}
+          </Product.AddToCartButton>
         </div>
       </DialogContent>
     </Dialog>
   );
 };
-
 export default VariantSelectionModal;

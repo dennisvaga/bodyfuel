@@ -3,8 +3,9 @@
 import ProductDetail from "@/src/features/products/components/ProductDetail";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import { useFetchQuery, QUERY_KEYS, productService } from "@repo/shared";
-import { notFound, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
+import PageLayout from "@/src/layouts/PageLayout";
 
 const page = () => {
   const pathname = usePathname();
@@ -15,24 +16,14 @@ const page = () => {
     serviceFn: () => productService.getProductBySlug(slug ?? ""),
   });
 
-  if (isLoading) {
-    return (
-      <SectionContainer>
-        <div className="flex justify-center items-center min-h-[50vh]">
-          <p>Loading product...</p>
-        </div>
-      </SectionContainer>
-    );
-  }
-
-  if (!product) {
-    notFound();
-  }
-
   return (
-    <SectionContainer className="flex flex-row justify-center w-full">
-      <ProductDetail product={product} isLoading={isLoading}></ProductDetail>
-    </SectionContainer>
+    <PageLayout isLoading={isLoading} data={product}>
+      {(productData) => (
+        <SectionContainer className="flex flex-row justify-center w-full">
+          <ProductDetail product={productData} isLoading={false} />
+        </SectionContainer>
+      )}
+    </PageLayout>
   );
 };
 

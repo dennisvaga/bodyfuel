@@ -102,7 +102,7 @@ const CartItemsList = ({
                   className="absolute left-0 top-0 z-10 flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer disabled:opacity-50"
                   aria-label="Remove item"
                 >
-                  {isRemovingFromCart ? <LoadAnimation /> : <X />}
+                  <X />
                 </button>
 
                 {/* Product image */}
@@ -185,7 +185,7 @@ const CartItemsList = ({
                     className="flex flex-col w-4 h-4 text-muted-foreground hover:text-destructive rounded-full transition-colors hover:cursor-pointer disabled:opacity-50"
                     aria-label="Remove item"
                   >
-                    {isRemovingFromCart ? <LoadAnimation /> : <X />}
+                    <X />
                   </button>
 
                   {/* Product image */}
@@ -219,7 +219,11 @@ const CartItemsList = ({
                   />
                 )}
                 {/* Product total price */}
-                <Label>{productTotal.toFixed(2)}</Label>
+                <Product.Total
+                  priceColor="dark:text-gray-150 text-base"
+                  showLabel={false}
+                  amount={productTotal}
+                />
               </div>
             </Product>
           );
@@ -237,13 +241,15 @@ const CartItemsList = ({
 
       {/* Subtotal/Total based on variant */}
       {showTotal && (
-        <div
-          className={`flex justify-between ${variant === "cart" ? "pt-10" : "pt-2"}`}
-        >
-          <Label className="text-lg ">
-            {showSubtotalLabel ? "Subtotal:" : "Total:"}
-          </Label>
-          <Label className="text-lg font-bold"> ${total}</Label>
+        <div className={`${variant === "cart" ? "pt-10" : "pt-2"}`}>
+          <Product.Total
+            amount={total}
+            label={"Total"}
+            labelSize="lg"
+            priceSize="xl"
+            priceColor="dark:text-gray-150 text-base"
+            isLoading={isChangingQuantity}
+          />
         </div>
       )}
 

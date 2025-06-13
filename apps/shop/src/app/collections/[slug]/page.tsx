@@ -3,9 +3,9 @@
 import React from "react";
 import { collectionService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
-import { notFound, usePathname } from "next/navigation";
-import LoadAnimation from "@repo/ui/components/LoadAnimation";
+import { usePathname } from "next/navigation";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import PageLayout from "@/src/layouts/PageLayout";
 
 const Page = () => {
   const pathname = usePathname();
@@ -16,18 +16,14 @@ const Page = () => {
     serviceFn: () => collectionService.getCollectionBySlug(slug ?? ""),
   });
 
-  if (isLoading)
-    return (
-      <SectionContainer className="flex justify-center">
-        <LoadAnimation />
-      </SectionContainer>
-    );
-  if (!collection) notFound();
-
   return (
-    <SectionContainer>
-      <ProductGrid productGroup={collection} isLoading={isLoading} />
-    </SectionContainer>
+    <PageLayout isLoading={isLoading} data={collection}>
+      {(collection) => (
+        <SectionContainer>
+          <ProductGrid productGroup={collection} isLoading={false} />
+        </SectionContainer>
+      )}
+    </PageLayout>
   );
 };
 

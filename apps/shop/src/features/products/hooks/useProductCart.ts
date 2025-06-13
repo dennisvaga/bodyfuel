@@ -1,5 +1,15 @@
 /**
- * Custom hook for managing product cart interactions
+ * Custom hook for managing product cart interactions.
+ *
+ * This hook provides a product-focused abstraction over cart operations,
+ * handling product-specific logic like variant validation, stock checking,
+ * and local quantity management before committing to the global cart state.
+ *
+ * Key responsibilities:
+ * - Manages local quantity state for UI interactions
+ * - Validates product variants and stock availability
+ * - Handles cart operations (add/update) with proper variant matching
+ * - Provides loading states from the underlying cart context
  */
 
 import { useState, useEffect } from "react";
@@ -19,6 +29,10 @@ interface UseProductCartReturn {
   handleQuantityChange: (newQty: number) => void;
   isOutOfStock: boolean;
   canAddToCart: boolean;
+  // Loading states from cart context
+  isAddingToCart: boolean;
+  isChangingQuantity: boolean;
+  isLoading: boolean;
 }
 
 export const useProductCart = ({
@@ -26,8 +40,16 @@ export const useProductCart = ({
   currentStock,
   selectedVariant,
 }: UseProductCartProps): UseProductCartReturn => {
-  const { addToCart, changeQuantity, cart, setOpenMiniCart } = useCart();
-
+  const {
+    addToCart,
+    changeQuantity,
+    cart,
+    setOpenMiniCart,
+    // Add these loading states
+    isAddingToCart,
+    isChangingQuantity,
+    isLoading,
+  } = useCart();
   const productInCart = cart?.cartItems?.find(
     (item) =>
       item.productId === product.id &&
@@ -106,5 +128,8 @@ export const useProductCart = ({
     handleQuantityChange,
     isOutOfStock,
     canAddToCart,
+    isAddingToCart,
+    isChangingQuantity,
+    isLoading,
   };
 };
