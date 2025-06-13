@@ -44,6 +44,7 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     data: cart,
     isLoading,
     refetch,
+    isFetching,
   } = useFetchQuery<CartWithItems>({
     queryKey: QUERY_KEYS.CART,
     serviceFn: cartService.getCart,
@@ -155,10 +156,10 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
         removeFromCart,
         openMiniCart,
         setOpenMiniCart,
-        // Loading states for mutations
-        isAddingToCart: addToCartMutation.isPending,
-        isChangingQuantity: changeQuantityMutation.isPending,
-        isRemovingFromCart: removeFromCartMutation.isPending,
+        // Loading states for mutations - include fetching state for ongoing operations
+        isAddingToCart: addToCartMutation.isPending || isFetching,
+        isChangingQuantity: changeQuantityMutation.isPending || isFetching,
+        isRemovingFromCart: removeFromCartMutation.isPending || isFetching,
       }}
     >
       {children}

@@ -17,7 +17,8 @@ import CartItemsList from "./CartItemsList";
 import { CartVariants } from "../types/cartEnums";
 
 const MiniCartDrawer = () => {
-  const { cart, total, openMiniCart, setOpenMiniCart } = useCart();
+  const { cart, total, openMiniCart, setOpenMiniCart, isChangingQuantity } =
+    useCart();
   const router = useRouter();
 
   // Check if cart is empty to conditionally render content
@@ -87,6 +88,7 @@ const MiniCartDrawer = () => {
               <Product.Total
                 priceColor="dark:text-gray-150 text-base"
                 amount={total}
+                isLoading={isChangingQuantity}
               />
               <div className="flex flex-col gap-2">
                 <Button

@@ -336,7 +336,7 @@ Product.Total = ({
       >
         {isLoading ? (
           <div className="flex items-center gap-2">
-            <LoadAnimation />
+            <LoadAnimation size="md" />
           </div>
         ) : (
           `$${amount.toFixed(2)}`

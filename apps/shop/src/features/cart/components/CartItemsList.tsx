@@ -244,7 +244,7 @@ const CartItemsList = ({
         <div className={`${variant === "cart" ? "pt-10" : "pt-2"}`}>
           <Product.Total
             amount={total}
-            label={"Total"}
+            label={showSubtotalLabel ? "Subtotal" : "Total"}
             labelSize="lg"
             priceSize="xl"
             priceColor="dark:text-gray-150 text-base"
