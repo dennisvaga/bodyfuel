@@ -22,7 +22,9 @@ const page = () => {
       isLoading={isLoading}
       containerClassName="flex flex-row justify-center w-full"
     >
-      {() => <ProductDetail product={product} isLoading={isLoading} />}
+      {(productData, loading) => (
+        <ProductDetail product={productData} isLoading={loading} />
+      )}
     </PageLayout>
   );
 };

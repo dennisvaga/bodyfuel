@@ -22,11 +22,11 @@ const CartItemSkeleton = ({
   // Skeleton variants specific to each variant
   // - This object structure is more efficient than switch, because we can pull only the specific record that we need.
   const skeletonVariants: Record<string, (key: number) => JSX.Element> = {
-    // Full cart page skeleton with quantity controls
+    // Full cart page skeleton with quantity controls - matches actual cart layout
     cart: (key) => (
       <div
         key={key}
-        className="flex sm:flex-row flex-col gap-4 items-center p-4"
+        className="flex sm:flex-row flex-col gap-4 items-center border p-8 rounded-xl"
       >
         <div className="flex flex-row">
           <div className="flex flex-row gap-2">
@@ -38,6 +38,8 @@ const CartItemSkeleton = ({
           <div className="flex flex-col gap-2">
             <Skeleton className={`w-[120px] h-[20px] ${bgClass}`} />{" "}
             {/* Product name */}
+            <Skeleton className={`w-[80px] h-[16px] ${bgClass}`} />{" "}
+            {/* Variant options */}
             <div className="flex gap-2 items-center">
               <Skeleton className={`w-[40px] h-[16px] ${bgClass}`} />{" "}
               {/* Price label */}

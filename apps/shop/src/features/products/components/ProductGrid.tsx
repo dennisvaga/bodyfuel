@@ -30,14 +30,14 @@ const ProductGrid = ({ productGroup, isLoading }: ProductGridProps) => {
       {/* Products grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {isLoading ? (
-          <ProductSkeleton></ProductSkeleton>
+          <ProductSkeleton variant={ProductCardVariants.grid} count={8} />
         ) : (
           products?.map((product: any) => (
             <ProductCard
               key={product.id}
               product={product}
-              variant={ProductCardVariants.default}
-            ></ProductCard>
+              variant={ProductCardVariants.grid}
+            />
           ))
         )}
       </div>

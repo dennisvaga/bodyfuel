@@ -19,8 +19,8 @@ interface ProductSkeletonProps {
  * Shows a placeholder while data is loading.
  */
 const ProductSkeleton = ({
-  variant = ProductCardVariants.default,
-  count = 6,
+  variant = ProductCardVariants.grid,
+  count = 8,
   withBrigterBg = false,
 }: ProductSkeletonProps) => {
   const bgClass = withBrigterBg ? "bg-muted/50 dark:bg-muted/30" : "";
@@ -28,14 +28,27 @@ const ProductSkeleton = ({
   // Skeleton variants specific to each variant
   // - This object structure is more efficient than switch, because we can pull only the specific record that we need.
   const skeletonVariants: Record<string, (key: number) => JSX.Element> = {
-    // Default product card (grid view)
-    default: (key) => (
-      <div key={key}>
-        <Skeleton className={`w-[340px] h-[280px] rounded-xl ${bgClass}`} />
-        <div className="flex flex-col gap-2 px-0 py-4">
-          <Skeleton className={`h-5 w-[100px] ${bgClass}`} />
-          <Skeleton className={`h-5 w-[100px] ${bgClass}`} />
-          <Skeleton className={`h-5 w-[100px] ${bgClass}`} />
+    // Grid product card (grid view)
+    grid: (key) => (
+      <div
+        key={key}
+        className="rounded-xl shadow-sm bg-card overflow-hidden flex flex-col justify-between w-full"
+      >
+        {/* Card Header - empty space for image */}
+        <div className="p-6 overflow-hidden">
+          <div className="w-[160px] md:w-[240px] h-[160px] md:h-[240px]" />
+        </div>
+
+        {/* Card Content */}
+        <div className="flex flex-col relative p-4 gap-1">
+          <Skeleton className={`h-4 w-[80px] ${bgClass}`} /> {/* Brand */}
+          <Skeleton className={`h-5 w-[120px] ${bgClass}`} /> {/* Name */}
+          <Skeleton className={`h-4 w-[60px] ${bgClass}`} /> {/* Reviews */}
+          <Skeleton className={`h-5 w-[70px] ${bgClass}`} /> {/* Price */}
+          {/* Mobile button skeleton */}
+          <Skeleton
+            className={`h-10 w-full mt-2 rounded-xl md:hidden ${bgClass}`}
+          />
         </div>
       </div>
     ),
@@ -131,14 +144,10 @@ const ProductSkeleton = ({
     ),
   };
 
-  // Fallback to default if invalid variant
-  const renderSkeleton = skeletonVariants[variant] || skeletonVariants.default;
+  // Fallback to grid if invalid variant
+  const renderSkeleton = skeletonVariants[variant] || skeletonVariants.grid;
 
-  return (
-    <>
-      {Array.from({ length: count }).map((_, index) => renderSkeleton(index))}
-    </>
-  );
+  return Array.from({ length: count }).map((_, index) => renderSkeleton(index));
 };
 
 export default ProductSkeleton;

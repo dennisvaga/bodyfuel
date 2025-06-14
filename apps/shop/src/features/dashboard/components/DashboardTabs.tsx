@@ -14,13 +14,19 @@ import OrdersSummaryCard from "./OrdersSummaryCard";
 import QuickActionsCard from "./QuickActionsCard";
 import OrdersList from "./OrdersList";
 import ProfileInfo from "./ProfileInfo";
+import { OrdersListSkeleton } from "./DashboardSkeleton";
 
 interface DashboardTabsProps {
   session: Session | null;
   orders: OrderWithItems[];
+  isLoading?: boolean;
 }
 
-const DashboardTabs = ({ session, orders }: DashboardTabsProps) => {
+const DashboardTabs = ({
+  session,
+  orders,
+  isLoading = false,
+}: DashboardTabsProps) => {
   return (
     <Tabs defaultValue="overview" className="w-full">
       <TabsList className="mb-4">
@@ -38,7 +44,7 @@ const DashboardTabs = ({ session, orders }: DashboardTabsProps) => {
       </TabsContent>
 
       <TabsContent value="orders">
-        <OrdersList orders={orders} />
+        {isLoading ? <OrdersListSkeleton /> : <OrdersList orders={orders} />}
       </TabsContent>
 
       <TabsContent value="profile">

@@ -3,7 +3,6 @@
 import React from "react";
 import { productService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
-import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import PageLayout from "@/src/layouts/PageLayout";
 
 const ProductsPage = () => {
@@ -13,8 +12,14 @@ const ProductsPage = () => {
   });
 
   return (
-    <PageLayout isLoading={isLoading} data={productsData}>
-      {(products) => <ProductGrid productGroup={products} isLoading={false} />}
+    <PageLayout
+      data={productsData}
+      isLoading={isLoading}
+      requiresEntity={false}
+    >
+      {(products, loading) => (
+        <ProductGrid productGroup={products} isLoading={loading} />
+      )}
     </PageLayout>
   );
 };

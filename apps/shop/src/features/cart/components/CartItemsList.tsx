@@ -59,8 +59,9 @@ const CartItemsList = ({
   const emptyCart = renderEmptyCart();
   if (emptyCart) return emptyCart;
 
-  // Skeletons - specific to each variant
-  if (isLoading) {
+  // For cart variant, loading is handled at page level
+  // For other variants (mini, checkout), handle loading here
+  if (isLoading && variant !== CartVariants.cart) {
     return (
       <div className="flex flex-col gap-4">
         <CartItemSkeleton
@@ -70,9 +71,6 @@ const CartItemsList = ({
         />
         {showTotal && (
           <TotalSkeleton withBrigterBg={variant === CartVariants.checkout} />
-        )}
-        {variant === CartVariants.cart && showCheckoutButton && (
-          <Button>Checkout</Button>
         )}
       </div>
     );

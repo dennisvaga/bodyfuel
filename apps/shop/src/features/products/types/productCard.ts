@@ -1,5 +1,5 @@
 export enum ProductCardVariants {
-  default = "default",
+  grid = "grid",
   slider = "slider",
   detail = "detail",
 }

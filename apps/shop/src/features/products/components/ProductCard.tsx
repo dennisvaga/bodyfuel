@@ -23,7 +23,7 @@ interface ProductCardProps {
 
 const ProductCard = ({
   product,
-  variant = ProductCardVariants.default,
+  variant = ProductCardVariants.grid,
 }: ProductCardProps) => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);

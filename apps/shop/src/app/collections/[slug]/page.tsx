@@ -4,7 +4,6 @@ import React from "react";
 import { collectionService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
 import ProductGrid from "@/src/features/products/components/ProductGrid";
 import { usePathname } from "next/navigation";
-import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import PageLayout from "@/src/layouts/PageLayout";
 
 const Page = () => {
@@ -17,9 +16,9 @@ const Page = () => {
   });
 
   return (
-    <PageLayout isLoading={isLoading} data={collection}>
-      {(collection) => (
-        <ProductGrid productGroup={collection} isLoading={false} />
+    <PageLayout data={collection} isLoading={isLoading}>
+      {(collectionData, loading) => (
+        <ProductGrid productGroup={collectionData} isLoading={loading} />
       )}
     </PageLayout>
   );

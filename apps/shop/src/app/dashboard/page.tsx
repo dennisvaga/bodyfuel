@@ -2,8 +2,8 @@
 
 import { useSession } from "next-auth/react";
 import DashboardTabs from "@/src/features/dashboard/components/DashboardTabs";
+import { DashboardSkeleton } from "@/src/features/dashboard/components/DashboardSkeleton";
 import { orderService, QUERY_KEYS, useFetchQuery } from "@repo/shared";
-import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import PageLayout from "@/src/layouts/PageLayout";
 
 const DashboardPage = () => {
@@ -27,16 +27,23 @@ const DashboardPage = () => {
 
   return (
     <PageLayout
+      data={orders}
       isLoading={combinedLoading}
-      data={session?.user ? orders : null}
-      containerClassName="flex items-center justify-center min-h-[400px]"
+      requiresEntity={false}
     >
-      {(ordersData) => (
-        <SectionContainer className="flex flex-col gap-8">
+      {(ordersData, loading) => (
+        <div className="flex flex-col gap-8">
           <h1 className="text-4xl font-bold">Your Account</h1>
-          <DashboardTabs session={session} orders={ordersData || []} />
-          <div className="mt-8"></div>
-        </SectionContainer>
+          {loading ? (
+            <DashboardSkeleton />
+          ) : (
+            <DashboardTabs
+              session={session}
+              orders={ordersData || []}
+              isLoading={loading}
+            />
+          )}
+        </div>
       )}
     </PageLayout>
   );

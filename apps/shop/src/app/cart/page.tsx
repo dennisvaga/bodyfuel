@@ -3,39 +3,44 @@
 import CartItemsList from "@/src/features/cart/components/CartItemsList";
 import { CartVariants } from "@/src/features/cart/types/cartEnums";
 import { useCart } from "@/src/features/cart/contexts/cartContext";
-import React from "react";
-import { SectionContainer } from "@repo/ui/components/SectionContainer";
+import CartItemSkeleton, {
+  TotalSkeleton,
+} from "@/src/features/cart/components/CartItemSkeleton";
+import { Button } from "@repo/ui/components/ui/button";
 import PageLayout from "@/src/layouts/PageLayout";
+import React from "react";
 
 const Page = () => {
   const { cart, isLoading } = useCart();
 
   return (
     <PageLayout
-      isLoading={isLoading}
       data={cart}
+      isLoading={isLoading}
+      requiresEntity={false}
       containerClassName="flex items-center justify-center min-h-[calc(50vh)]"
     >
-      {(cartData) => {
-        const isCartEmpty =
-          !cartData?.cartItems || cartData.cartItems.length === 0;
+      {(cartData, loading) => (
+        <div className="flex flex-col gap-8 items-center w-full md:max-w-[70%]">
+          <h1 className="text-4xl">Your Cart</h1>
 
-        return (
-          <SectionContainer className="flex items-center justify-center min-h-[calc(50vh)]">
-            <div className="flex flex-col gap-8 items-center w-full md:max-w-[70%]">
-              <h1 className="text-4xl">Your Cart</h1>
-
-              {isCartEmpty && <p>Your cart is currently empty.</p>}
-
-              <CartItemsList
-                variant={CartVariants.cart}
-                showSubtotalLabel={true}
-                showCheckoutButton={true}
-              />
+          {loading ? (
+            <div className="flex flex-col gap-4 w-full">
+              <CartItemSkeleton variant={CartVariants.cart} count={3} />
+              <div className="pt-10">
+                <TotalSkeleton />
+              </div>
+              <Button>Checkout</Button>
             </div>
-          </SectionContainer>
-        );
-      }}
+          ) : (
+            <CartItemsList
+              variant={CartVariants.cart}
+              showSubtotalLabel={true}
+              showCheckoutButton={true}
+            />
+          )}
+        </div>
+      )}
     </PageLayout>
   );
 };

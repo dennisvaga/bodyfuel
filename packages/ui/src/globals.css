@@ -87,8 +87,8 @@
     --chart-5: 27 87% 67%;
 
     /*Custom*/
-    --background-darker: 0, 0%, 0%, 0.9;
-    --background-darker-solid: 0, 0%, 8%;
+    --background-darker: 0 0% 0% / 0.9;
+    --background-darker-solid: 0 0% 8%;
     
     /* Product component colors */
     --product-price: 20.5 90.2% 48.2%;
@@ -107,7 +107,7 @@
   }
 
   .dark {
-    --background: 0, 0%, 10%;
+    --background: 0 0% 10%;
     --foreground: 60 9.1% 97.8%;
     --card: 20 14.3% 4.1%;
     --card-foreground: 60 9.1% 97.8%;
@@ -133,9 +133,9 @@
     --chart-5: 340 75% 55%;
 
     /*Custom*/
-    --background-darker: 0, 0%, 5%, 0.5;
-    --background-darker-solid: 0, 0%, 8%;
-    --text-dark: 0, 0%, 100%;
+    --background-darker: 0 0% 5% / 0.5;
+    --background-darker-solid: 0 0% 8%;
+    --text-dark: 0 0% 100%;
     
     /* Product component colors for dark mode */
     --product-price: 20.5 90.2% 48.2%;

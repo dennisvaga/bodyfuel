@@ -15,14 +15,21 @@ const QuickActionsCard = () => {
       <CardHeader>
         <CardTitle>Quick Actions</CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col gap-2">
-        {/* <Button asChild variant="outline" size="sm">
-          <Link href="/">Browse Products</Link>
-        </Button> */}
-        <Button asChild variant="outline" size="sm">
+      <CardContent className="space-y-3">
+        <Button
+          asChild
+          variant="outline"
+          size="sm"
+          className="w-full justify-start"
+        >
           <Link href="/contact-us">Contact Support</Link>
         </Button>
-        <Button asChild variant="destructive" size="sm">
+        <Button
+          asChild
+          variant="destructive"
+          size="sm"
+          className="w-full justify-start"
+        >
           <Link href="/signout">Sign Out</Link>
         </Button>
       </CardContent>
