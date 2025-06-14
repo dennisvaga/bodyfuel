@@ -12,7 +12,7 @@ import Link from "next/link";
 import { ProductGroupType } from "../types/productGroup";
 import { ChevronRight } from "lucide-react";
 import { StaticImageData } from "next/image";
-import ProductSliderSkeleton from "./ProductSliderSkeleton";
+import ProductSkeleton from "./ProductSkeleton";
 
 interface ProductSliderProps<T = any> {
   productGroup: T;
@@ -31,7 +31,12 @@ const ProductSlider = ({
 }: ProductSliderProps) => {
   // Show skeleton while loading
   if (isLoading) {
-    return <ProductSliderSkeleton productCount={productCount} />;
+    return (
+      <ProductSkeleton
+        variant={ProductCardVariants.slider}
+        count={productCount}
+      />
+    );
   }
 
   return (

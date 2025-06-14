@@ -9,7 +9,7 @@
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import heroProteinImage from "@media/hero-banners/hero-image-protein.png";
-import heroAthleteImage from "@media/hero-banners/hero-banner-athlete.png";
+import heroAthleteImage from "@media/hero-banners/hero-banner-single-protein.png";
 import {
   Carousel,
   CarouselContent,
@@ -43,11 +43,11 @@ const sliderImages = [
   },
   {
     src: heroAthleteImage,
-    alt: "Athlete Hydration Banner",
-    heading: "Real Fuel. Real Athletes.",
-    subheading: "Stay hydrated. Recover faster. Perform better.",
+    alt: "Single Protein Powder Banner",
+    heading: "PURE PROTEIN POWER",
+    subheading: "ONE SCOOP. MAXIMUM RESULTS.",
     description:
-      "Formulated for performance. Trusted by runners, lifters, and athletes who never settle.",
+      "Premium whey protein engineered for serious gains. Clean ingredients, unmatched quality, proven performance.",
     ctaText: "SHOP NOW",
     ctaLink: "/products",
     alignment: "right",

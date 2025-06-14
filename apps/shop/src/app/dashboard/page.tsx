@@ -34,7 +34,7 @@ const DashboardPage = () => {
       {(ordersData) => (
         <SectionContainer className="flex flex-col gap-8">
           <h1 className="text-4xl font-bold">Your Account</h1>
-          <DashboardTabs session={session} orders={ordersData} />
+          <DashboardTabs session={session} orders={ordersData || []} />
           <div className="mt-8"></div>
         </SectionContainer>
       )}

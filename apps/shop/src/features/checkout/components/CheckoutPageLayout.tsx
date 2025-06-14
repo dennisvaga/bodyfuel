@@ -47,7 +47,7 @@ const CheckoutPageLayout = ({
 
       {/* RIGHT: SIDEBAR, sticky at the top right, no extra padding */}
       <div className="w-full -order-1 md:order-1 bg-background">
-        <aside className="sticky top-0 right-0 md:max-w-[380px] w-full px-10 py-10">
+        <aside className="sticky top-0 right-0 md:max-w-[380px] w-full px-10 py-20">
           {/* Logo */}
           <div className="w-full pb-20 md:hidden">
             <Link href={"/"}>

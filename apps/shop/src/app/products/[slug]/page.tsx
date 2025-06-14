@@ -1,7 +1,6 @@
 "use client";
 
 import ProductDetail from "@/src/features/products/components/ProductDetail";
-import { SectionContainer } from "@repo/ui/components/SectionContainer";
 import { useFetchQuery, QUERY_KEYS, productService } from "@repo/shared";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -16,13 +15,14 @@ const page = () => {
     serviceFn: () => productService.getProductBySlug(slug ?? ""),
   });
 
+  // Always render ProductDetail - it handles its own loading/skeleton states
   return (
-    <PageLayout isLoading={isLoading} data={product}>
-      {(productData) => (
-        <SectionContainer className="flex flex-row justify-center w-full">
-          <ProductDetail product={productData} isLoading={false} />
-        </SectionContainer>
-      )}
+    <PageLayout
+      data={product}
+      isLoading={isLoading}
+      containerClassName="flex flex-row justify-center w-full"
+    >
+      {() => <ProductDetail product={product} isLoading={isLoading} />}
     </PageLayout>
   );
 };

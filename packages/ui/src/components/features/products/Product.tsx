@@ -5,7 +5,7 @@
 
 "use client";
 
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import Image from "next/image";
 import { Label } from "@radix-ui/react-label";
 import { PlusIcon, MinusIcon, ShoppingCart, Star } from "lucide-react";
@@ -20,6 +20,7 @@ import {
 } from "@repo/ui/components/ui/select";
 import { cn } from "#lib/cn";
 import LoadAnimation from "#components/LoadAnimation";
+import { Skeleton } from "@repo/ui/components/ui/skeleton";
 
 // Core Product compound component
 const Product = ({
@@ -51,37 +52,64 @@ Product.Image = ({
   className?: string;
   hoverEffect?: boolean;
   onClick?: () => void;
-}) => (
-  <div
-    className={cn(
-      `relative h-full flex items-center justify-center ${onClick ? "hover:cursor-pointer" : ""}`,
-      className
-    )}
-    onClick={onClick}
-  >
+}) => {
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasError, setHasError] = React.useState(false);
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  const handleError = () => {
+    setIsLoading(false);
+    setHasError(true);
+  };
+
+  return (
     <div
-      style={{
-        width: width ? `${width}px` : "100%",
-        height: height ? `${height}px` : "auto",
-        maxWidth: "100%",
-        maxHeight: "100%",
-      }}
-      className={cn("relative", !height && "aspect-square")}
+      className={cn(
+        `relative h-full flex items-center justify-center ${onClick ? "hover:cursor-pointer" : ""}`,
+        className
+      )}
+      onClick={onClick}
     >
-      <Image
-        src={src || "/"}
-        alt="Product Image"
-        sizes={`${width}px`}
-        fill
-        className={cn(
-          "object-contain",
-          hoverEffect &&
-            "transition-transform duration-500 transform group-hover:scale-105"
+      <div
+        style={{
+          width: width ? `${width}px` : "100%",
+          height: height ? `${height}px` : "auto",
+          maxWidth: "100%",
+          maxHeight: "100%",
+        }}
+        className={cn("relative", !height && "aspect-square")}
+      >
+        {/* Loading skeleton */}
+        {isLoading && <Skeleton className="absolute inset-0 rounded-lg" />}
+
+        {/* Error fallback */}
+        {hasError && (
+          <div className="absolute inset-0 bg-muted rounded-lg flex items-center justify-center">
+            <div className="text-muted-foreground text-sm">Image not found</div>
+          </div>
         )}
-      />
+
+        <Image
+          src={src || "/"}
+          alt="Product Image"
+          sizes={`${width}px`}
+          fill
+          className={cn(
+            "object-contain transition-opacity duration-300",
+            isLoading ? "opacity-0" : "opacity-100",
+            hoverEffect &&
+              "transition-transform duration-500 transform group-hover:scale-105"
+          )}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // Product Name
 Product.Name = ({

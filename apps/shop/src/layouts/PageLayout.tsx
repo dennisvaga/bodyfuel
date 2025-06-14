@@ -2,42 +2,38 @@
 
 import { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import LoadAnimation from "@repo/ui/components/LoadAnimation";
 import { SectionContainer } from "@repo/ui/components/SectionContainer";
 
 interface PageLayoutProps<T> {
-  isLoading: boolean;
   data: T | undefined | null;
+  isLoading?: boolean;
   children: (data: T) => ReactNode;
-  loadingComponent?: ReactNode;
   notFoundComponent?: ReactNode;
   containerClassName?: string;
 }
 
 /**
  * Reusable page layout component that handles loading and not-found states.
- * Eliminates the need to repeat loading/error handling logic across pages.
+ * Components handle their own loading states with skeletons.
+ * Errors are handled by Next.js error boundaries.
  */
 function PageLayout<T>({
-  isLoading,
   data,
+  isLoading = false,
   children,
-  loadingComponent,
   notFoundComponent,
   containerClassName,
 }: PageLayoutProps<T>) {
-  // Show loading state
+  // During loading, let child components handle their own loading states
   if (isLoading) {
     return (
-      <SectionContainer
-        className={`flex justify-center ${containerClassName || ""}`}
-      >
-        {loadingComponent || <LoadAnimation />}
+      <SectionContainer className={containerClassName}>
+        {children(data as T)}
       </SectionContainer>
     );
   }
 
-  // Show not found if no data
+  // Only show not found when we're sure data doesn't exist (not loading + no data)
   if (!data) {
     if (notFoundComponent) {
       return <>{notFoundComponent}</>;
@@ -46,7 +42,11 @@ function PageLayout<T>({
   }
 
   // Render children with data
-  return <>{children(data)}</>;
+  return (
+    <SectionContainer className={containerClassName}>
+      {children(data)}
+    </SectionContainer>
+  );
 }
 
 export default PageLayout;

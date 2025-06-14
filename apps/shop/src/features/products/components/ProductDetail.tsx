@@ -8,13 +8,19 @@ import React from "react";
 import { useProductVariants } from "../hooks/useProductVariants";
 import { useProductCart } from "../hooks/useProductCart";
 import Product from "@repo/ui/components/features/products/Product";
+import ProductSkeleton from "./ProductSkeleton";
+import { ProductCardVariants } from "../types/productCard";
 
 interface ProductDetailProps {
-  product: ProductWithImageUrl;
+  product: ProductWithImageUrl | undefined;
   isLoading: boolean;
 }
 
-const ProductDetail = ({ product }: ProductDetailProps) => {
+const ProductDetail = ({ product, isLoading }: ProductDetailProps) => {
+  // Show skeleton while loading or when product is undefined
+  if (isLoading || !product) {
+    return <ProductSkeleton variant={ProductCardVariants.detail} count={1} />;
+  }
   // Use focused hooks for specific business logic
   const {
     selectedOptions,

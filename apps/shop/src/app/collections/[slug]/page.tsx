@@ -19,9 +19,7 @@ const Page = () => {
   return (
     <PageLayout isLoading={isLoading} data={collection}>
       {(collection) => (
-        <SectionContainer>
-          <ProductGrid productGroup={collection} isLoading={false} />
-        </SectionContainer>
+        <ProductGrid productGroup={collection} isLoading={false} />
       )}
     </PageLayout>
   );
