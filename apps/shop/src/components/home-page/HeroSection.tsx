@@ -134,7 +134,7 @@ const HeroSection = () => {
                         className={cn(
                           `object-contain pb-0 transition-all duration-1200 ease-out`,
                           isLoaded
-                            ? "transform translate-y-0 opacity-100 scale-100"
+                            ? "transform translate-y-0 opacity-100 scale-110"
                             : "transform translate-y-12 opacity-0 scale-95"
                         )}
                         style={{
