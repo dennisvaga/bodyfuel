@@ -31,13 +31,9 @@ const ProductSkeleton = ({
       case ProductCardVariants.grid:
         return (
           <div className="rounded-xl shadow-sm bg-card overflow-hidden flex flex-col justify-between w-full">
-            {/* Product Image */}
+            {/* Product Image - Empty space since Product.Image has its own skeleton */}
             <div className="p-6 overflow-hidden">
-              <Skeleton
-                height={240}
-                width={240}
-                className="rounded-xl max-w-full"
-              />
+              <div className="aspect-square w-full max-w-[240px] mx-auto" />
             </div>
 
             {/* Product Details */}
@@ -111,59 +107,49 @@ const ProductSkeleton = ({
       case ProductCardVariants.detail:
         return (
           <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-            {/* Product Image */}
+            {/* Product Image - Empty space since Product.Image has its own skeleton */}
             <div className="w-full lg:w-1/2 flex justify-center">
-              <Skeleton
-                height={550}
-                width={550}
-                className="rounded-xl max-w-full"
-              />
+              <div className="aspect-square w-full max-w-[550px]" />
             </div>
 
             {/* Product Details */}
             <div className="flex flex-col relative w-full lg:w-1/2">
-              <div className="flex flex-col gap-4">
-                {/* Product Name */}
-                <Skeleton height={36} width="80%" />
+              <div className="flex flex-col gap-3">
+                {/* Product Name - text-2xl md:text-3xl */}
+                <Skeleton height={40} width="85%" />
 
-                {/* Brand */}
-                <Skeleton height={24} width="40%" />
+                {/* Brand - text-lg md:text-xl */}
+                <Skeleton height={24} width="35%" />
 
-                {/* Price */}
-                <Skeleton height={28} width="30%" />
+                {/* Price - text-lg md:text-xl */}
+                <Skeleton height={28} width="25%" />
 
-                {/* Description */}
-                <div className="flex flex-col gap-2">
-                  <Skeleton height={16} width="100%" />
-                  <Skeleton height={16} width="85%" />
-                  <Skeleton height={16} width="70%" />
+                {/* Description - text-sm md:text-md */}
+                <Skeleton height={20} width="90%" />
+
+                {/* Flavor Label */}
+                <div className="mt-4">
+                  <Skeleton height={20} width="15%" />
                 </div>
 
-                {/* Variant Selector */}
-                <div className="mt-4 flex flex-col gap-3">
-                  <Skeleton height={20} width="30%" />
-                  <div className="flex gap-2">
-                    <Skeleton height={40} width={64} className="rounded" />
-                    <Skeleton height={40} width={64} className="rounded" />
-                    <Skeleton height={40} width={64} className="rounded" />
-                  </div>
-                </div>
+                {/* Flavor Dropdown */}
+                <Skeleton height={48} width="100%" className="rounded" />
 
                 {/* Stock Information */}
-                <Skeleton height={16} width="25%" />
+                <Skeleton height={20} width="30%" />
               </div>
 
               {/* Action Controls */}
-              <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 mt-8 md:mt-16 md:items-center">
+              <div className="flex flex-row gap-4 items-center mt-8">
                 {/* Quantity Controls */}
                 <div className="flex items-center gap-2">
                   <Skeleton height={40} width={40} className="rounded" />
-                  <Skeleton height={40} width={64} className="rounded" />
+                  <Skeleton height={40} width={60} className="rounded" />
                   <Skeleton height={40} width={40} className="rounded" />
                 </div>
 
                 {/* Add to Cart Button */}
-                <Skeleton height={40} width="100%" className="rounded" />
+                <Skeleton height={48} width={200} className="rounded" />
               </div>
             </div>
           </div>
