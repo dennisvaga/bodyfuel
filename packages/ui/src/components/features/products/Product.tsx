@@ -20,7 +20,9 @@ import {
 } from "@repo/ui/components/ui/select";
 import { cn } from "#lib/cn";
 import LoadAnimation from "#components/LoadAnimation";
-import { Skeleton } from "@repo/ui/components/ui/skeleton";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import { useSkeleton } from "#hooks/useSkeleton";
 
 // Core Product compound component
 const Product = ({
@@ -65,6 +67,8 @@ Product.Image = ({
     setHasError(true);
   };
 
+  const { skeletonTheme } = useSkeleton();
+
   return (
     <div
       className={cn(
@@ -82,8 +86,17 @@ Product.Image = ({
         }}
         className={cn("relative", !height && "aspect-square")}
       >
-        {/* Loading skeleton */}
-        {isLoading && <Skeleton className="absolute inset-0 rounded-lg" />}
+        {/* Loading skeleton with proper theming */}
+        {isLoading && (
+          <SkeletonTheme {...skeletonTheme}>
+            <Skeleton
+              height="100%"
+              width="100%"
+              className="rounded-lg"
+              style={{ position: "absolute", inset: 0 }}
+            />
+          </SkeletonTheme>
+        )}
 
         {/* Error fallback */}
         {hasError && (

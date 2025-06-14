@@ -1,153 +1,187 @@
 /**
- * Dynamic skeleton loader for product components.
+ * Dynamic skeleton loader for product components using react-loading-skeleton.
  * Shows placeholders while data is loading, with support for multiple display variants.
+ * Much more maintainable and automatically responsive.
  */
 
 "use client";
-import React, { JSX } from "react";
-import { Skeleton } from "@repo/ui/components/ui/skeleton";
+import React from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 import { ProductCardVariants } from "../types/productCard";
+import { useSkeleton } from "@repo/ui/hooks/useSkeleton";
 
 interface ProductSkeletonProps {
   variant?: ProductCardVariants;
   count?: number;
-  withBrigterBg?: boolean; // Prevent skeleton from blending with bg
 }
 
 /**
- * Dynamic ProductSkeleton that supports multiple layout variants
- * Shows a placeholder while data is loading.
+ * Clean, maintainable skeleton using react-loading-skeleton
+ * Automatically responsive and easy to maintain
  */
 const ProductSkeleton = ({
   variant = ProductCardVariants.grid,
   count = 8,
-  withBrigterBg = false,
 }: ProductSkeletonProps) => {
-  const bgClass = withBrigterBg ? "bg-muted/50 dark:bg-muted/30" : "";
+  const { skeletonTheme } = useSkeleton();
 
-  // Skeleton variants specific to each variant
-  // - This object structure is more efficient than switch, because we can pull only the specific record that we need.
-  const skeletonVariants: Record<string, (key: number) => JSX.Element> = {
-    // Grid product card (grid view)
-    grid: (key) => (
-      <div
-        key={key}
-        className="rounded-xl shadow-sm bg-card overflow-hidden flex flex-col justify-between w-full"
-      >
-        {/* Card Header - empty space for image */}
-        <div className="p-6 overflow-hidden">
-          <div className="w-[160px] md:w-[240px] h-[160px] md:h-[240px]" />
-        </div>
-
-        {/* Card Content */}
-        <div className="flex flex-col relative p-4 gap-1">
-          <Skeleton className={`h-4 w-[80px] ${bgClass}`} /> {/* Brand */}
-          <Skeleton className={`h-5 w-[120px] ${bgClass}`} /> {/* Name */}
-          <Skeleton className={`h-4 w-[60px] ${bgClass}`} /> {/* Reviews */}
-          <Skeleton className={`h-5 w-[70px] ${bgClass}`} /> {/* Price */}
-          {/* Mobile button skeleton */}
-          <Skeleton
-            className={`h-10 w-full mt-2 rounded-xl md:hidden ${bgClass}`}
-          />
-        </div>
-      </div>
-    ),
-
-    // Slider product card (horizontal slider)
-    slider: (key) => (
-      <div key={key} className="min-w-[200px] lg:flex-1 lg:min-w-0">
-        <div className="rounded-xl shadow-sm bg-card overflow-hidden flex flex-col justify-between">
-          {/* Card Header with image */}
-          <div className="p-6 overflow-hidden">
-            <Skeleton
-              className={`w-[160px] md:w-[240px] h-[160px] md:h-[240px] rounded-xl ${bgClass}`}
-            />
-          </div>
-
-          {/* Card Content */}
-          <div className="flex flex-col relative p-4 gap-1">
-            <Skeleton className={`h-4 w-[80px] ${bgClass}`} /> {/* Brand */}
-            <Skeleton className={`h-5 w-[120px] ${bgClass}`} /> {/* Name */}
-            <Skeleton className={`h-4 w-[60px] ${bgClass}`} /> {/* Reviews */}
-            <Skeleton className={`h-5 w-[70px] ${bgClass}`} /> {/* Price */}
-            {/* Mobile button skeleton */}
-            <Skeleton
-              className={`h-10 w-full mt-2 rounded-xl md:hidden ${bgClass}`}
-            />
-          </div>
-        </div>
-      </div>
-    ),
-
-    // Product detail page skeleton
-    detail: (key) => (
-      <div
-        key={key}
-        className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto"
-      >
-        {/* Product Image Skeleton */}
-        <div className="w-full lg:w-1/2 flex justify-center">
-          <Skeleton
-            className={`w-[550px] h-[550px] max-w-full rounded-xl ${bgClass}`}
-          />
-        </div>
-
-        {/* Product Details Skeleton */}
-        <div className="flex flex-col relative w-full lg:w-1/2">
-          <div className="flex flex-col gap-3">
-            {/* Product Name */}
-            <Skeleton
-              className={`h-8 md:h-9 w-[300px] max-w-full ${bgClass}`}
-            />
-
-            {/* Brand */}
-            <Skeleton className={`h-6 md:h-7 w-[150px] ${bgClass}`} />
-
-            {/* Price */}
-            <Skeleton className={`h-6 md:h-7 w-[100px] ${bgClass}`} />
-
-            {/* Description */}
-            <div className="flex flex-col gap-2">
-              <Skeleton className={`h-4 w-full ${bgClass}`} />
-              <Skeleton className={`h-4 w-[80%] ${bgClass}`} />
-              <Skeleton className={`h-4 w-[60%] ${bgClass}`} />
+  const renderSkeleton = () => {
+    switch (variant) {
+      case ProductCardVariants.grid:
+        return (
+          <div className="rounded-xl shadow-sm bg-card overflow-hidden flex flex-col justify-between w-full">
+            {/* Product Image */}
+            <div className="p-6 overflow-hidden">
+              <Skeleton
+                height={240}
+                width={240}
+                className="rounded-xl max-w-full"
+              />
             </div>
 
-            {/* Variant Selector (optional) */}
-            <div className="mt-4 flex flex-col gap-2">
-              <Skeleton className={`h-5 w-[120px] ${bgClass}`} />
-              <div className="flex gap-2">
-                <Skeleton className={`h-10 w-16 rounded ${bgClass}`} />
-                <Skeleton className={`h-10 w-16 rounded ${bgClass}`} />
-                <Skeleton className={`h-10 w-16 rounded ${bgClass}`} />
+            {/* Product Details */}
+            <div className="flex flex-col relative p-4 gap-2">
+              <Skeleton height={16} width="60%" /> {/* Brand */}
+              <Skeleton height={20} width="80%" /> {/* Name */}
+              <Skeleton height={16} width="40%" /> {/* Reviews */}
+              <Skeleton height={20} width="50%" /> {/* Price */}
+              {/* Mobile button */}
+              <div className="md:hidden mt-2">
+                <Skeleton height={40} width="100%" className="rounded-xl" />
               </div>
             </div>
-
-            {/* Stock Information */}
-            <Skeleton className={`h-4 w-[100px] ${bgClass}`} />
           </div>
+        );
 
-          {/* Action Controls */}
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 mt-8 md:mt-16 md:items-center">
-            {/* Quantity Controls */}
-            <div className="flex items-center gap-2">
-              <Skeleton className={`h-10 w-10 rounded ${bgClass}`} />
-              <Skeleton className={`h-10 w-16 rounded ${bgClass}`} />
-              <Skeleton className={`h-10 w-10 rounded ${bgClass}`} />
+      case ProductCardVariants.slider:
+        return (
+          <div className="flex flex-col xl:items-center w-full">
+            <div className="flex flex-col gap-6 w-full">
+              {/* Group heading skeleton */}
+              <div className="flex flex-row items-center">
+                <Skeleton height={36} width={200} />
+                <Skeleton height={27} width={27} className="ml-2" />
+              </div>
+
+              {/* Group image & products container */}
+              <div className="flex flex-row gap-3 overflow-x-auto lg:overflow-x-visible pb-2 w-full">
+                {/* View all card skeleton */}
+                <div className="relative max-w-[230px] lg:w-1/3 lg:min-w-0 border rounded-xl flex-shrink-0 h-[400px]">
+                  <Skeleton height="100%" width="100%" className="rounded-xl" />
+                </div>
+
+                {/* Product cards skeleton */}
+                <div className="flex flex-row gap-3 -order-1 sm:order-1 lg:flex-1 lg:w-2/3">
+                  {Array.from({ length: count }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="min-w-[200px] lg:flex-1 lg:min-w-0"
+                    >
+                      <div className="rounded-xl shadow-sm bg-card overflow-hidden flex flex-col justify-between h-[400px]">
+                        {/* Product Image - Empty space since Product.Image has its own skeleton */}
+                        <div className="p-6 overflow-hidden flex-1 flex items-center justify-center">
+                          <div className="w-full aspect-square max-w-[240px]" />
+                        </div>
+
+                        {/* Product Details */}
+                        <div className="flex flex-col relative p-4 gap-2">
+                          <Skeleton height={16} width="60%" /> {/* Brand */}
+                          <Skeleton height={20} width="80%" /> {/* Name */}
+                          <Skeleton height={16} width="40%" /> {/* Reviews */}
+                          <Skeleton height={20} width="50%" /> {/* Price */}
+                          {/* Mobile button */}
+                          <div className="md:hidden mt-2">
+                            <Skeleton
+                              height={40}
+                              width="100%"
+                              className="rounded-xl"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
+      case ProductCardVariants.detail:
+        return (
+          <div className="flex flex-col lg:flex-row w-full gap-4 lg:gap-8 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
+            {/* Product Image */}
+            <div className="w-full lg:w-1/2 flex justify-center">
+              <Skeleton
+                height={550}
+                width={550}
+                className="rounded-xl max-w-full"
+              />
             </div>
 
-            {/* Add to Cart Button */}
-            <Skeleton className={`h-10 w-full rounded ${bgClass}`} />
+            {/* Product Details */}
+            <div className="flex flex-col relative w-full lg:w-1/2">
+              <div className="flex flex-col gap-4">
+                {/* Product Name */}
+                <Skeleton height={36} width="80%" />
+
+                {/* Brand */}
+                <Skeleton height={24} width="40%" />
+
+                {/* Price */}
+                <Skeleton height={28} width="30%" />
+
+                {/* Description */}
+                <div className="flex flex-col gap-2">
+                  <Skeleton height={16} width="100%" />
+                  <Skeleton height={16} width="85%" />
+                  <Skeleton height={16} width="70%" />
+                </div>
+
+                {/* Variant Selector */}
+                <div className="mt-4 flex flex-col gap-3">
+                  <Skeleton height={20} width="30%" />
+                  <div className="flex gap-2">
+                    <Skeleton height={40} width={64} className="rounded" />
+                    <Skeleton height={40} width={64} className="rounded" />
+                    <Skeleton height={40} width={64} className="rounded" />
+                  </div>
+                </div>
+
+                {/* Stock Information */}
+                <Skeleton height={16} width="25%" />
+              </div>
+
+              {/* Action Controls */}
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 mt-8 md:mt-16 md:items-center">
+                {/* Quantity Controls */}
+                <div className="flex items-center gap-2">
+                  <Skeleton height={40} width={40} className="rounded" />
+                  <Skeleton height={40} width={64} className="rounded" />
+                  <Skeleton height={40} width={40} className="rounded" />
+                </div>
+
+                {/* Add to Cart Button */}
+                <Skeleton height={40} width="100%" className="rounded" />
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    ),
+        );
+
+      default:
+        return null;
+    }
   };
 
-  // Fallback to grid if invalid variant
-  const renderSkeleton = skeletonVariants[variant] || skeletonVariants.grid;
+  const content =
+    variant === ProductCardVariants.slider
+      ? renderSkeleton()
+      : Array.from({ length: count }).map((_, index) => (
+          <div key={index}>{renderSkeleton()}</div>
+        ));
 
-  return Array.from({ length: count }).map((_, index) => renderSkeleton(index));
+  return <SkeletonTheme {...skeletonTheme}>{content}</SkeletonTheme>;
 };
 
 export default ProductSkeleton;
