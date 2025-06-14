@@ -9,7 +9,6 @@ import CartItemSkeleton, { TotalSkeleton } from "./CartItemSkeleton";
 import { CartVariants } from "../types/cartEnums";
 import { useCart } from "../contexts/cartContext";
 import { X } from "lucide-react";
-import LoadAnimation from "@repo/ui/components/LoadAnimation";
 
 interface CartItemsListProps {
   variant?: CartVariants;
@@ -64,14 +63,8 @@ const CartItemsList = ({
   if (isLoading && variant !== CartVariants.cart) {
     return (
       <div className="flex flex-col gap-4">
-        <CartItemSkeleton
-          variant={variant}
-          count={3}
-          withBrigterBg={variant === CartVariants.checkout}
-        />
-        {showTotal && (
-          <TotalSkeleton withBrigterBg={variant === CartVariants.checkout} />
-        )}
+        <CartItemSkeleton variant={variant} count={3} />
+        {showTotal && <TotalSkeleton />}
       </div>
     );
   }
