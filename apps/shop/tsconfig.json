@@ -1,0 +1,31 @@
+{
+  "extends": "@repo/typescript-config/nextjs.json",
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@components/*": ["src/components/*"],
+      "@features/*": ["src/features/*"],
+      "@hooks/*": ["src/hooks/*"],
+      "@lib/*": ["src/lib/*"],
+      "@services/*": ["src/services/*"],
+      "@globalTypes/*": ["src/types/*"],
+      "@productType/*": ["src/features/products/types/*"],
+      "@categoryType/*": ["src/features/categories/types/*"],
+      "@cartType/*": ["src/features/cart/types/*"],
+      "@utils/*": ["src/utils/*"],
+      "@media/*": ["public/media/*"],
+      "@rootMedia/*": ["../../public/media/*"]
+    },
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "incremental": true,
+    "esModuleInterop": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
