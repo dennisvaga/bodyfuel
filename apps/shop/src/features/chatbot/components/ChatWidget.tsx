@@ -30,7 +30,7 @@ export default function ChatWidget() {
     extractProductData,
     streamedProducts,
     productStatus,
-  } = useProductChat();
+  } = useProductChat(isOpen);
 
   // Don't render anything until we've checked localStorage
   if (!isWidgetInitialized) {
@@ -56,7 +56,7 @@ export default function ChatWidget() {
 
   // Different styling for mobile vs desktop
   const cardClassName = isMobile
-    ? "fixed inset-0 w-full h-full flex flex-col z-50 bg-card border-none rounded-none"
+    ? "fixed inset-0 w-full h-full flex flex-col z-50 bg-card border-none rounded-none shadow-xl"
     : "fixed bottom-4 right-4 w-[400px] h-[min(500px,70vh)] max-w-full flex flex-col shadow-xl z-50 bg-card border-border";
 
   return (

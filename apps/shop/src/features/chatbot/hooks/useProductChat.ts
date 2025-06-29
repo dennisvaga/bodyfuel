@@ -4,6 +4,12 @@ import { useChat } from "@ai-sdk/react";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { ChatProductCardProps } from "../components/ChatProductCard";
 import { getPlatformAwareUrl } from "@repo/platform-utils";
+import {
+  loadFormDataFromLocalStorage,
+  saveFormDataToLocalStorage,
+} from "@repo/shared";
+
+const GREETING_SHOWN_KEY = "bodyfuel-greeting-shown";
 
 /**
  * Custom hook for managing chat interactions with AI-powered product search
@@ -14,7 +20,7 @@ import { getPlatformAwareUrl } from "@repo/platform-utils";
  *
  * @returns Chat state and control methods for the product chat interface
  */
-export function useProductChat() {
+export function useProductChat(isOpen?: boolean) {
   const [processingMessages, setProcessingMessages] = useState<boolean>(false);
   const [streamedProducts, setStreamedProducts] = useState<
     Omit<ChatProductCardProps, "className">[]
@@ -55,17 +61,26 @@ export function useProductChat() {
   // Track if welcome message has been sent
   const welcomeSentRef = useRef(false);
 
-  // Auto-send welcome prompt when chat initializes
+  // Auto-send welcome prompt only on first time opening the widget
   useEffect(() => {
-    if (messages.length === 0 && !welcomeSentRef.current) {
-      console.log("Sending welcome message to backend");
+    if (!isOpen) return; // Only run when widget is open
+    
+    // Check if greeting has been shown before
+    const greetingShown = loadFormDataFromLocalStorage<boolean>(GREETING_SHOWN_KEY);
+    
+    if (!greetingShown && messages.length === 0 && !welcomeSentRef.current) {
+      console.log("Sending welcome message to backend (first time)");
       welcomeSentRef.current = true;
+      
+      // Mark greeting as shown
+      saveFormDataToLocalStorage(GREETING_SHOWN_KEY, true);
+      
       append({
         role: "user",
         content: "welcome",
       });
     }
-  }, [messages.length, append]);
+  }, [isOpen, messages.length, append]);
 
   /**
    * Extracts and parses product data from message content

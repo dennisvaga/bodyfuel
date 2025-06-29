@@ -16,8 +16,7 @@ export function useChatWidget() {
   // Initialize widget state from localStorage
   useEffect(() => {
     const savedState = loadFormDataFromLocalStorage<boolean>(CHAT_WIDGET_KEY);
-    // Default to open (true) if no saved state exists
-    setIsOpen(savedState !== null ? savedState : true);
+    setIsOpen(savedState === true);
     setIsWidgetInitialized(true);
   }, []);
 
