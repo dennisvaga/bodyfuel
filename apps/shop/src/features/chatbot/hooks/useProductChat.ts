@@ -64,17 +64,18 @@ export function useProductChat(isOpen?: boolean) {
   // Auto-send welcome prompt only on first time opening the widget
   useEffect(() => {
     if (!isOpen) return; // Only run when widget is open
-    
+
     // Check if greeting has been shown before
-    const greetingShown = loadFormDataFromLocalStorage<boolean>(GREETING_SHOWN_KEY);
-    
+    const greetingShown =
+      loadFormDataFromLocalStorage<boolean>(GREETING_SHOWN_KEY);
+
     if (!greetingShown && messages.length === 0 && !welcomeSentRef.current) {
       console.log("Sending welcome message to backend (first time)");
       welcomeSentRef.current = true;
-      
+
       // Mark greeting as shown
       saveFormDataToLocalStorage(GREETING_SHOWN_KEY, true);
-      
+
       append({
         role: "user",
         content: "welcome",

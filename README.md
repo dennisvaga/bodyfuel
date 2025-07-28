@@ -4,7 +4,7 @@ A full-stack e-commerce solution for fitness supplements built with Next.js, Exp
 
 ## Project Overview
 
-BodyFuel is a modern fitness supplements e-commerce platform built as a monorepo using Turborepo. We specialize in high-quality supplements to fuel your fitness journey with three main applications:
+BodyFuel is a modern fitness supplements e-commerce platform built as a monorepo using Turborepo. This project showcases a complete e-commerce solution specializing in high-quality supplements to fuel your fitness journey with three main applications:
 
 1. **Shop** - Customer-facing storefront built with Next.js
 2. **Admin** - Administrative dashboard for product and order management
